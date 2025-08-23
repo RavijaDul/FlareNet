@@ -22,3 +22,18 @@ Install dependencies and start the development server:
 cd frontend
 npm install
 npm run dev
+
+# Backend
+cd backend
+./mvnw clean install
+./mvnw spring-boot:run
+
+# Database (PostgreSQL)
+CREATE DATABASE flarenet_dev;
+
+# Frontend production build
+npm run build
+npm run preview
+
+# Backend tests
+./mvnw test
