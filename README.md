@@ -1,41 +1,54 @@
 # Flarenet
 
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![npm](https://img.shields.io/badge/npm-8%2B-blue?logo=npm&logoColor=white)](https://www.npmjs.com/)
+[![Java](https://img.shields.io/badge/Java-17%2B-orange?logo=java&logoColor=white)](https://www.oracle.com/java/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14%2B-blue?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+
 Full-stack project with a **React (Vite + Material UI)** frontend and a **Spring Boot** backend using **PostgreSQL**.  
-Frontend and backend are organized in separate folders.
+Frontend and backend are organized in separate folders. This README provides instructions for setup, running, and understanding the project.
 
 ---
 
-To get started, make sure you have the following installed and running:
+## Prerequisites
 
-- **Node.js** 18+ (20+ recommended)  
+Before starting, ensure you have the following installed:
+
+- **Node.js** 18+  
 - **npm** (for frontend)  
 - **Java 17+** (for backend / Spring Boot)  
-- **PostgreSQL**  
+- **PostgreSQL** running locally or remotely  
 
 ---
 
-### Frontend Setup
+## Setup & Run
 
-Install dependencies and start the development server:
+### Frontend
 
 ```bash
 cd frontend
-npm install
-npm run dev
+npm install      # Install dependencies
+npm run dev       # Start frontend development server
+``` 
 
 # Backend
+```bash
 cd backend
 ./mvnw clean install
 ./mvnw spring-boot:run
-
+```
 # Database (PostgreSQL)
+```bash
 CREATE DATABASE flarenet_dev;
+```
 
 # Frontend production build
+```bash
 npm run build
 npm run preview
-
+```
 # Backend tests
+```bash
 ./mvnw test
 
 ```
