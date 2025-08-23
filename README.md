@@ -68,8 +68,8 @@ cd ../frontend
 npm install                # Install frontend dependencies
 npm run dev                # Start frontend development server
 ```
-# Open frontend in browser at http://localhost:5173
-# Open backend in browser at http://localhost:8080
+###   Open frontend in browser at http://localhost:5173
+###   Open backend in browser at http://localhost:8080
 
 # Frontend production build
 ``` bash
