@@ -1,19 +1,54 @@
 # Flarenet
 
-Full-stack project with a **React (Vite + Material UI)** frontend and a **Spring Boot** backend using **PostgreSQL**.  
-This README provides instructions for setup, running, and understanding the project.
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![npm](https://img.shields.io/badge/npm-8%2B-blue?logo=npm&logoColor=white)](https://www.npmjs.com/)
+[![Java](https://img.shields.io/badge/Java-17%2B-orange?logo=java&logoColor=white)](https://www.oracle.com/java/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14%2B-blue?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![React](https://img.shields.io/badge/React-18%2B-cyan?logo=react&logoColor=white)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-4%2B-pink?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Material UI](https://img.shields.io/badge/Material_UI-5%2B-007FFF?logo=mui&logoColor=white)](https://mui.com/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3%2B-green?logo=spring&logoColor=white)](https://spring.io/projects/spring-boot)
 
 ---
 
-## Quick Setup & Run
+## Overview
 
-Follow the steps below. All commands can be copy-pasted sequentially in your terminal.
+**Flarenet** is a full-stack web application with a **React frontend** and **Spring Boot backend** using **PostgreSQL**.  
 
-```bash
-# 1. Database Setup
-# Ensure PostgreSQL is running and create the development database
-psql -U your_db_user -c "CREATE DATABASE flarenet_dev;"
+- **Frontend:** Built with React, Vite, and Material UI for fast and responsive UI.  
+- **Backend:** Spring Boot handles business logic and provides REST APIs.  
+- **Database:** PostgreSQL stores all data for the system.  
 
+This system is designed to demonstrate **modern web development with a separation of frontend and backend**, and can be extended with features like authentication, CRUD operations, and dashboards.
+
+---
+
+## Dependencies
+
+### Frontend
+
+- React, Vite, Material UI  
+- Axios or fetch for API requests  
+- Node.js and npm to run scripts  
+
+### Backend
+
+- Java 17+, Spring Boot 3+  
+- Spring Data JPA for database interactions  
+- PostgreSQL JDBC driver  
+- Maven for dependency management  
+
+---
+
+## Step-by-Step Setup
+
+### 1. Database
+
+1. Install PostgreSQL.  
+2. Create the development database:
+
+```sql
+CREATE DATABASE flarenet_dev;
 # Update database connection in backend/src/main/resources/application.properties:
 # spring.datasource.url=jdbc:postgresql://localhost:5432/flarenet_dev
 # spring.datasource.username=your_db_user
