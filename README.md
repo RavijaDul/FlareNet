@@ -1,63 +1,43 @@
 # Flarenet
 
-
-[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green?logo=node.js&logoColor=white)](https://nodejs.org/)
-[![npm](https://img.shields.io/badge/npm-8%2B-blue?logo=npm&logoColor=white)](https://www.npmjs.com/)
-[![Java](https://img.shields.io/badge/Java-17%2B-orange?logo=java&logoColor=white)](https://www.oracle.com/java/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14%2B-blue?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![React](https://img.shields.io/badge/React-18%2B-cyan?logo=react&logoColor=white)](https://reactjs.org/)
-[![Vite](https://img.shields.io/badge/Vite-4%2B-pink?logo=vite&logoColor=white)](https://vitejs.dev/)
-[![Material UI](https://img.shields.io/badge/Material_UI-5%2B-007FFF?logo=mui&logoColor=white)](https://mui.com/)
-[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3%2B-green?logo=spring&logoColor=white)](https://spring.io/projects/spring-boot)
-
-
 Full-stack project with a **React (Vite + Material UI)** frontend and a **Spring Boot** backend using **PostgreSQL**.  
-Frontend and backend are organized in separate folders. This README provides instructions for setup, running, and understanding the project.
+This README provides instructions for setup, running, and understanding the project.
 
 ---
 
-## Prerequisites
+## Quick Setup & Run
 
-Before starting, ensure you have the following installed:
-
-- **Node.js** 18+  
-- **npm** (for frontend)  
-- **Java 17+** (for backend / Spring Boot)  
-- **PostgreSQL** running locally or remotely  
-
----
-
-## Setup & Run
-
-### Frontend
+Follow the steps below. All commands can be copy-pasted sequentially in your terminal.
 
 ```bash
-cd frontend
-npm install      # Install dependencies
-npm run dev       # Start frontend development server
-``` 
+# 1. Database Setup
+# Ensure PostgreSQL is running and create the development database
+psql -U your_db_user -c "CREATE DATABASE flarenet_dev;"
 
-# Backend
-```bash
+# Update database connection in backend/src/main/resources/application.properties:
+# spring.datasource.url=jdbc:postgresql://localhost:5432/flarenet_dev
+# spring.datasource.username=your_db_user
+# spring.datasource.password=your_db_password
+# spring.jpa.hibernate.ddl-auto=update
+
+# 2. Backend Setup
 cd backend
-./mvnw clean install
-./mvnw spring-boot:run
-```
-# Database (PostgreSQL)
-```bash
-CREATE DATABASE flarenet_dev;
-```
+./mvnw clean install      # Build backend
+./mvnw spring-boot:run    # Run backend server (tables auto-created)
+./mvnw test               # Run backend tests
+
+# 3. Frontend Setup
+cd ../frontend
+npm install                # Install frontend dependencies
+npm run dev                # Start frontend development server
+
+# Open frontend in browser at http://localhost:5173
+# Open backend in browser at http://localhost:8080
 
 # Frontend production build
-```bash
-npm run build
-npm run preview
-```
-# Backend tests
-```bash
-./mvnw test
+npm run build              # Build production files
+npm run preview            # Preview production build
 
-```
 
 ## Project Structure
 
