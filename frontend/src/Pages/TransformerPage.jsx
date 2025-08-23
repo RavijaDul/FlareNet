@@ -28,22 +28,59 @@ const uploader = inspectedBy;
     setweather(event.target.value);
     };
   // Handle file selection
-  const handlebaselineFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const fileData = {
-      file,
-      type: "Baseline",
-      weather,
-      uploadedAt: new Date(),
-      uploader,
-    };
-      setSelectedbaselineFile({ file, tag: "Baseline", weather });
-      setBaselineUpdatedAt(new Date()); // store current time
-      console.log("Selected baseline file:", file, "Tag: Baseline", "Weather:", weather);
-      // here you can also call API to upload the file
+  const handlebaselineFileChange = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  try {
+    // 🔹 Step 1: Check if baseline already exists in backend
+    const checkResponse = await fetch(`/api/transformers/${inspectionID}/images`);
+    if (!checkResponse.ok) throw new Error("Failed to fetch images");
+    const images = await checkResponse.json();
+
+    const existingBaseline = images.find((img) => img.type === "Baseline");
+
+    if (existingBaseline) {
+      // ✅ If backend already has baseline, just use that (skip upload)
+      setSelectedbaselineFile({
+        file: null,
+        tag: "Baseline",
+        weather: existingBaseline.weather,
+        url: existingBaseline.url,
+      });
+      setBaselineUpdatedAt(new Date(existingBaseline.uploadedAt));
+      setweather(existingBaseline.weather);
+      console.log("Baseline already exists in backend, skipping upload.");
+      return;
     }
-  };
+
+    // 🔹 Step 2: If no baseline, upload new one
+    setSelectedbaselineFile({ file, tag: "Baseline", weather });
+    setBaselineUpdatedAt(new Date());
+    console.log("Selected baseline file:", file, "Tag: Baseline", "Weather:", weather);
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("type", "Baseline");
+    formData.append("weather", weather);
+    formData.append("uploader", uploader);
+
+    const uploadResponse = await fetch(`/api/transformers/${inspectionID}/images`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!uploadResponse.ok) {
+      throw new Error("Upload failed");
+    }
+
+    console.log("Baseline uploaded successfully");
+  } catch (error) {
+    console.error("Error in baseline handling:", error);
+  }
+}
+
+
     const handlethermalFileChange = (event) => {
   const file = event.target.files[0];
   if (file) {
