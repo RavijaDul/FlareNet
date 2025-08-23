@@ -54,25 +54,28 @@ CREATE DATABASE flarenet_dev;
 # spring.datasource.username=your_db_user
 # spring.datasource.password=your_db_password
 # spring.jpa.hibernate.ddl-auto=update
-
+```
 # 2. Backend Setup
+``` bash
 cd backend
 ./mvnw clean install      # Build backend
 ./mvnw spring-boot:run    # Run backend server (tables auto-created)
 ./mvnw test               # Run backend tests
-
+```
 # 3. Frontend Setup
+``` bash
 cd ../frontend
 npm install                # Install frontend dependencies
 npm run dev                # Start frontend development server
-
+```
 # Open frontend in browser at http://localhost:5173
 # Open backend in browser at http://localhost:8080
 
 # Frontend production build
+``` bash
 npm run build              # Build production files
 npm run preview            # Preview production build
-
+```
 
 ## Project Structure
 
