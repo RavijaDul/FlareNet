@@ -15,13 +15,15 @@ function NewPage() {
     const [baselineUpdatedAt, setBaselineUpdatedAt] = React.useState(null);
     
     //variables
-    const transformerNo = "AZ-8370";
-    const poleno = "EN-122-A"
-    const Branch="Nugegoda"
-    const InspectedBy="A-110"
-    const InspectionID="000123589"
-    const inspectiondate="Mon(21), May, 2023 12.55pm"
+    const [transformerNo, setTransformerNo] = React.useState("AZ-8370");
+    const [poleno, setPoleno] = React.useState("EN-122-A");
+    const [branch, setBranch] = React.useState("Nugegoda");
+    const [inspectedBy, setInspectedBy] = React.useState("A-110");
+    const [inspectionID, setInspectionID] = React.useState("000123589");
+    const [inspectionDate, setInspectionDate] = React.useState("Mon(21), May, 2023 12.55pm");
 
+// uploader is always the inspector
+const uploader = inspectedBy; 
     const handleChange = (event) => {
     setweather(event.target.value);
     };
@@ -29,17 +31,30 @@ function NewPage() {
   const handlebaselineFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setSelectedbaselineFile(file);
+      const fileData = {
+      file,
+      type: "Baseline",
+      weather,
+      uploadedAt: new Date(),
+      uploader,
+    };
+      setSelectedbaselineFile({ file, tag: "Baseline", weather });
       setBaselineUpdatedAt(new Date()); // store current time
-      console.log("Selectedbaseline file:", file);
+      console.log("Selected baseline file:", file, "Tag: Baseline", "Weather:", weather);
       // here you can also call API to upload the file
     }
   };
     const handlethermalFileChange = (event) => {
   const file = event.target.files[0];
   if (file) {
-    setSelectedthermalFile(file);
-    console.log("Selectedthermal file:", file);
+    const fileData = {
+      file,
+      type: "Maintenance",
+      uploadedAt: new Date(),
+      uploader,
+    };
+    setSelectedthermalFile({ file, tag: "Maintenance" });
+    console.log("Selected thermal file:", file, "Tag: Maintenance");
 
     // Start loading
     setLoading(true);
@@ -73,9 +88,9 @@ function NewPage() {
         }}
       >
         <div>
-          <p style={{ fontSize: "18px", fontWeight: "600", color: "#000000ff"  }}>{InspectionID}</p>
+          <p style={{ fontSize: "18px", fontWeight: "600", color: "#000000ff"  }}>{inspectionID}</p>
           <p style={{ fontSize: "14px", color: "#000000ff" }}>
-            {inspectiondate}
+            {inspectionDate}
           </p>
         </div>
         <div>
@@ -91,7 +106,7 @@ function NewPage() {
   type="file"
   style={{ display: "none" }}
   onChange={handlebaselineFileChange}
-  disabled={!!selectedbaselineFile}
+  disabled={!weather || !!selectedbaselineFile}
 />
 
 {/* Upload button */}
@@ -100,7 +115,7 @@ function NewPage() {
     variant="contained"
     size="small"
     component="span"
-    disabled={!!selectedbaselineFile}
+    disabled={!weather || !!selectedbaselineFile}
   >
     Baseline Image
   </Button>
@@ -117,7 +132,7 @@ function NewPage() {
     }}
   >
     <img
-      src={URL.createObjectURL(selectedbaselineFile)}
+      src={URL.createObjectURL(selectedbaselineFile.file)}
       alt="Baseline"
       style={{ width: "100px", borderRadius: "8px" }}
     />
@@ -168,7 +183,7 @@ function NewPage() {
           }}
         >
           <p style={{ fontSize: "12px", color: "#060707ff" }}>Branch</p>
-          <p style={{ fontWeight: "600" , color: "#060707ff"}}>{Branch}</p>
+          <p style={{ fontWeight: "600" , color: "#060707ff"}}>{branch}</p>
         </div>
 
         <div
@@ -180,7 +195,7 @@ function NewPage() {
           }}
         >
           <p style={{ fontSize: "12px", color: "#080808ff" }}>Inspected By</p>
-          <p style={{ fontWeight: "600" , color: "#080808ff"}}>{InspectedBy}</p>
+          <p style={{ fontWeight: "600" , color: "#080808ff"}}>{inspectedBy}</p>
         </div>
       </div>
      <div
@@ -230,9 +245,11 @@ function NewPage() {
         type="file"
         style={{ display: "none" }}
         onChange={handlethermalFileChange}
+        disabled={!(weather && selectedbaselineFile)}
+
       />
       <label htmlFor="uploadthermal-button-file">
-        <Button variant="contained" size="small" component="span">
+        <Button variant="contained" size="small" component="span" disabled={!(weather && selectedbaselineFile)}>
           Thermal Image
         </Button>
       </label>
@@ -252,7 +269,7 @@ function NewPage() {
       <div>
         <p style={{ fontSize: "12px", fontWeight: "600" }}>Baseline</p>
         <img
-          src={URL.createObjectURL(selectedbaselineFile)}
+          src={URL.createObjectURL(selectedbaselineFile.file)}
           alt="Baseline"
           style={{ width: "150px", borderRadius: "8px" }}
         />
@@ -260,7 +277,7 @@ function NewPage() {
       <div>
         <p style={{ fontSize: "12px", fontWeight: "600" }}>Thermal</p>
         <img
-          src={URL.createObjectURL(selectedthermalFile)}
+          src={URL.createObjectURL(selectedthermalFile.file)}
           alt="Thermal"
           style={{ width: "150px", borderRadius: "8px" }}
         />
