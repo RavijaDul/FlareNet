@@ -63,18 +63,18 @@ npm run preview
 
 ### Frontend (frontend/)
 
-- **src/components/ — Reusable UI components
+- src/components/ — Reusable UI components
 
-- **src/pages/ — Application pages and routes
+- src/pages/ — Application pages and routes
 
-- **src/services/ — API calls to backend
+- src/services/ — API calls to backend
 
 ### Backend (backend/)
 
-- **src/main/java/.../controllers/ — REST controllers handling HTTP requests
+- src/main/java/.../controllers/ — REST controllers handling HTTP requests
 
-- **src/main/java/.../services/ — Business logic and service layer
+- src/main/java/.../services/ — Business logic and service layer
 
-- **src/main/java/.../models/ — Entities / data models mapping to database tables
+- src/main/java/.../models/ — Entities / data models mapping to database tables
 
-- **src/main/resources/ — Configuration files including application.properties
+- *src/main/resources/ — Configuration files including application.properties
