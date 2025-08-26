@@ -39,7 +39,7 @@ function NewPage() {
 
   // API integration states
   const [transformersData, setTransformersData] = useState([])
-  const [newTransformer, setNewTransformer] = useState({transformerNo: '',region: '',type: '',poleNo: ''})
+  const [newTransformer, setNewTransformer] = useState({transformerNo: '',region: '',type: '',poleNo: '', capacityKVA: '',locationDetails: ''})
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' })
@@ -107,7 +107,7 @@ const handleUpdateTransformer = async () => {
       t.id === editingTransformer.id ? response.data : t
     ));
     setEditingTransformer(null);
-    setNewTransformer({ transformerNo: '', region: '', type: '', poleNo: '' });
+    setNewTransformer({ transformerNo: '', region: '', type: '', poleNo: '', capacityKVA: '',locationDetails: '' });
     setOpenPopup(false);
     setSnackbar({ open: true, message: 'Transformer updated successfully', severity: 'success' })
   } catch (err) {
@@ -272,6 +272,16 @@ const handleViewDetails = (transformer) => {
             label="Pole No" fullWidth margin="dense"
             value={newTransformer.poleNo}
             onChange={e=>setNewTransformer({...newTransformer, poleNo:e.target.value})}
+          />
+          <TextField 
+            label="Capacity" fullWidth margin="dense"
+            value={newTransformer.capacityKVA}
+            onChange={e=>setNewTransformer({...newTransformer, capacityKVA:e.target.value})}
+          />
+          <TextField 
+            label="Location" fullWidth margin="dense"
+            value={newTransformer.locationDetails}
+            onChange={e=>setNewTransformer({...newTransformer, locationDetails:e.target.value})}
           />
 
             </DialogContent>

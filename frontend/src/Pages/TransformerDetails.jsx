@@ -121,6 +121,7 @@ function TransformerDetails() {
       inspectedDate: formData.date.format("YYYY-MM-DD"),  // <-- rename
       inspectionTime: formData.time.format("HH:mm:ss"),
       maintenanceDate: null, // optional
+
       };
 
       try {
@@ -209,6 +210,19 @@ function TransformerDetails() {
             size="small"
           />
         </Box>
+         {/* New field for Capacity KVA */}
+        <Box sx={{ minWidth: 150 }}>
+        <Typography variant="caption" color="textSecondary">
+          Capacity (KVA)
+        </Typography>
+        <Typography variant="subtitle1">{transformer.capacityKVA || "-"}</Typography>
+        </Box>
+        <Box sx={{ minWidth: 150 }}>
+        <Typography variant="caption" color="textSecondary">
+          Location
+        </Typography>
+        <Typography variant="subtitle1">{transformer.locationDetails || "-"}</Typography>
+        </Box>
       </Paper>
 
       {/* Transformer Inspection Section */}
@@ -233,7 +247,7 @@ function TransformerDetails() {
           <TableRow>
             <TableCell sx={{ width: 50 }}>Inspection Number</TableCell>
             <TableCell sx={{ width: 200 }}>Inspection Date</TableCell>
-            <TableCell sx={{ width: 200 }}>Branch</TableCell>
+            <TableCell sx={{ width: 200 }}>Maintenence Date</TableCell>
             <TableCell sx={{ width: 200 }}>Status</TableCell>
             <TableCell sx={{ width: 200, align: "right" }}>Actions</TableCell> 
           </TableRow>
@@ -243,7 +257,7 @@ function TransformerDetails() {
             <TableRow key={item.id}>
               <TableCell sx={{ width: 50 }}>{item.inspectionNumber}</TableCell>
               <TableCell sx={{ width: 200 }}>{item.inspectedDate} {item.inspectionTime}</TableCell>
-              <TableCell sx={{ width: 200 }}>{item.branch}</TableCell>
+              <TableCell sx={{ width: 200 }}>{item.inspectedDate} {item.inspectionTime}</TableCell>
               <TableCell sx={{ width: 200 }}>{item.status}</TableCell>
               <TableCell sx={{ width: 200, display: "flex", justifyContent: "flex-end", gap: 1 }}>
           <Button
@@ -260,6 +274,7 @@ function TransformerDetails() {
                 inspectionID: item.id,
                 inspectionDate: item.inspectedDate,
                 inspectionTime: item.inspectionTime,
+                inspectionNumber: item.inspectionNumber,
               },
             })
           }

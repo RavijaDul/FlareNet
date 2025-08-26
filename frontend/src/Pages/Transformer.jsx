@@ -31,7 +31,10 @@ function Transformer() {
     const [inspectionID, setInspectionID] = React.useState(state.inspectionID || "");
     const [inspectionDate, setInspectionDate] = React.useState(state.inspectionDate || "");
     const [transformerId, setTransformerId] = React.useState(state.transformerId || "");
-
+    const [inspectionNumber, setInspectionNumber] = React.useState(state.inspectionNumber || "");
+    const [thermalUploaded, setThermalUploaded] = React.useState(false);
+    const [showComparison, setShowComparison] = React.useState(false);
+    const [progress, setProgress] = React.useState(0);
     // uploader is always the inspector
     const uploader = inspectedBy;
 
@@ -152,6 +155,19 @@ function Transformer() {
             });
             setThermalImageUrl(uploadedImg.url);
             console.log("Thermal image uploaded successfully:", uploadedImg);
+            setThermalUploaded(true);
+           setProgress(0);
+
+            let value = 0;
+            const interval = setInterval(() => {
+            value += 100 / (3000 / 30); // fill in 3s
+            setProgress(Math.min(value, 100));
+            }, 30);
+
+            setTimeout(() => {
+            clearInterval(interval);
+            setShowComparison(true);
+            }, 3000);
         } catch (error) {
             console.error("Error in thermal image upload:", error);
             if (error.response) {
@@ -202,7 +218,7 @@ function Transformer() {
                 }}
             >
                 <div>
-                    <p style={{ fontSize: "18px", fontWeight: "600", color: "#000000ff"  }}>{inspectionID}</p>
+                    <p style={{ fontSize: "18px", fontWeight: "600", color: "#000000ff"  }}>{inspectionNumber}</p>
                     <p style={{ fontSize: "14px", color: "#000000ff" }}>
                         {inspectionDate}
                     </p>
@@ -211,7 +227,7 @@ function Transformer() {
                     <p style={{ fontSize: "12px", color: "#070708ff" }}>
                     {baselineUpdatedAt
                         ? `Last updated: ${baselineUpdatedAt.toLocaleString()}`
-                        : "No baseline uploaded yet"}
+                        : "Select Weather to Upload Baseline "}
                     </p>
                     {/* Weather selection for baseline */}
                     {!selectedbaselineFile && ( // Only show weather dropdown if no baseline is selected/uploaded
@@ -317,7 +333,7 @@ function Transformer() {
                         boxShadow: "0 1px 4px rgba(16, 15, 15, 0.1)",
                     }}
                 >
-                    <p style={{ fontSize: "极2px", color: "#0b0b0cff" }}>Pole No</p>
+                    <p style={{ fontSize: "12px", color: "#0b0b0cff" }}>Pole No</p>
                     <p style={{ fontWeight: "600", color: "#0b0b0cff" }}>{poleno}</p>
                 </div>
 
@@ -326,7 +342,7 @@ function Transformer() {
                         padding: "8px 16px",
                         background: "#f3f4f6",
                         borderRadius: "8px",
-                        boxShadow: "0 14px rgba(0,0,0,0.1)",
+                        boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
                     }}
                 >
                     <p style={{ fontSize: "12px", color: "#060707ff" }}>Branch</p>
@@ -368,10 +384,10 @@ function Transformer() {
                                 marginBottom: "8px",
                             }}
                         >
-                            Select the Weather (Optional for Thermal)
+                            Select Thermal Image
                         </p>
-
-                        <FormControl fullWidth size="small" sx={{ mb: 1 }}>
+                        
+                        {/* <FormControl fullWidth size="small" sx={{ mb: 1 }}>
                             <InputLabel id="weather-select-label">Weather</InputLabel>
                             <Select
                                 labelId="weather-select-label"
@@ -384,7 +400,7 @@ function Transformer() {
                                 <MenuItem value="CLOUDY">Cloudy</MenuItem>
                                 <MenuItem value="RAINY">Rain</MenuItem>
                             </Select>
-                        </FormControl>
+                        </FormControl> */}
 
                         {/* Upload button for thermal */}
                         <input
@@ -410,42 +426,55 @@ function Transformer() {
                     </p>
                 )}
 
-                {/* Show baseline + thermal images side by side */}
-                {!loading && (baselineImageUrl || thermalImageUrl) && (
-                    <div style={{ display: "flex", gap: "16px", marginTop: "12px" }}>
-                        {baselineImageUrl && (
-                            <div>
-                                <p style={{ fontSize: "12px", fontWeight: "600" }}>Baseline</p>
-                                <img
-                                    src={`http://localhost:8080${baselineImageUrl}`}
-                                    alt="Baseline"
-                                    style={{ width: "150px", borderRadius: "8px" }}
-                                />
-                            </div>
-                        )}
-                        {thermalImageUrl && (
-                            <div>
-                                <p style={{ fontSize: "12px", fontWeight: "600"}}>Thermal</p>
-                                <img
-                                    src={`http://localhost:8080${thermalImageUrl}`}
-                                    alt="Thermal"
-                                    style={{ width: "150px", borderRadius: "8px" }}
-                                />
-                                {/* Optionally add a delete button for thermal image */}
-                                <IconButton
-                                    aria-label="delete"
-                                    color="error"
-                                    onClick={() => {
-                                        setSelectedthermalFile(null);
-                                        setThermalImageUrl(null);
-                                    }}
-                                >
-                                    <DeleteIcon />
-                                </IconButton>
-                            </div>
-                        )}
+                        {/* Show baseline + thermal images side by side */}
+                        {!loading && thermalImageUrl && baselineImageUrl && (
+                            <div
+                style={{
+                    display: "flex",
+                    gap: "32px",            // more spacing between images
+                    marginTop: "20px",
+                    justifyContent: "center", // center horizontally
+                    alignItems: "center",     // align vertically
+                }}
+                >
+                {baselineImageUrl && (
+                    <div style={{ textAlign: "center" }}>
+                    <p style={{ fontSize: "14px", fontWeight: "600", marginBottom: "8px" }}>
+                        Baseline
+                    </p>
+                    <img
+                        src={`http://localhost:8080${baselineImageUrl}`}
+                        alt="Baseline"
+                        style={{ width: "400px",height:"300px", borderRadius: "12px" }}  // larger image
+                    />
                     </div>
                 )}
+                {thermalImageUrl && (
+                    <div style={{ textAlign: "center" }}>
+                    <p style={{ fontSize: "14px", fontWeight: "600", marginBottom: "8px" }}>
+                        Thermal
+                    </p>
+                    <img
+                        src={`http://localhost:8080${thermalImageUrl}`}
+                        alt="Thermal"
+                        style={{ width: "400px",height:"300px", borderRadius: "12px" }}  // larger image
+                    />
+                    <IconButton
+                        aria-label="delete"
+                        color="error"
+                        onClick={() => {
+                        setSelectedthermalFile(null);
+                        setThermalImageUrl(null);
+                        }}
+                        sx={{ marginTop: "8px" }}
+                    >
+                        <DeleteIcon />
+                    </IconButton>
+                    </div>
+  )}
+</div>
+
+            )}
             </div>   
         </div>
     );

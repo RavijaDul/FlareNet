@@ -1,141 +1,102 @@
-// // src/pages/HomePage.jsx
-// import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
-// function HomePage() {
-//   const navigate = useNavigate()
+function HomePage() {
+  const navigate = useNavigate()
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
 
-//   return (
-//     <div className="homepage">
-//       <h1>Welcome to the App</h1>
-//       <p>Select an option to continue:</p>
-//       <button
-//         onClick={() => navigate('/new')}
-//         className="upload-btn"
-//       >
-//         Transformer Upload
-//       </button>
-//     </div>
-//   )
-// }
-// export default HomePage 
+  const handleLogin = () => {
+    // Demo: just navigate without checking inputs
+    navigate('/new')
+  }
 
-import React from "react";
-import { Link } from "react-router-dom";
-
-const Dashboard = () => {
   return (
-    <div style={{ fontFamily: "Arial, sans-serif", minHeight: "100vh", background: "#f4f6f8" }}>
-      {/* Header */}
-      <header style={{
-        background: "#004080",
-        color: "#fff",
-        padding: "1.5rem 2rem",
+    <div
+      className="homepage"
+      style={{
+        width: "100vw",
+        height: "100vh",
+        margin: 0,
+        padding: 0,
+        backgroundImage: "url('/image.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
         display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center"
-      }}>
-        <h1 style={{ margin: 0 }}>Flarenet System</h1>
-        <nav>
-          <Link to="/" style={{ color: "#fff", marginRight: "1rem", textDecoration: "none" }}>Dashboard</Link>
-          <Link to="/transformers" style={{ color: "#fff", marginRight: "1rem", textDecoration: "none" }}>Transformers</Link>
-          <Link to="/reports" style={{ color: "#fff", textDecoration: "none" }}>Reports</Link>
-        </nav>
-      </header>
+        flexDirection: "column",
+        alignItems: "center",
+        color: "#000",
+      }}
+    >
+      {/* Header at the top */}
+      <h1 style={{ marginTop: "20px" }}>Welcome to the Transformer Managing App</h1>
 
-      {/* Main Content */}
-      <main style={{ padding: "2rem", maxWidth: "1200px", margin: "0 auto" }}>
-        <h2 style={{ color: "#004080", marginBottom: "1rem" }}>Welcome to Flarenet</h2>
-        <p>Quick access to all system functionalities.</p>
+      {/* Popup Box */}
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          padding: "40px",
+          borderRadius: "20px",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+          textAlign: "center",
+          minWidth: "320px",
+        }}
+      >
+        <h2 style={{ marginBottom: "20px" }}>Login</h2>
 
-        {/* Action Cards */}
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-          gap: "1.5rem",
-          marginTop: "2rem"
-        }}>
-          <Link to="/new" style={{ textDecoration: "none" }}>
-            <div style={{
-              background: "#fff",
-              padding: "1.5rem",
-              borderRadius: "10px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-              textAlign: "center",
-              cursor: "pointer",
-              transition: "transform 0.2s"
-            }}
-            onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"}
-            onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}>
-              <h3 style={{ color: "#004080" }}>Manage Transformers</h3>
-              <p>Add, edit, or delete transformer records</p>
-            </div>
-          </Link>
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "15px",
+            borderRadius: "8px",
+            border: "1px solid #ccc",
+            fontSize: "16px",
+          }}
+        />
 
-          <Link to="/transformer" style={{ textDecoration: "none" }}>
-            <div style={{
-              background: "#fff",
-              padding: "1.5rem",
-              borderRadius: "10px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-              textAlign: "center",
-              cursor: "pointer",
-              transition: "transform 0.2s"
-            }}
-            onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"}
-            onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}>
-              <h3 style={{ color: "#004080" }}>Upload Images</h3>
-              <p>Upload baseline or maintenance thermal images</p>
-            </div>
-          </Link>
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "20px",
+            borderRadius: "8px",
+            border: "1px solid #ccc",
+            fontSize: "16px",
+          }}
+        />
 
-          <Link to="/reports" style={{ textDecoration: "none" }}>
-            <div style={{
-              background: "#fff",
-              padding: "1.5rem",
-              borderRadius: "10px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-              textAlign: "center",
-              cursor: "pointer",
-              transition: "transform 0.2s"
-            }}
-            onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"}
-            onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}>
-              <h3 style={{ color: "#004080" }}>View Reports</h3>
-              <p>Generate and view maintenance record sheets</p>
-            </div>
-          </Link>
-
-          <Link to="/settings" style={{ textDecoration: "none" }}>
-            <div style={{
-              background: "#fff",
-              padding: "1.5rem",
-              borderRadius: "10px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-              textAlign: "center",
-              cursor: "pointer",
-              transition: "transform 0.2s"
-            }}
-            onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"}
-            onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}>
-              <h3 style={{ color: "#004080" }}>Settings</h3>
-              <p>Manage system settings and user preferences</p>
-            </div>
-          </Link>
-        </div>
-      </main>
-
-      {/* Footer */}
-      <footer style={{
-        background: "#004080",
-        color: "#fff",
-        textAlign: "center",
-        padding: "1rem",
-        marginTop: "2rem"
-      }}>
-        &copy; 2025 Flarenet
-      </footer>
+        <button
+          onClick={handleLogin}
+          style={{
+            width: "100%",
+            padding: "12px",
+            border: "none",
+            borderRadius: "10px",
+            backgroundColor: "#007bff",
+            color: "white",
+            cursor: "pointer",
+            fontSize: "16px",
+          }}
+        >
+          Login
+        </button>
+      </div>
     </div>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default HomePage
