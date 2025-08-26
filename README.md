@@ -22,7 +22,7 @@ Flarenet is a web-based system designed to manage and automate transformer inspe
 
 - **Frontend:** Built with React, Vite, and Material UI for fast and responsive UI.  
 - **Backend:** Spring Boot handles business logic and provides REST APIs.  
-- **Database:** PostgreSQL stores all data for the system.  
+- **Database:** PostgreSQL via Docker Compose stores all data for the system.  
 
 This system is designed to demonstrate **modern web development with a separation of frontend and backend**, and can be extended with features like authentication, CRUD operations, and dashboards.
 
@@ -40,7 +40,7 @@ This system is designed to demonstrate **modern web development with a separatio
 
 - Java 17+, Spring Boot 3+  
 - Spring Data JPA for database interactions  
-- PostgreSQL JDBC driver  
+- PostgreSQL via Docker Compose  
 - Maven for dependency management  
 
 ---
