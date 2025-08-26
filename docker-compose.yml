@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16
+    container_name: flarenet-db
+    restart: always
+    environment:
+      POSTGRES_DB: flarenet
+      POSTGRES_USER: flarenet
+      POSTGRES_PASSWORD: flarenet
+    ports:
+      - "5432:5432"
+    volumes:
+      # Mount init.sql so DB initializes with your schema + data
+      - ./flarenet-backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      # Mount uploads folder so images are accessible inside container
+      - ./flarenet-backend/uploads:/uploads
+      # Persistent DB storage
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
