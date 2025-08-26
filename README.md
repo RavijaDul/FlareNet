@@ -43,59 +43,115 @@ This system is designed to demonstrate **modern web development with a separatio
 
 ---
 
-## Step-by-Step Setup
+---
 
-### 1. Database
+## 🚀 Local Setup
 
-1. Install PostgreSQL.  
-2. Create the development database:
-
-```sql
-CREATE DATABASE flarenet_dev;
-# Update database connection in backend/src/main/resources/application.properties:
-# spring.datasource.url=jdbc:postgresql://localhost:5432/flarenet_dev
-# spring.datasource.username=your_db_user
-# spring.datasource.password=your_db_password
-# spring.jpa.hibernate.ddl-auto=update
-```
-### 2. Backend Setup
-``` bash
-cd backend
-./mvnw clean install      # Build backend
-./mvnw spring-boot:run    # Run backend server (tables auto-created)
-./mvnw test               # Run backend tests
-```
-### 3. Frontend Setup
-``` bash
-cd ../frontend
-npm install                # Install frontend dependencies
-npm run dev                # Start frontend development server
-```
-###   Open frontend in browser at http://localhost:5173
-###   Open backend in browser at http://localhost:8080
-
-### Frontend production build
-``` bash
-npm run build              # Build production files
-npm run preview            # Preview production build
+### 1. Clone the repository
+```bash
+git clone https://github.com/your-org/FlareNet.git
+cd FlareNet
 ```
 
-## Project Structure
+---
 
-### Frontend (frontend/)
+### 2. Start Postgres with Docker
+We use Docker to run Postgres with schema and seed data automatically.
 
-- src/components/ — Reusable UI components
+```bash
+docker compose up -d
+```
 
-- src/pages/ — Application pages and routes
+- Database: `flarenet`  
+- User: `flarenet`  
+- Password: `flarenet`  
+- Port: `5432`  
 
-- src/services/ — API calls to backend
+Images will be available inside `flarenet-backend/uploads/`.
 
-### Backend (backend/)
+> **Note:** The first time you run this, Postgres will execute `init.sql` and create all tables and seed data.
 
-- src/main/java/.../controllers/ — REST controllers handling HTTP requests
+---
 
-- src/main/java/.../services/ — Business logic and service layer
+### 3. Run the Backend
+Navigate to the backend folder and start the Spring Boot server:
 
-- src/main/java/.../models/ — Entities / data models mapping to database tables
+```bash
+cd flarenet-backend
+mvn spring-boot:run
+```
 
-- *src/main/resources/ — Configuration files including application.properties
+The backend API will be available at `http://localhost:8080/api`.
+
+---
+
+### 4. Run the Frontend
+Navigate to the frontend folder, install dependencies, and start the dev server:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend will be available at `http://localhost:5173`.
+
+---
+
+## 🗂️ Project Structure
+
+```
+FlareNet/
+├── docker-compose.yml          # Docker Compose for Postgres DB
+├── flarenet-backend/
+│   ├── db/
+│   │   └── init.sql            # Database schema + seed data
+│   ├── uploads/                # Images folder (mounted in Docker)
+│   ├── src/                    # Java backend code
+│   └── pom.xml                 # Maven build file
+├── frontend/
+│   ├── src/                    # React frontend code
+│   ├── package.json
+│   └── package-lock.json
+└── README.md
+```
+
+---
+
+## ⚙️ Notes for Teammates
+
+1. **Images:**  
+   All thermal images are stored in `flarenet-backend/uploads/`. This folder is mounted in Docker, so images are accessible to the backend.
+
+2. **Database:**  
+   - Tables: `transformers`, `inspections`, `thermal_image`  
+   - The database will be automatically created on first Docker run.  
+
+3. **Environment variables (optional):**  
+   You can customize DB credentials in `docker-compose.yml`. Make sure the backend `application.yml` matches these credentials.
+
+---
+
+## ✅ Quick Commands
+
+```bash
+# Start database
+docker compose up -d
+
+# Start backend
+cd flarenet-backend
+mvn spring-boot:run
+
+# Start frontend
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+## 📌 Additional Tips
+
+- To stop the DB: `docker compose down`
+- To reset the DB: delete `pgdata` volume or run `docker compose down -v` and `docker compose up -d`
+- Use Postgres GUI tools (like pgAdmin or DBeaver) to inspect the database if needed
