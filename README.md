@@ -155,3 +155,8 @@ npm run dev
 - To stop the DB: `docker compose down`
 - To reset the DB: delete `pgdata` volume or run `docker compose down -v` and `docker compose up -d`
 - Use Postgres GUI tools (like pgAdmin or DBeaver) to inspect the database if needed
+
+## ⚠️ Limitations & Issues
+
+- Authentication & user roles missing – At this stage, the system does not include authentication, authorization, or multi-user role management. These features will be added in future phases.
+- Deployment not yet available – FlareNet currently runs only in a local development environment (Docker + local servers). A cloud deployment setup is not yet provided.
