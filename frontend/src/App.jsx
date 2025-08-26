@@ -10,8 +10,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/new" element={<NewPage />} />
+        {/* <Route path="/" element={<HomePage />} /> */}
+        <Route path="/" element={<NewPage />} />
         <Route path="/transformer/:id" element={<TransformerDetails />} />
         {/* Add this route for the Transformer page */}
         <Route path="/transformer" element={<Transformer />} />

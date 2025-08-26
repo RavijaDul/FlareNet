@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Box,
@@ -16,22 +16,26 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Snackbar,
+  Alert,
+  CircularProgress,
 } from "@mui/material";
 
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker, TimePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider, DatePicker, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
+import { inspectionsAPI } from "../services/api";
 
 function TransformerDetails() {
   const location = useLocation();
   const transformer = location.state; // data passed from navigate
   const [editingId, setEditingId] = useState(null); // null = adding new, otherwise editing
   const [open, setOpen] = useState(false);
-  const [inspectionData, setInspectionData] = useState([
-    { id: 10000, transformerNo: "AZ-6950", date: "", time: "" },
-  ]);
+  const [inspectionData, setInspectionData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [inspectionsLoading, setInspectionsLoading] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   
   const [formData, setFormData] = useState({
     branch: "",
@@ -39,6 +43,7 @@ function TransformerDetails() {
     date: dayjs(),
     time: dayjs(),
   });
+
 
   if (!transformer) {
     return (
@@ -48,48 +53,125 @@ function TransformerDetails() {
     );
   }
 
-  const { transformerNo, poleNo, region, type } = transformer;
+  const { transformerNo, poleNo, region, type, id } = transformer;
   const navigate = useNavigate();
+
+  // Fetch inspections when component mounts
+  useEffect(() => {
+    const fetchInspections = async () => {
+      if (!id) return;
+      
+      setInspectionsLoading(true);
+      try {
+        const response = await inspectionsAPI.getByTransformer(id);
+        setInspectionData(response.data);
+      } catch (err) {
+        console.error('Error fetching inspections:', err);
+        setSnackbar({ open: true, message: 'Failed to fetch inspections', severity: 'error' });
+      } finally {
+        setInspectionsLoading(false);
+      }
+    };
+
+    fetchInspections();
+  }, [id]);
 
   const handleChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
   };
 
-  const handleSubmit = () => {
-  const newEntry = {
-    id: editingId !== null
-      ? editingId // keep the same ID if editing
-      : inspectionData.length
-        ? inspectionData[inspectionData.length - 1].id + 1
-        : 10000,
-    transformerNo: formData.transformerNo,
-    branch: formData.branch,
-    dateTime: formData.date.format("ddd(DD), MMM, YYYY") + " " + formData.time.format("hh.mmA"),
+  // const handleSubmit = () => {
+  //   const newEntry = {
+  //     id: editingId !== null
+  //       ? editingId // keep the same ID if editing
+  //       : inspectionData.length
+  //         ? inspectionData[inspectionData.length - 1].id + 1
+  //         : 10000,
+  //     transformerNo: formData.transformerNo,
+  //     branch: formData.branch,
+  //     dateTime: formData.date.format("ddd(DD), MMM, YYYY") + " " + formData.time.format("hh.mmA"),
+  //     inspectionDate: formData.date.format("YYYY-MM-DD"),
+  //     inspectionTime: formData.time.format("HH:mm:ss"),
+  //     status: "PENDING"
+  //   };
+
+  //   if (editingId !== null) {
+  //     // update existing row
+  //     setInspectionData(
+  //       inspectionData.map((item) => (item.id === editingId ? newEntry : item))
+  //     );
+  //   } else {
+  //     // add new row
+  //     setInspectionData([...inspectionData, newEntry]);
+  //   }
+
+  //   setOpen(false);
+  //   setEditingId(null); // reset editing
+  //   setFormData({
+  //     branch: "",
+  //     transformerNo: transformer?.transformerNo || "",
+  //     date: dayjs(),
+  //     time: dayjs(),
+  //   });
+  // };
+    const handleSubmit = async () => {
+      const payload = {
+      branch: formData.branch,
+      transformerId: transformer.id, 
+      inspectedDate: formData.date.format("YYYY-MM-DD"),  // <-- rename
+      inspectionTime: formData.time.format("HH:mm:ss"),
+      maintenanceDate: null, // optional
+      };
+
+      try {
+        let res;
+        if (editingId !== null) {
+          res = await inspectionsAPI.update(editingId, payload);
+          setInspectionData(
+            inspectionData.map((item) => (item.id === editingId ? res.data : item))
+          );
+        } else {
+          res = await inspectionsAPI.create(payload);
+          setInspectionData([...inspectionData, res.data]);
+        }
+
+        setSnackbar({ open: true, message: "Inspection saved!", severity: "success" });
+      } catch (err) {
+        setSnackbar({ open: true, message: "Failed to save inspection", severity: "error" });
+      }
+
+      setOpen(false);
+      setEditingId(null);
+      setFormData({
+        branch: "",
+        transformerNo: transformer?.transformerNo || "",
+        date: dayjs(),
+        time: dayjs(),
+      });
+    };
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
   };
-
-  if (editingId !== null) {
-    // update existing row
-    setInspectionData(
-      inspectionData.map((item) => (item.id === editingId ? newEntry : item))
-    );
-  } else {
-    // add new row
-    setInspectionData([...inspectionData, newEntry]);
-  }
-
-  setOpen(false);
-  setEditingId(null); // reset editing
-  setFormData({
-    branch: "",
-    transformerNo: transformer?.transformerNo || "",
-    date: dayjs(),
-    time: dayjs(),
-  });
-};
 
 
   return (
     <Box sx={{ p: 3 }}>
+      {/* Snackbar for notifications */}
+      <Snackbar 
+        open={snackbar.open} 
+        autoHideDuration={6000} 
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert 
+          onClose={handleCloseSnackbar} 
+          severity={snackbar.severity} 
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+      
       {/* Transformer Details Section */}
       <Typography variant="h5" gutterBottom>
         Transformer Details
@@ -141,81 +223,95 @@ function TransformerDetails() {
 
       {/* Inspection Table */}
       <Paper sx={{ p: 2, mb: 4 }}>
-        {inspectionData.length ? (
+        {inspectionsLoading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+            <CircularProgress />
+          </Box>
+        ) : inspectionData.length ? (
           <Table>
             <TableHead>
-  <TableRow>
-    <TableCell sx={{ width: 50 }}>ID</TableCell>
-    <TableCell sx={{ width: 200 }}>Inspection Date </TableCell>
-    <TableCell sx={{ width: 200 }}>Maintenance Date</TableCell>
-    <TableCell sx={{ width: 200, align: "right" }}>Actions</TableCell> {/* Last column */}
-  </TableRow>
-</TableHead>
-<TableBody>
-  {inspectionData.map((item) => (
-    <TableRow key={item.id}>
-      <TableCell sx={{ width: 50 }}>{item.id}</TableCell>
-      <TableCell sx={{ width: 200 }}>{item.dateTime}</TableCell>
-      <TableCell sx={{ width: 200 }}>Sat(23), Aug, 2025 09.56PM</TableCell>
-      <TableCell sx={{ width: 200, display: "flex", justifyContent: "flex-end", gap: 1 }}>
-  <Button
-  variant="outlined"
-  size="small"
-  color="primary"
-  onClick={() =>
-    navigate("/transformer", {
-      state: {
-        transformerNo: transformerNo, // from current page
-        poleNo: poleNo,
-        region: region,
-        inspectionID: item.id, // or whatever your inspection ID is
-        inspectionDate: item.dateTime,
-      },
-    })
-  }
->
-  View
-</Button>
-  <Button
-  variant="outlined"
-  size="small"
-  color="warning"
-  onClick={() => {
-    setEditingId(item.id); // mark the row to edit
-    setFormData({
-      branch: item.branch,
-      transformerNo: item.transformerNo,
-      date: dayjs(item.dateTime.split(" ")[0]), // extract date
-      time: dayjs(item.dateTime.split(" ")[1], "hh.mmA"), // extract time
-    });
-    setOpen(true);
-  }}
->
-  Edit
-</Button>
-  <Button
-    variant="outlined"
-    size="small"
-    color="error"
-    onClick={() => {
-      setInspectionData(inspectionData.filter((i) => i.id !== item.id));
-    }}
-  >
-    Delete
-  </Button>
-</TableCell>
-    </TableRow>
-  ))}
-</TableBody>
-          </Table>
+          <TableRow>
+            <TableCell sx={{ width: 50 }}>Inspection Number</TableCell>
+            <TableCell sx={{ width: 200 }}>Inspection Date</TableCell>
+            <TableCell sx={{ width: 200 }}>Branch</TableCell>
+            <TableCell sx={{ width: 200 }}>Status</TableCell>
+            <TableCell sx={{ width: 200, align: "right" }}>Actions</TableCell> 
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {inspectionData.map((item) => (
+            <TableRow key={item.id}>
+              <TableCell sx={{ width: 50 }}>{item.inspectionNumber}</TableCell>
+              <TableCell sx={{ width: 200 }}>{item.inspectedDate} {item.inspectionTime}</TableCell>
+              <TableCell sx={{ width: 200 }}>{item.branch}</TableCell>
+              <TableCell sx={{ width: 200 }}>{item.status}</TableCell>
+              <TableCell sx={{ width: 200, display: "flex", justifyContent: "flex-end", gap: 1 }}>
+          <Button
+          variant="outlined"
+          size="small"
+          color="primary"
+          onClick={() =>
+            navigate("/transformer", {
+              state: {
+                transformerNo: transformerNo,
+                poleNo: poleNo,
+                region: region,
+                transformerId: id, // Pass transformer ID instead of inspection ID
+                inspectionID: item.id,
+                inspectionDate: item.inspectedDate,
+                inspectionTime: item.inspectionTime,
+              },
+            })
+          }
+        >
+          View
+        </Button>
+        <Button
+          variant="outlined"
+          size="small"
+          color="warning"
+          onClick={() => {
+            setEditingId(item.id); // mark the row to edit
+            setFormData({
+              branch: item.branch,
+              transformerNo: transformerNo,
+              date: dayjs(item.inspectedDate),
+              time: dayjs(item.inspectionTime, "HH:mm:ss"),
+            });
+            setOpen(true);
+          }}
+        >
+          Edit
+        </Button>
+          <Button
+            variant="outlined"
+            size="small"
+            color="error"
+            onClick={async () => {
+              try {
+                await inspectionsAPI.delete(item.id);
+                setInspectionData(inspectionData.filter((i) => i.id !== item.id));
+                setSnackbar({ open: true, message: 'Inspection deleted successfully', severity: 'success' });
+              } catch (err) {
+                setSnackbar({ open: true, message: 'Failed to delete inspection', severity: 'error' });
+              }
+            }}
+          >
+            Delete
+          </Button>
+        </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+        </Table>
         ) : (
           <Typography variant="body2" color="textSecondary">
             No inspections available. Click "Add Inspection" to create one.
           </Typography>
         )}
-      </Paper>
+        </Paper>
 
-      {/* Add Inspection Dialog */}
+        {/* Add Inspection Dialog */}
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
         <DialogTitle>New Inspection</DialogTitle>
         <DialogContent dividers>
@@ -248,12 +344,12 @@ function TransformerDetails() {
             </LocalizationProvider>
           </Box>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleSubmit}>
-            Confirm
-          </Button>
-        </DialogActions>
+          <DialogActions>
+            <Button onClick={() => setOpen(false)}>Cancel</Button>
+            <Button variant="contained" onClick={handleSubmit}>
+              Confirm
+            </Button>
+          </DialogActions>
       </Dialog>
     </Box>
   );

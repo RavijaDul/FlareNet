@@ -1,14 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { 
   Box, Drawer, AppBar, Toolbar, Typography, Button, Table, 
   TableBody, TableCell, TableContainer, TableHead, TableRow, 
   Paper, Menu, MenuItem, Chip, IconButton, Dialog, DialogTitle, 
-  DialogContent, DialogActions, TextField
+  DialogContent, DialogActions, TextField, Snackbar, Alert, CircularProgress
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import { FormControl, InputLabel, Select } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { transformersAPI } from '../services/api';
+
 function NewPage() {
   const [view, setView] = useState('transformers') // 'transformers' or 'inspections'
   const [regionFilter, setRegionFilter] = useState('All Regions')
@@ -35,22 +37,48 @@ function NewPage() {
     setTypeFilter('All Types')
   }
 
-  // Empty arrays instead of dummy data
-  const [transformersData, setTransformersData] = useState([{ id: 1, transformerNo: "AZ-6950", region: "Nugegodo", type: "Bulk" }])
+  // API integration states
+  const [transformersData, setTransformersData] = useState([])
   const [newTransformer, setNewTransformer] = useState({transformerNo: '',region: '',type: '',poleNo: ''})
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' })
+  
   const inspectionsData = []
-  const handleSaveNewTransformer = () => {
-  const newId = transformersData.length > 0 
-    ? Math.max(...transformersData.map(t => t.id)) + 1 
-    : 1
+  
+  // Fetch transformers on component mount
+  useEffect(() => {
+    fetchTransformers()
+  }, [])
 
-  setTransformersData([
-    ...transformersData,
-    { id: newId, ...newTransformer }])
+  const fetchTransformers = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const response = await transformersAPI.list()
+      setTransformersData(response.data)
+    } catch (err) {
+      setError('Failed to fetch transformers')
+      setSnackbar({ open: true, message: 'Failed to fetch transformers', severity: 'error' })
+      console.error('Error fetching transformers:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
 
-  setNewTransformer({ transformerNo: '', region: '', type: '', poleNo: '' })
-  setOpenPopup(false)
-}
+  const handleSaveNewTransformer = async () => {
+    try {
+      const response = await transformersAPI.create(newTransformer)
+      setTransformersData([...transformersData, response.data])
+      setNewTransformer({ transformerNo: '', region: '', type: '', poleNo: '' })
+      setOpenPopup(false)
+      setSnackbar({ open: true, message: 'Transformer created successfully', severity: 'success' })
+    } catch (err) {
+      setError('Failed to create transformer')
+      setSnackbar({ open: true, message: 'Failed to create transformer', severity: 'error' })
+      console.error('Error creating transformer:', err)
+    }
+  }
   const filteredData = transformersData.filter(item => {
     return (regionFilter === 'All Regions' || item.region === regionFilter) &&
            (typeFilter === 'All Types' || item.type === typeFilter)
@@ -71,17 +99,63 @@ const handleEdit = (transformer) => {
   setOpenPopup(true);
 }
 
+// Handle Update transformer
+const handleUpdateTransformer = async () => {
+  try {
+    const response = await transformersAPI.update(editingTransformer.id, newTransformer)
+    setTransformersData(transformersData.map(t => 
+      t.id === editingTransformer.id ? response.data : t
+    ));
+    setEditingTransformer(null);
+    setNewTransformer({ transformerNo: '', region: '', type: '', poleNo: '' });
+    setOpenPopup(false);
+    setSnackbar({ open: true, message: 'Transformer updated successfully', severity: 'success' })
+  } catch (err) {
+    setError('Failed to update transformer')
+    setSnackbar({ open: true, message: 'Failed to update transformer', severity: 'error' })
+    console.error('Error updating transformer:', err)
+  }
+}
+
 // Handle Delete (remove record)
-const handleDelete = (id) => {
-  setTransformersData(transformersData.filter(t => t.id !== id));
+const handleDelete = async (id) => {
+  try {
+    await transformersAPI.delete(id)
+    setTransformersData(transformersData.filter(t => t.id !== id));
+    setSnackbar({ open: true, message: 'Transformer deleted successfully', severity: 'success' })
+  } catch (err) {
+    setError('Failed to delete transformer')
+    setSnackbar({ open: true, message: 'Failed to delete transformer', severity: 'error' })
+    console.error('Error deleting transformer:', err)
+  }
 }
 const navigate = useNavigate();   
 const handleViewDetails = (transformer) => {
   navigate(`/transformer/${transformer.id}`, { state: transformer });
 }  
 
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
+      {/* Snackbar for notifications */}
+      <Snackbar 
+        open={snackbar.open} 
+        autoHideDuration={6000} 
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert 
+          onClose={handleCloseSnackbar} 
+          severity={snackbar.severity} 
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+
       {/* App Bar */}
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
@@ -142,129 +216,137 @@ const handleViewDetails = (transformer) => {
 
         {view === 'transformers' ? (
           <>
+            {/* Loading state */}
+            {loading && (
+              <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+                <CircularProgress />
+              </Box>
+            )}
+
+            {/* Error state */}
+            {error && !loading && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
+
             {/* New Button Above Filter */}
-     {view === 'transformers' && (
-     <Box sx={{ mb: 2 }}>
-    <Button 
-      variant="contained" 
-      color="primary"
-      onClick={() => setOpenPopup(true)}
-    >
-      New Transformer
-    </Button>
+            {view === 'transformers' && !loading && (
+            <Box sx={{ mb: 2 }}>
+            <Button 
+              variant="contained" 
+              color="primary"
+              onClick={() => setOpenPopup(true)}
+            >
+              New Transformer
+            </Button>
 
-    {/* Popup Dialog */}
-<Dialog open={openPopup} onClose={() => setOpenPopup(false)}>
-  <DialogTitle>Add New Transformer</DialogTitle>
-  <DialogContent>
-    <TextField 
-  label="Transformer No." fullWidth margin="dense" 
-  value={newTransformer.transformerNo}
-  onChange={e=>setNewTransformer({...newTransformer, transformerNo:e.target.value})}
-/>
+            {/* Popup Dialog */}
+          <Dialog open={openPopup} onClose={() => setOpenPopup(false)}>
+            <DialogTitle>Add New Transformer</DialogTitle>
+            <DialogContent>
+              <TextField 
+            label="Transformer No." fullWidth margin="dense" 
+            value={newTransformer.transformerNo}
+            onChange={e=>setNewTransformer({...newTransformer, transformerNo:e.target.value})}
+          />
 
-<TextField 
-  label="Region" fullWidth margin="dense"
-  value={newTransformer.region}
-  onChange={e=>setNewTransformer({...newTransformer, region:e.target.value})}
-/>
+          <TextField 
+            label="Region" fullWidth margin="dense"
+            value={newTransformer.region}
+            onChange={e=>setNewTransformer({...newTransformer, region:e.target.value})}
+          />
 
-<FormControl fullWidth margin="dense">
-  <InputLabel>Type</InputLabel>
-  <Select
-    value={newTransformer.type}
-    onChange={e=>setNewTransformer({...newTransformer, type:e.target.value})}
-  >
-    <MenuItem value="Bulk">Bulk</MenuItem>
-    <MenuItem value="Distribution">Distribution</MenuItem>
-  </Select>
-</FormControl>
+          <FormControl fullWidth margin="dense">
+            <InputLabel>Type</InputLabel>
+            <Select
+              value={newTransformer.type}
+              onChange={e=>setNewTransformer({...newTransformer, type:e.target.value})}
+            >
+              <MenuItem value="Bulk">Bulk</MenuItem>
+              <MenuItem value="Distribution">Distribution</MenuItem>
+            </Select>
+          </FormControl>
 
-<TextField 
-  label="Pole No" fullWidth margin="dense"
-  value={newTransformer.poleNo}
-  onChange={e=>setNewTransformer({...newTransformer, poleNo:e.target.value})}
-/>
+          <TextField 
+            label="Pole No" fullWidth margin="dense"
+            value={newTransformer.poleNo}
+            onChange={e=>setNewTransformer({...newTransformer, poleNo:e.target.value})}
+          />
 
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={() => {
-  setOpenPopup(false);
-  setEditingTransformer(null);}}>Cancel</Button>
-    <Button 
-  variant="contained" 
-  color="primary" 
-  onClick={() => {
-    if (editingTransformer) {
-      // Update existing
-      setTransformersData(transformersData.map(t => 
-        t.id === editingTransformer.id ? { ...editingTransformer, ...newTransformer } : t
-      ));
-      setEditingTransformer(null);
-    } else {
-      // Add new
-      handleSaveNewTransformer();
-    }
-    setNewTransformer({ transformerNo: '', region: '', type: '', poleNo: '' });
-    setOpenPopup(false);
-  }}
->
-  {editingTransformer ? 'Update' : 'Save'}
-</Button>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => {
+            setOpenPopup(false);
+            setEditingTransformer(null);}}>Cancel</Button>
+              <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={() => {
+              if (editingTransformer) {
+                handleUpdateTransformer();
+              } else {
+                handleSaveNewTransformer();
+              }
+            }}
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={24} /> : (editingTransformer ? 'Update' : 'Save')}
+          </Button>
 
-  </DialogActions>
-</Dialog>
+          </DialogActions>
+        </Dialog>
 
   </Box>
 )}
 
-            {/* Filter Section */}
-            <Paper sx={{ p: 2, mb: 2 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <FilterListIcon />
-                <Typography variant="h6">Filters</Typography>
-              </Box>
+{/* Filter Section */}
+<Paper sx={{ p: 2, mb: 2 }}>
+  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+    <FilterListIcon />
+    <Typography variant="h6">Filters</Typography>
+  </Box>
 
-              <Box sx={{ display: 'flex', gap: 2, mt: 2, flexWrap: 'wrap' }}>
-                <Button variant="outlined" onClick={handleRegionClick} sx={{ minWidth: 150 }}>
-                  {regionFilter}
-                </Button>
-                <Menu anchorEl={regionAnchorEl} open={Boolean(regionAnchorEl)} onClose={() => handleRegionClose(null)}>
-                  {regions.map(region => (
-                    <MenuItem key={region} onClick={() => handleRegionClose(region)} selected={regionFilter === region}>
-                      {region}
-                    </MenuItem>
-                  ))}
-                </Menu>
+  <Box sx={{ display: 'flex', gap: 2, mt: 2, flexWrap: 'wrap' }}>
+    <Button variant="outlined" onClick={handleRegionClick} sx={{ minWidth: 150 }}>
+      {regionFilter}
+    </Button>
+    <Menu anchorEl={regionAnchorEl} open={Boolean(regionAnchorEl)} onClose={() => handleRegionClose(null)}>
+      {regions.map(region => (
+        <MenuItem key={region} onClick={() => handleRegionClose(region)} selected={regionFilter === region}>
+          {region}
+        </MenuItem>
+      ))}
+    </Menu>
 
-                <Button variant="outlined" onClick={handleTypeClick} sx={{ minWidth: 150 }}>
-                  {typeFilter}
-                </Button>
-                <Menu anchorEl={typeAnchorEl} open={Boolean(typeAnchorEl)} onClose={() => handleTypeClose(null)}>
-                  {types.map(type => (
-                    <MenuItem key={type} onClick={() => handleTypeClose(type)} selected={typeFilter === type}>
-                      {type}
-                    </MenuItem>
-                  ))}
-                </Menu>
+    <Button variant="outlined" onClick={handleTypeClick} sx={{ minWidth: 150 }}>
+      {typeFilter}
+    </Button>
+    <Menu anchorEl={typeAnchorEl} open={Boolean(typeAnchorEl)} onClose={() => handleTypeClose(null)}>
+      {types.map(type => (
+        <MenuItem key={type} onClick={() => handleTypeClose(type)} selected={typeFilter === type}>
+          {type}
+        </MenuItem>
+      ))}
+    </Menu>
 
-                <Button variant="outlined" color="secondary" onClick={resetFilters}>
-                  Reset filters
-                </Button>
-              </Box>
-            </Paper>
+    <Button variant="outlined" color="secondary" onClick={resetFilters}>
+      Reset filters
+    </Button>
+  </Box>
+</Paper>
 
-            {/* Data Table */}
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} aria-label="transformers table">
-                <TableHead>
-  <TableRow>
-    <TableCell>Region</TableCell>
-    <TableCell>Type</TableCell>
-    <TableCell>Transformer No.</TableCell>
-    <TableCell>Pole No</TableCell> {/* Add this */}
-    <TableCell align="right">Action</TableCell>
-  </TableRow>
+{/* Data Table */}
+<TableContainer component={Paper}>
+  <Table sx={{ minWidth: 650 }} aria-label="transformers table">
+  <TableHead>
+    <TableRow>
+      <TableCell>Region</TableCell>
+      <TableCell>Type</TableCell>
+      <TableCell>Transformer No.</TableCell>
+      <TableCell>Pole No</TableCell>
+      <TableCell align="right">Action</TableCell>
+    </TableRow>
 </TableHead>
 <TableBody>
   {filteredData.length === 0 ? (
@@ -321,18 +403,19 @@ const handleViewDetails = (transformer) => {
               </Table>
             </TableContainer>
           </>
-        ) : (
+          ) : (
           /* Inspections View Placeholder */
-          <Paper sx={{ p: 3, textAlign: 'center' }}>
-            <Typography variant="h6" gutterBottom>
-              Inspections View
-            </Typography>
-            <Typography variant="body1" color="textSecondary">
-              Inspection data will be displayed here.
-            </Typography>
-          </Paper>
-        )}
+            <Paper sx={{ p: 3, textAlign: 'center' }}>
+              <Typography variant="h6" gutterBottom>
+                Inspections View
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                Inspection data will be displayed here.
+              </Typography>
+            </Paper>
+          )}
       </Box>
+
     </Box>
   )
 }
