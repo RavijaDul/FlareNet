@@ -34,7 +34,7 @@ build/
 
 ### Application Specific ###
 # Uploaded files - these should not be in version control
-
+uploads/
 # Database files
 *.db
 *.sqlite
