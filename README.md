@@ -156,6 +156,26 @@ npm run dev
 - To reset the DB: delete `pgdata` volume or run `docker compose down -v` and `docker compose up -d`
 - Use Postgres GUI tools (like pgAdmin or DBeaver) to inspect the database if needed
 
+---
+
+## Quick Start for New Users
+
+After cloning the repository, you will have 5 dummy transformer records automatically loaded into the database. This allows you to test the app immediately.
+
+
+
+### Dummy Data
+The following dummy transformer records will be available:
+- TX-0001: Nugegoda, Keells Embuldeniya
+- TX-0002: Kaduwela, Malabe Junction
+- TX-0003: Nugegoda, Keells Embuldeniya
+- TX-0004: Kaduwela, Malabe Junction
+- TX-0005: Nugegoda, Keells Embuldeniya
+
+You can use these for testing and development.
+
+---
+
 ## ⚠️ Limitations & Issues
 
 - Authentication & user roles missing – At this stage, the system does not include authentication, authorization, or multi-user role management. These features will be added in future phases.

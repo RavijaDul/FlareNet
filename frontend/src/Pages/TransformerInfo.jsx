@@ -38,6 +38,87 @@ function NewPage() {
   }
 
   // API integration states
+  // Add 5 dummy transformers
+  const handleAddDummyTransformers = async () => {
+    setLoading(true);
+    setError(null);
+    const dummyTransformers = [
+      {
+        transformerNo: 'TX-DUMMY-01', region: 'Colombo', type: 'Bulk', poleNo: 'P-001', capacityKVA: 100, locationDetails: 'Location 1'
+      },
+      {
+        transformerNo: 'TX-DUMMY-02', region: 'Kandy', type: 'Distribution', poleNo: 'P-002', capacityKVA: 150, locationDetails: 'Location 2'
+      },
+      {
+        transformerNo: 'TX-DUMMY-03', region: 'Galle', type: 'Bulk', poleNo: 'P-003', capacityKVA: 120, locationDetails: 'Location 3'
+      },
+      {
+        transformerNo: 'TX-DUMMY-04', region: 'Jaffna', type: 'Distribution', poleNo: 'P-004', capacityKVA: 130, locationDetails: 'Location 4'
+      },
+      {
+        transformerNo: 'TX-DUMMY-05', region: 'Matara', type: 'Bulk', poleNo: 'P-005', capacityKVA: 110, locationDetails: 'Location 5'
+      }
+    ];
+    try {
+      // Add transformers
+      const responses = await Promise.all(
+        dummyTransformers.map(t => transformersAPI.create(t))
+      );
+      const addedTransformers = responses.map(r => r.data);
+      setTransformersData([...transformersData, ...addedTransformers]);
+
+      // Add inspections to first two transformers
+      const inspections = [
+        // 3 for first transformer
+        {
+          branch: 'Colombo Branch',
+          inspectedDate: '2025-08-01',
+          inspectionTime: '09:00:00',
+          maintenanceDate: '2025-08-10',
+          transformerId: addedTransformers[0].id
+        },
+        {
+          branch: 'Colombo Branch',
+          inspectedDate: '2025-08-10',
+          inspectionTime: '10:00:00',
+          maintenanceDate: '2025-08-20',
+          transformerId: addedTransformers[0].id
+        },
+        {
+          branch: 'Colombo Branch',
+          inspectedDate: '2025-08-20',
+          inspectionTime: '11:00:00',
+          maintenanceDate: '2025-08-30',
+          transformerId: addedTransformers[0].id
+        },
+        // 2 for second transformer
+        {
+          branch: 'Kandy Branch',
+          inspectedDate: '2025-08-05',
+          inspectionTime: '09:30:00',
+          maintenanceDate: '2025-08-15',
+          transformerId: addedTransformers[1].id
+        },
+        {
+          branch: 'Kandy Branch',
+          inspectedDate: '2025-08-15',
+          inspectionTime: '10:30:00',
+          maintenanceDate: '2025-08-25',
+          transformerId: addedTransformers[1].id
+        }
+      ];
+      await Promise.all(
+        inspections.map(i => window.inspectionsAPI ? window.inspectionsAPI.create(i) : require('../services/api').inspectionsAPI.create(i))
+      );
+      setSnackbar({ open: true, message: '5 dummy transformers and 5 inspections added!', severity: 'success' });
+    } catch (err) {
+      setError('Failed to add dummy transformers or inspections');
+      setSnackbar({ open: true, message: 'Failed to add dummy transformers or inspections', severity: 'error' });
+      console.error('Error adding dummy transformers or inspections:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
   const [transformersData, setTransformersData] = useState([])
   const [newTransformer, setNewTransformer] = useState({transformerNo: '',region: '',type: '',poleNo: '', capacityKVA: '',locationDetails: ''})
   const [loading, setLoading] = useState(false)
@@ -232,14 +313,21 @@ const handleViewDetails = (transformer) => {
 
             {/* New Button Above Filter */}
             {view === 'transformers' && !loading && (
-            <Box sx={{ mb: 2 }}>
-            <Button 
-              variant="contained" 
-              color="primary"
-              onClick={() => setOpenPopup(true)}
-            >
-              New Transformer
-            </Button>
+            <Box sx={{ mb: 2, display: 'flex', gap: 2 }}>
+              <Button 
+                variant="contained" 
+                color="primary"
+                onClick={() => setOpenPopup(true)}
+              >
+                New Transformer
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleAddDummyTransformers}
+              >
+                Add 5 Dummy Transformers
+              </Button>
 
             {/* Popup Dialog */}
           <Dialog open={openPopup} onClose={() => setOpenPopup(false)}>
