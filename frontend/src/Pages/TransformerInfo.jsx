@@ -1,3 +1,6 @@
+//TransformerInfo.jsx
+
+
 import { useState, useEffect } from 'react'
 import { 
   Box, Drawer, AppBar, Toolbar, Typography, Button, Table, 
@@ -11,7 +14,7 @@ import { FormControl, InputLabel, Select } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { transformersAPI } from '../services/api';
 
-function NewPage() {
+function MainPage() {
   const [view, setView] = useState('transformers') // 'transformers' or 'inspections'
   const [regionFilter, setRegionFilter] = useState('All Regions')
   const [typeFilter, setTypeFilter] = useState('All Types')
@@ -155,43 +158,6 @@ const handleViewDetails = (transformer) => {
           {snackbar.message}
         </Alert>
       </Snackbar>
-
-      {/* App Bar */}
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            Transformers Management
-          </Typography>
-        </Toolbar>
-      </AppBar>
-
-      {/* Sidebar Drawer */}
-      <Drawer
-        variant="temporary"
-        open={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-        ModalProps={{ keepMounted: true }}
-        sx={{ '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 240 } }}
-      >
-        <Toolbar />
-        <Box sx={{ overflow: 'auto', p: 2 }}>
-          <Typography variant="h6" gutterBottom>
-            Transformers
-          </Typography>
-          <Box sx={{ pl: 2 }}>
-            {/* No transformers to display */}
-          </Box>
-        </Box>
-      </Drawer>
 
       {/* Main Content */}
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
@@ -430,4 +396,7 @@ const handleViewDetails = (transformer) => {
   )
 }
 
-export default NewPage
+export default MainPage
+
+
+

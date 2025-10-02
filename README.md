@@ -160,3 +160,30 @@ npm run dev
 
 - Authentication & user roles missing – At this stage, the system does not include authentication, authorization, or multi-user role management. These features will be added in future phases.
 - Deployment not yet available – FlareNet currently runs only in a local development environment (Docker + local servers). A cloud deployment setup is not yet provided.
+
+
+
+
+-To change user role
+Open DB with pgAdmin or Docker CLI.
+
+docker exec -it flarenet-db psql -U flarenet -d flarenet
+
+
+Run:
+
+\dt
+select * from users;
+
+
+(you should see your registered users).
+
+Manually promote yourself:
+
+UPDATE users SET role='ADMIN' WHERE username='yourname';
+
+Later, when you move towards production/stable release, you can:
+
+Switch off ddl-auto.
+
+Lock schema with Flyway or Liquibase migrations.

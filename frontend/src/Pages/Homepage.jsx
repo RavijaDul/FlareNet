@@ -1,102 +1,179 @@
-import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { Link } from "react-router-dom";
+import bgImage from "../assets/transformer-bg.png"; // ✅ put your image in src/assets
 
 function HomePage() {
-  const navigate = useNavigate()
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-
-  const handleLogin = () => {
-    // Demo: just navigate without checking inputs
-    navigate('/new')
-  }
-
   return (
-    <div
-      className="homepage"
-      style={{
-        width: "100vw",
-        height: "100vh",
-        margin: 0,
-        padding: 0,
-        backgroundImage: "url('/image.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        color: "#000",
-      }}
-    >
-      {/* Header at the top */}
-      <h1 style={{ marginTop: "20px" }}>Welcome to the Transformer Managing App</h1>
-
-      {/* Popup Box */}
-      <div
+    <div style={{ fontFamily: "Arial, sans-serif", color: "#fff" }}>
+      {/* Navbar */}
+      <nav
         style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          backgroundColor: "rgba(255, 255, 255, 0.95)",
-          padding: "40px",
-          borderRadius: "20px",
-          boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
-          textAlign: "center",
-          minWidth: "320px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "15px 40px",
+          backgroundColor: "rgba(0,0,0,0.7)",
+          position: "fixed",
+          top: 0,
+          width: "100%",
+          zIndex: 100,
         }}
       >
-        <h2 style={{ marginBottom: "20px" }}>Login</h2>
+        <h2 style={{ margin: 0, fontWeight: "bold", letterSpacing: "2px" }}>
+          Flarenet
+        </h2>
+        <div>
+          <Link
+            to="/login"
+            style={{
+              marginRight: "20px",
+              color: "white",
+              textDecoration: "none",
+              fontWeight: "500",
+            }}
+          >
+            Login
+          </Link>
+          <Link
+            to="/register"
+            style={{
+              color: "white",
+              textDecoration: "none",
+              fontWeight: "500",
+            }}
+          >
+            Sign Up
+          </Link>
+        </div>
+      </nav>
 
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+      {/* Hero Section */}
+      <section
+        style={{
+          height: "100vh",
+          backgroundImage: `url(${bgImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          position: "relative",
+        }}
+      >
+        {/* Overlay */}
+        <div
           style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
             width: "100%",
-            padding: "10px",
-            marginBottom: "15px",
-            borderRadius: "8px",
-            border: "1px solid #ccc",
-            fontSize: "16px",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,0.6)",
           }}
-        />
+        ></div>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "10px",
-            marginBottom: "20px",
-            borderRadius: "8px",
-            border: "1px solid #ccc",
-            fontSize: "16px",
-          }}
-        />
+        {/* Text */}
+        <div style={{ textAlign: "center", zIndex: 1 }}>
+          <h1 style={{ fontSize: "4rem", marginBottom: "10px" }}>Flarenet</h1>
+          <h2 style={{ fontSize: "1.8rem", fontWeight: "300" }}>
+            Transformer Management System
+          </h2>
+        </div>
+      </section>
 
-        <button
-          onClick={handleLogin}
+      {/* About Section */}
+      <section
+        style={{
+          padding: "80px 20px",
+          backgroundColor: "#f9f9f9",
+          color: "#333",
+          textAlign: "center",
+        }}
+      >
+        <h2>About the Project</h2>
+        <p style={{ maxWidth: "800px", margin: "20px auto", lineHeight: "1.6" }}>
+          Power utilities perform routine thermal inspections of distribution
+          transformers to detect anomalies like overheating, insulation
+          degradation, and load imbalances. Flarenet is designed to digitize and
+          automate this workflow — providing anomaly detection, record
+          management, and an intuitive user interface for engineers.
+        </p>
+      </section>
+
+      {/* Features Section */}
+      <section
+        style={{
+          padding: "80px 20px",
+          backgroundColor: "#fff",
+          color: "#333",
+        }}
+      >
+        <h2 style={{ textAlign: "center" }}>Key Features</h2>
+        <div
           style={{
-            width: "100%",
-            padding: "12px",
-            border: "none",
-            borderRadius: "10px",
-            backgroundColor: "#007bff",
-            color: "white",
-            cursor: "pointer",
-            fontSize: "16px",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+            gap: "30px",
+            maxWidth: "1000px",
+            margin: "40px auto",
           }}
         >
-          Login
-        </button>
-      </div>
+          <div
+            style={{
+              padding: "20px",
+              borderRadius: "12px",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+              background: "#f5f5f5",
+            }}
+          >
+            <h3>Phase 1</h3>
+            <p>Transformer record management & baseline image uploads.</p>
+          </div>
+          <div
+            style={{
+              padding: "20px",
+              borderRadius: "12px",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+              background: "#f5f5f5",
+            }}
+          >
+            <h3>Phase 2</h3>
+            <p>
+              Automated anomaly detection with AI-driven image comparisons and
+              visual highlights.
+            </p>
+          </div>
+          <div
+            style={{
+              padding: "20px",
+              borderRadius: "12px",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+              background: "#f5f5f5",
+            }}
+          >
+            <h3>Phase 3</h3>
+            <p>
+              Interactive annotation & feedback loop for refining detection
+              results.
+            </p>
+          </div>
+          <div
+            style={{
+              padding: "20px",
+              borderRadius: "12px",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+              background: "#f5f5f5",
+            }}
+          >
+            <h3>Phase 4</h3>
+            <p>
+              Automatic maintenance record sheet generation with anomaly
+              tracking.
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
-  )
+  );
 }
 
-export default HomePage
+export default HomePage;

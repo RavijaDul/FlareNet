@@ -9,12 +9,18 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none #update
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
 # Storage configuration
 flarenet:
   storage:
     location: uploads
+
+# JWT configuration
+jwt:
+  secret: my-super-strong-secret-key-please-change-1234567890
+  expiration: 86400000   # 24 hours
