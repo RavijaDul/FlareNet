@@ -1,0 +1,360 @@
+2025-09-30 19:22:53,868 - utils.logger - INFO - Logging configuration initialized
+2025-09-30 19:25:04,629 - utils.logger - INFO - Logging configuration initialized
+2025-09-30 19:25:05,777 - utils.logger - INFO - Logging configuration initialized
+2025-09-30 19:25:05,791 - main - INFO - Starting FlareNet ML Backend...
+2025-09-30 19:25:05,793 - services.ml_inference - INFO - Initializing ML Inference Service...
+2025-09-30 19:25:05,797 - models.patchcore_model - INFO - Loading model from /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/models/weights/model.ckpt
+2025-09-30 19:25:05,812 - models.patchcore_model - INFO - Configuration loaded successfully
+2025-09-30 19:25:52,877 - timm.models._builder - INFO - Loading pretrained weights from Hugging Face hub (timm/wide_resnet50_2.racm_in1k)
+2025-09-30 19:25:53,614 - timm.models._hub - INFO - [timm/wide_resnet50_2.racm_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+2025-09-30 19:25:54,008 - timm.models._builder - INFO - Missing keys (fc.weight, fc.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+2025-09-30 19:25:54,159 - models.patchcore_model - INFO - Model loaded successfully on device: cpu
+2025-09-30 19:25:54,161 - services.ml_inference - INFO - ML Inference Service initialized successfully
+2025-09-30 19:25:54,163 - main - INFO - ML service initialized successfully
+2025-09-30 19:26:46,302 - watchfiles.main - INFO - 3 changes detected
+2025-09-30 19:29:49,120 - watchfiles.main - INFO - 1 change detected
+2025-10-01 12:52:34,990 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 12:54:42,302 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 12:54:43,732 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 12:54:43,747 - main - INFO - Starting FlareNet ML Backend...
+2025-10-01 12:54:43,749 - services.ml_inference - INFO - Initializing ML Inference Service...
+2025-10-01 12:54:43,753 - models.patchcore_model - INFO - Loading model from /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/models/weights/model.ckpt
+2025-10-01 12:54:43,773 - models.patchcore_model - INFO - Configuration loaded successfully
+2025-10-01 12:55:28,223 - timm.models._builder - INFO - Loading pretrained weights from Hugging Face hub (timm/wide_resnet50_2.racm_in1k)
+2025-10-01 12:55:28,929 - timm.models._hub - INFO - [timm/wide_resnet50_2.racm_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+2025-10-01 12:55:29,325 - timm.models._builder - INFO - Missing keys (fc.weight, fc.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+2025-10-01 12:55:29,487 - models.patchcore_model - INFO - Model loaded successfully on device: cpu
+2025-10-01 12:55:29,489 - services.ml_inference - INFO - ML Inference Service initialized successfully
+2025-10-01 12:55:29,491 - main - INFO - ML service initialized successfully
+2025-10-01 12:56:15,363 - watchfiles.main - INFO - 1 change detected
+2025-10-01 12:59:15,769 - watchfiles.main - INFO - 1 change detected
+2025-10-01 13:02:40,128 - watchfiles.main - INFO - 1 change detected
+2025-10-01 13:06:09,146 - watchfiles.main - INFO - 1 change detected
+2025-10-01 13:09:23,784 - watchfiles.main - INFO - 1 change detected
+2025-10-01 13:12:33,978 - watchfiles.main - INFO - 1 change detected
+2025-10-01 13:15:52,301 - watchfiles.main - INFO - 1 change detected
+2025-10-01 13:19:04,170 - watchfiles.main - INFO - 1 change detected
+2025-10-01 13:22:17,101 - watchfiles.main - INFO - 1 change detected
+2025-10-01 13:25:42,371 - watchfiles.main - INFO - 1 change detected
+2025-10-01 13:28:32,758 - main - INFO - Shutting down FlareNet ML Backend...
+2025-10-01 13:28:32,783 - models.patchcore_model - INFO - Model cleanup completed
+2025-10-01 13:28:32,785 - services.ml_inference - INFO - ML Inference Service cleanup completed
+2025-10-01 13:31:03,316 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 13:33:33,016 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 13:33:34,778 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 13:33:34,796 - main - INFO - Starting FlareNet ML Backend...
+2025-10-01 13:33:34,798 - services.ml_inference - INFO - Initializing ML Inference Service...
+2025-10-01 13:33:34,802 - models.patchcore_model - INFO - Loading model from /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/models/weights/model.ckpt
+2025-10-01 13:33:34,820 - models.patchcore_model - INFO - Configuration loaded successfully
+2025-10-01 13:34:28,276 - timm.models._builder - INFO - Loading pretrained weights from Hugging Face hub (timm/wide_resnet50_2.racm_in1k)
+2025-10-01 13:34:29,047 - timm.models._hub - INFO - [timm/wide_resnet50_2.racm_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+2025-10-01 13:34:29,439 - timm.models._builder - INFO - Missing keys (fc.weight, fc.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+2025-10-01 13:34:29,632 - models.patchcore_model - INFO - Model loaded successfully on device: cpu
+2025-10-01 13:34:29,634 - services.ml_inference - INFO - ML Inference Service initialized successfully
+2025-10-01 13:34:29,636 - main - INFO - ML service initialized successfully
+2025-10-01 13:35:25,304 - watchfiles.main - INFO - 2 changes detected
+2025-10-01 13:35:25,659 - watchfiles.main - INFO - 1 change detected
+2025-10-01 13:35:25,767 - main - INFO - Shutting down FlareNet ML Backend...
+2025-10-01 13:35:25,789 - models.patchcore_model - INFO - Model cleanup completed
+2025-10-01 13:35:25,791 - services.ml_inference - INFO - ML Inference Service cleanup completed
+2025-10-01 13:39:30,551 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 13:42:01,952 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 13:42:03,561 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 13:42:03,578 - main - INFO - Starting FlareNet ML Backend...
+2025-10-01 13:42:03,581 - services.ml_inference - INFO - Initializing ML Inference Service...
+2025-10-01 13:42:03,585 - models.patchcore_model - INFO - Loading model from /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/models/weights/model.ckpt
+2025-10-01 13:42:03,604 - models.patchcore_model - INFO - Configuration loaded successfully
+2025-10-01 13:43:01,097 - timm.models._builder - INFO - Loading pretrained weights from Hugging Face hub (timm/wide_resnet50_2.racm_in1k)
+2025-10-01 13:43:01,674 - timm.models._hub - INFO - [timm/wide_resnet50_2.racm_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+2025-10-01 13:43:01,752 - timm.models._builder - INFO - Missing keys (fc.weight, fc.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+2025-10-01 13:43:01,967 - models.patchcore_model - INFO - Model loaded successfully on device: cpu
+2025-10-01 13:43:01,968 - services.ml_inference - INFO - ML Inference Service initialized successfully
+2025-10-01 13:43:01,971 - main - INFO - ML service initialized successfully
+2025-10-01 13:43:59,565 - watchfiles.main - INFO - 1 change detected
+2025-10-01 13:47:47,159 - watchfiles.main - INFO - 3 changes detected
+2025-10-01 13:51:50,921 - watchfiles.main - INFO - 4 changes detected
+2025-10-01 13:51:51,066 - main - INFO - Shutting down FlareNet ML Backend...
+2025-10-01 13:51:51,090 - models.patchcore_model - INFO - Model cleanup completed
+2025-10-01 13:51:51,092 - services.ml_inference - INFO - ML Inference Service cleanup completed
+2025-10-01 13:54:48,323 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 13:54:49,802 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 13:54:49,812 - main - INFO - Starting FlareNet ML Backend...
+2025-10-01 13:54:49,813 - services.ml_inference - INFO - Initializing ML Inference Service...
+2025-10-01 13:54:49,818 - models.patchcore_model - INFO - Loading model from /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/models/weights/model.ckpt
+2025-10-01 13:54:49,834 - models.patchcore_model - INFO - Configuration loaded successfully
+2025-10-01 13:55:43,604 - timm.models._builder - INFO - Loading pretrained weights from Hugging Face hub (timm/wide_resnet50_2.racm_in1k)
+2025-10-01 13:55:44,335 - timm.models._hub - INFO - [timm/wide_resnet50_2.racm_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+2025-10-01 13:55:44,400 - timm.models._builder - INFO - Missing keys (fc.weight, fc.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+2025-10-01 13:55:44,524 - models.patchcore_model - INFO - Model loaded successfully on device: cpu
+2025-10-01 13:55:44,526 - services.ml_inference - INFO - ML Inference Service initialized successfully
+2025-10-01 13:55:44,527 - main - INFO - ML service initialized successfully
+2025-10-01 13:56:38,589 - watchfiles.main - INFO - 8 changes detected
+2025-10-01 13:56:38,703 - main - INFO - Shutting down FlareNet ML Backend...
+2025-10-01 13:56:38,728 - models.patchcore_model - INFO - Model cleanup completed
+2025-10-01 13:56:38,730 - services.ml_inference - INFO - ML Inference Service cleanup completed
+2025-10-01 14:00:09,781 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 14:02:22,907 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 14:02:24,208 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 14:02:24,223 - main - INFO - Starting FlareNet ML Backend...
+2025-10-01 14:02:24,224 - services.ml_inference - INFO - Initializing ML Inference Service...
+2025-10-01 14:02:24,228 - models.patchcore_model - INFO - Loading model from /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/models/weights/model.ckpt
+2025-10-01 14:02:24,245 - models.patchcore_model - INFO - Configuration loaded successfully
+2025-10-01 14:03:08,820 - timm.models._builder - INFO - Loading pretrained weights from Hugging Face hub (timm/wide_resnet50_2.racm_in1k)
+2025-10-01 14:03:09,335 - timm.models._hub - INFO - [timm/wide_resnet50_2.racm_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+2025-10-01 14:03:09,403 - timm.models._builder - INFO - Missing keys (fc.weight, fc.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+2025-10-01 14:03:09,530 - models.patchcore_model - INFO - Model loaded successfully on device: cpu
+2025-10-01 14:03:09,531 - services.ml_inference - INFO - ML Inference Service initialized successfully
+2025-10-01 14:03:09,532 - main - INFO - ML service initialized successfully
+2025-10-01 14:03:17,953 - api.routes - INFO - File saved: /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/uploads/7a5f8231bed145fb8283bf0c5bb5f3f5.jpg
+2025-10-01 14:03:17,954 - services.ml_inference - INFO - Processing image: /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/uploads/7a5f8231bed145fb8283bf0c5bb5f3f5.jpg
+2025-10-01 14:03:19,552 - services.ml_inference - INFO - Image processed successfully: Faulty (score: 1.0000)
+2025-10-01 14:04:02,745 - watchfiles.main - INFO - 10 changes detected
+2025-10-01 14:07:25,401 - watchfiles.main - INFO - 1 change detected
+2025-10-01 14:11:11,177 - watchfiles.main - INFO - 5 changes detected
+2025-10-01 14:11:11,316 - main - INFO - Shutting down FlareNet ML Backend...
+2025-10-01 14:11:11,337 - models.patchcore_model - INFO - Model cleanup completed
+2025-10-01 14:11:11,340 - services.ml_inference - INFO - ML Inference Service cleanup completed
+2025-10-01 14:13:51,763 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 14:13:53,576 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 14:13:53,591 - main - INFO - Starting FlareNet ML Backend...
+2025-10-01 14:13:53,615 - services.ml_inference - INFO - Initializing ML Inference Service...
+2025-10-01 14:13:53,620 - models.patchcore_model - INFO - Loading model from /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/models/weights/model.ckpt
+2025-10-01 14:13:53,643 - models.patchcore_model - INFO - Configuration loaded successfully
+2025-10-01 14:14:45,162 - timm.models._builder - INFO - Loading pretrained weights from Hugging Face hub (timm/wide_resnet50_2.racm_in1k)
+2025-10-01 14:14:45,750 - timm.models._hub - INFO - [timm/wide_resnet50_2.racm_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+2025-10-01 14:14:45,850 - timm.models._builder - INFO - Missing keys (fc.weight, fc.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+2025-10-01 14:14:45,962 - models.patchcore_model - INFO - Model loaded successfully on device: cpu
+2025-10-01 14:14:45,963 - services.ml_inference - INFO - ML Inference Service initialized successfully
+2025-10-01 14:14:45,965 - main - INFO - ML service initialized successfully
+2025-10-01 14:14:46,020 - api.routes - INFO - File saved: /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/uploads/de43e86a004749eba7d1c6ebd2f41815.jpg
+2025-10-01 14:14:46,021 - services.ml_inference - INFO - Processing image: /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/uploads/de43e86a004749eba7d1c6ebd2f41815.jpg
+2025-10-01 14:14:47,290 - services.ml_inference - INFO - Image processed successfully: Faulty (score: 1.0000)
+2025-10-01 14:15:34,841 - watchfiles.main - INFO - 14 changes detected
+2025-10-01 14:15:35,035 - main - INFO - Shutting down FlareNet ML Backend...
+2025-10-01 14:15:35,067 - models.patchcore_model - INFO - Model cleanup completed
+2025-10-01 14:15:35,072 - services.ml_inference - INFO - ML Inference Service cleanup completed
+2025-10-01 14:17:34,009 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 14:19:39,093 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 14:19:40,391 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 14:19:40,404 - main - INFO - Starting FlareNet ML Backend...
+2025-10-01 14:19:40,409 - services.ml_inference - INFO - Initializing ML Inference Service...
+2025-10-01 14:19:40,412 - models.patchcore_model - INFO - Loading model from /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/models/weights/model.ckpt
+2025-10-01 14:19:40,426 - models.patchcore_model - INFO - Configuration loaded successfully
+2025-10-01 14:20:23,140 - timm.models._builder - INFO - Loading pretrained weights from Hugging Face hub (timm/wide_resnet50_2.racm_in1k)
+2025-10-01 14:20:23,665 - timm.models._hub - INFO - [timm/wide_resnet50_2.racm_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+2025-10-01 14:20:23,769 - timm.models._builder - INFO - Missing keys (fc.weight, fc.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+2025-10-01 14:20:23,911 - models.patchcore_model - INFO - Model loaded successfully on device: cpu
+2025-10-01 14:20:23,912 - services.ml_inference - INFO - ML Inference Service initialized successfully
+2025-10-01 14:20:23,914 - main - INFO - ML service initialized successfully
+2025-10-01 14:21:08,840 - watchfiles.main - INFO - 1 change detected
+2025-10-01 14:24:56,984 - watchfiles.main - INFO - 1 change detected
+2025-10-01 14:25:46,600 - api.routes - INFO - File saved: /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/uploads/e09ae49fe8e0467daab820565298f3ed.jpg
+2025-10-01 14:25:46,601 - services.ml_inference - INFO - Processing image: /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/uploads/e09ae49fe8e0467daab820565298f3ed.jpg
+2025-10-01 14:25:46,672 - services.ml_inference - ERROR - Error processing image /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/uploads/e09ae49fe8e0467daab820565298f3ed.jpg: 'coroutine' object has no attribute 'get'
+2025-10-01 14:25:46,673 - api.routes - ERROR - Error in detect_anomaly: 'coroutine' object has no attribute 'get'
+2025-10-01 14:26:03,037 - api.routes - INFO - File saved: /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/uploads/b4b805651189475187ad8bbb6bda3039.jpg
+2025-10-01 14:26:03,040 - services.ml_inference - INFO - Processing image: /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/uploads/b4b805651189475187ad8bbb6bda3039.jpg
+2025-10-01 14:26:03,053 - services.ml_inference - ERROR - Error processing image /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/uploads/b4b805651189475187ad8bbb6bda3039.jpg: 'coroutine' object has no attribute 'get'
+2025-10-01 14:26:03,055 - api.routes - ERROR - Error in detect_anomaly: 'coroutine' object has no attribute 'get'
+2025-10-01 14:31:59,386 - watchfiles.main - INFO - 1 change detected
+2025-10-01 14:31:59,741 - watchfiles.main - INFO - 1 change detected
+2025-10-01 14:35:20,102 - api.routes - INFO - File saved: /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/uploads/4f145813736f4ce9b9431a9122486b1b.jpg
+2025-10-01 14:35:20,106 - services.ml_inference - INFO - Processing image: /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/uploads/4f145813736f4ce9b9431a9122486b1b.jpg
+2025-10-01 14:35:20,157 - services.ml_inference - ERROR - Error processing image /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/uploads/4f145813736f4ce9b9431a9122486b1b.jpg: 'coroutine' object has no attribute 'get'
+2025-10-01 14:35:20,162 - api.routes - ERROR - Error in detect_anomaly: 'coroutine' object has no attribute 'get'
+2025-10-01 14:36:56,704 - api.routes - INFO - File saved: /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/uploads/4adbf9d167fd4e3cb964efcdcadc31ac.jpg
+2025-10-01 14:36:56,707 - services.ml_inference - INFO - Processing image: /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/uploads/4adbf9d167fd4e3cb964efcdcadc31ac.jpg
+2025-10-01 14:36:56,741 - services.ml_inference - ERROR - Error processing image /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/uploads/4adbf9d167fd4e3cb964efcdcadc31ac.jpg: 'coroutine' object has no attribute 'get'
+2025-10-01 14:36:56,747 - api.routes - ERROR - Error in detect_anomaly: 'coroutine' object has no attribute 'get'
+2025-10-01 14:41:46,128 - watchfiles.main - INFO - 4 changes detected
+2025-10-01 14:41:46,317 - main - INFO - Shutting down FlareNet ML Backend...
+2025-10-01 14:41:46,440 - models.patchcore_model - INFO - Model cleanup completed
+2025-10-01 14:41:46,442 - services.ml_inference - INFO - ML Inference Service cleanup completed
+2025-10-01 14:41:47,492 - watchfiles.main - INFO - 5 changes detected
+2025-10-01 14:46:52,790 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 14:46:55,649 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 14:46:55,667 - main - INFO - Starting FlareNet ML Backend...
+2025-10-01 14:46:55,681 - services.ml_inference - INFO - Initializing ML Inference Service...
+2025-10-01 14:46:55,686 - models.patchcore_model - INFO - Loading model from /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/models/weights/model.ckpt
+2025-10-01 14:46:55,714 - models.patchcore_model - INFO - Configuration loaded successfully
+2025-10-01 14:48:35,858 - timm.models._builder - INFO - Loading pretrained weights from Hugging Face hub (timm/wide_resnet50_2.racm_in1k)
+2025-10-01 14:48:36,988 - timm.models._hub - INFO - [timm/wide_resnet50_2.racm_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+2025-10-01 14:48:37,499 - timm.models._builder - INFO - Missing keys (fc.weight, fc.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+2025-10-01 14:48:37,782 - models.patchcore_model - INFO - Model loaded successfully on device: cpu
+2025-10-01 14:48:37,784 - services.ml_inference - INFO - ML Inference Service initialized successfully
+2025-10-01 14:48:37,788 - main - INFO - ML service initialized successfully
+2025-10-01 14:50:15,079 - watchfiles.main - INFO - 2 changes detected
+2025-10-01 14:50:15,490 - watchfiles.main - INFO - 1 change detected
+2025-10-01 14:50:15,845 - watchfiles.main - INFO - 3 changes detected
+2025-10-01 14:58:46,139 - watchfiles.main - INFO - 1 change detected
+2025-10-01 15:07:04,373 - watchfiles.main - INFO - 1 change detected
+2025-10-01 15:14:01,991 - watchfiles.main - INFO - 1 change detected
+2025-10-01 15:16:56,692 - watchfiles.main - INFO - 1 change detected
+2025-10-01 15:20:04,995 - watchfiles.main - INFO - 1 change detected
+2025-10-01 15:23:11,462 - watchfiles.main - INFO - 1 change detected
+2025-10-01 15:26:30,240 - watchfiles.main - INFO - 1 change detected
+2025-10-01 15:26:45,203 - api.routes - INFO - File saved: /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/uploads/7ead7e013fcd45e3a37a6209f2026e78.jpg
+2025-10-01 15:26:45,206 - services.ml_inference - INFO - Processing image: /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/uploads/7ead7e013fcd45e3a37a6209f2026e78.jpg
+2025-10-01 15:26:45,396 - services.ml_inference - ERROR - Error processing image /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/uploads/7ead7e013fcd45e3a37a6209f2026e78.jpg: float() argument must be a string or a real number, not 'coroutine'
+2025-10-01 15:26:45,399 - api.routes - ERROR - Error in detect_anomaly: float() argument must be a string or a real number, not 'coroutine'
+2025-10-01 15:29:53,808 - watchfiles.main - INFO - 1 change detected
+2025-10-01 15:29:54,161 - watchfiles.main - INFO - 1 change detected
+2025-10-01 15:33:39,472 - watchfiles.main - INFO - 1 change detected
+2025-10-01 15:37:16,481 - watchfiles.main - INFO - 1 change detected
+2025-10-01 15:40:44,734 - watchfiles.main - INFO - 1 change detected
+2025-10-01 15:44:43,313 - watchfiles.main - INFO - 1 change detected
+2025-10-01 15:48:37,358 - watchfiles.main - INFO - 1 change detected
+2025-10-01 15:52:18,724 - watchfiles.main - INFO - 1 change detected
+2025-10-01 15:56:09,959 - watchfiles.main - INFO - 1 change detected
+2025-10-01 16:00:07,008 - watchfiles.main - INFO - 1 change detected
+2025-10-01 16:03:54,335 - watchfiles.main - INFO - 1 change detected
+2025-10-01 16:08:06,730 - watchfiles.main - INFO - 1 change detected
+2025-10-01 16:11:17,382 - watchfiles.main - INFO - 1 change detected
+2025-10-01 16:14:11,373 - watchfiles.main - INFO - 1 change detected
+2025-10-01 16:17:07,870 - watchfiles.main - INFO - 1 change detected
+2025-10-01 16:20:03,024 - watchfiles.main - INFO - 1 change detected
+2025-10-01 16:23:14,200 - watchfiles.main - INFO - 1 change detected
+2025-10-01 16:26:36,211 - watchfiles.main - INFO - 1 change detected
+2025-10-01 16:29:56,894 - watchfiles.main - INFO - 1 change detected
+2025-10-01 16:33:28,612 - watchfiles.main - INFO - 1 change detected
+2025-10-01 16:37:07,641 - watchfiles.main - INFO - 1 change detected
+2025-10-01 16:40:14,342 - watchfiles.main - INFO - 1 change detected
+2025-10-01 16:43:40,159 - watchfiles.main - INFO - 1 change detected
+2025-10-01 16:46:49,963 - watchfiles.main - INFO - 1 change detected
+2025-10-01 16:50:00,352 - watchfiles.main - INFO - 1 change detected
+2025-10-01 16:53:12,805 - watchfiles.main - INFO - 1 change detected
+2025-10-01 16:56:09,630 - watchfiles.main - INFO - 1 change detected
+2025-10-01 16:59:05,144 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:02:03,331 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:05:01,597 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:08:00,931 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:10:56,972 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:13:51,321 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:16:59,479 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:19:57,112 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:22:57,275 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:25:54,289 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:29:01,737 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:31:56,790 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:34:55,737 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:37:59,886 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:40:57,810 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:43:51,609 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:46:51,911 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:49:48,160 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:52:41,759 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:55:40,723 - watchfiles.main - INFO - 1 change detected
+2025-10-01 17:58:35,351 - watchfiles.main - INFO - 1 change detected
+2025-10-01 18:01:39,398 - watchfiles.main - INFO - 1 change detected
+2025-10-01 18:04:34,857 - watchfiles.main - INFO - 1 change detected
+2025-10-01 18:07:36,903 - watchfiles.main - INFO - 1 change detected
+2025-10-01 18:10:39,053 - watchfiles.main - INFO - 1 change detected
+2025-10-01 18:13:45,503 - watchfiles.main - INFO - 1 change detected
+2025-10-01 20:53:22,474 - watchfiles.main - INFO - 1 change detected
+2025-10-01 20:57:19,670 - watchfiles.main - INFO - 1 change detected
+2025-10-01 21:01:10,669 - watchfiles.main - INFO - 1 change detected
+2025-10-01 21:04:22,503 - watchfiles.main - INFO - 1 change detected
+2025-10-01 21:07:50,210 - watchfiles.main - INFO - 1 change detected
+2025-10-01 21:12:22,011 - watchfiles.main - INFO - 1 change detected
+2025-10-01 21:16:03,367 - watchfiles.main - INFO - 1 change detected
+2025-10-01 21:19:31,081 - watchfiles.main - INFO - 2 changes detected
+2025-10-01 21:19:31,398 - main - INFO - Shutting down FlareNet ML Backend...
+2025-10-01 21:19:31,781 - models.patchcore_model - INFO - Model cleanup completed
+2025-10-01 21:19:31,785 - services.ml_inference - INFO - ML Inference Service cleanup completed
+2025-10-01 21:22:17,795 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 21:22:19,356 - utils.logger - INFO - Logging configuration initialized
+2025-10-01 21:22:19,366 - main - INFO - Starting FlareNet ML Backend...
+2025-10-01 21:22:19,373 - services.ml_inference - INFO - Initializing ML Inference Service...
+2025-10-01 21:22:19,376 - models.patchcore_model - INFO - Loading model from /mnt/c/Users/Yasiru Alahakoon/Desktop/Image Processing And Machine Vision/EN3160 Assignment 3 on Neural Networks/FlareNet/python-ml-backend/models/weights/model.ckpt
+2025-10-01 21:22:19,390 - models.patchcore_model - INFO - Configuration loaded successfully
+2025-10-01 21:23:11,297 - timm.models._builder - INFO - Loading pretrained weights from Hugging Face hub (timm/wide_resnet50_2.racm_in1k)
+2025-10-01 21:23:12,196 - timm.models._hub - INFO - [timm/wide_resnet50_2.racm_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+2025-10-01 21:23:12,701 - timm.models._builder - INFO - Missing keys (fc.weight, fc.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+2025-10-01 21:23:12,877 - models.patchcore_model - INFO - Model loaded successfully on device: cpu
+2025-10-01 21:23:12,879 - services.ml_inference - INFO - ML Inference Service initialized successfully
+2025-10-01 21:23:12,881 - main - INFO - ML service initialized successfully
+2025-10-01 21:23:47,397 - watchfiles.main - INFO - 1 change detected
+2025-10-01 21:23:47,751 - watchfiles.main - INFO - 2 changes detected
+2025-10-01 21:27:44,497 - watchfiles.main - INFO - 1 change detected
+2025-10-01 21:31:36,136 - watchfiles.main - INFO - 1 change detected
+2025-10-01 21:35:34,161 - watchfiles.main - INFO - 1 change detected
+2025-10-01 21:39:24,326 - watchfiles.main - INFO - 1 change detected
+2025-10-01 21:43:08,083 - watchfiles.main - INFO - 1 change detected
+2025-10-01 21:46:31,723 - watchfiles.main - INFO - 1 change detected
+2025-10-01 21:50:28,606 - watchfiles.main - INFO - 1 change detected
+2025-10-01 21:53:49,166 - watchfiles.main - INFO - 1 change detected
+2025-10-01 21:57:01,722 - watchfiles.main - INFO - 1 change detected
+2025-10-01 22:38:42,716 - watchfiles.main - INFO - 1 change detected
+2025-10-01 22:41:43,013 - watchfiles.main - INFO - 1 change detected
+2025-10-01 22:44:43,914 - watchfiles.main - INFO - 1 change detected
+2025-10-01 22:47:29,204 - watchfiles.main - INFO - 1 change detected
+2025-10-01 22:50:13,820 - watchfiles.main - INFO - 1 change detected
+2025-10-01 22:53:15,381 - watchfiles.main - INFO - 1 change detected
+2025-10-01 22:56:16,141 - watchfiles.main - INFO - 1 change detected
+2025-10-01 22:59:11,478 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:02:32,758 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:06:08,299 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:08:58,859 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:11:48,984 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:14:47,962 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:17:46,684 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:20:35,998 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:23:31,512 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:26:25,852 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:29:21,251 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:32:13,981 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:35:12,173 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:38:10,223 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:41:09,170 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:43:59,568 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:46:58,861 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:49:49,272 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:52:48,127 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:55:42,988 - watchfiles.main - INFO - 1 change detected
+2025-10-01 23:58:36,113 - watchfiles.main - INFO - 1 change detected
+2025-10-02 00:01:29,779 - watchfiles.main - INFO - 1 change detected
+2025-10-02 00:04:34,752 - watchfiles.main - INFO - 1 change detected
+2025-10-02 00:07:26,228 - watchfiles.main - INFO - 1 change detected
+2025-10-02 00:10:15,192 - watchfiles.main - INFO - 1 change detected
+2025-10-02 00:13:06,940 - watchfiles.main - INFO - 1 change detected
+2025-10-02 00:16:15,098 - watchfiles.main - INFO - 1 change detected
+2025-10-02 00:19:11,582 - watchfiles.main - INFO - 1 change detected
+2025-10-02 00:22:15,271 - watchfiles.main - INFO - 1 change detected
+2025-10-02 00:26:35,443 - watchfiles.main - INFO - 1 change detected
+2025-10-02 00:30:15,131 - watchfiles.main - INFO - 1 change detected
+2025-10-02 00:34:15,891 - watchfiles.main - INFO - 1 change detected
+2025-10-02 00:37:40,492 - watchfiles.main - INFO - 1 change detected
+2025-10-02 00:41:19,611 - watchfiles.main - INFO - 1 change detected
+2025-10-02 00:44:27,560 - watchfiles.main - INFO - 1 change detected
+2025-10-02 00:47:53,284 - watchfiles.main - INFO - 1 change detected
+2025-10-02 00:50:59,044 - watchfiles.main - INFO - 1 change detected
+2025-10-02 00:54:14,346 - watchfiles.main - INFO - 1 change detected
+2025-10-02 00:58:40,627 - watchfiles.main - INFO - 1 change detected
+2025-10-02 01:02:56,942 - watchfiles.main - INFO - 1 change detected
+2025-10-02 01:06:49,334 - watchfiles.main - INFO - 1 change detected
+2025-10-02 01:10:56,375 - watchfiles.main - INFO - 1 change detected
+2025-10-02 01:14:17,564 - watchfiles.main - INFO - 1 change detected
+2025-10-02 01:18:05,399 - watchfiles.main - INFO - 1 change detected
+2025-10-02 01:21:55,608 - watchfiles.main - INFO - 1 change detected
+2025-10-02 01:25:25,045 - watchfiles.main - INFO - 1 change detected
+2025-10-02 01:28:58,599 - watchfiles.main - INFO - 1 change detected
+2025-10-02 01:32:25,655 - watchfiles.main - INFO - 1 change detected
+2025-10-02 01:36:10,041 - watchfiles.main - INFO - 1 change detected
+2025-10-02 01:40:04,736 - watchfiles.main - INFO - 1 change detected
+2025-10-02 01:44:03,967 - watchfiles.main - INFO - 1 change detected
+2025-10-02 01:48:12,119 - watchfiles.main - INFO - 1 change detected
+2025-10-02 01:52:13,146 - watchfiles.main - INFO - 1 change detected
+2025-10-02 01:55:40,120 - watchfiles.main - INFO - 1 change detected
+2025-10-02 01:59:56,021 - watchfiles.main - INFO - 1 change detected
+2025-10-02 02:03:58,220 - watchfiles.main - INFO - 1 change detected
+2025-10-02 02:08:18,757 - watchfiles.main - INFO - 1 change detected
+2025-10-02 02:11:53,983 - watchfiles.main - INFO - 1 change detected
+2025-10-02 02:15:29,613 - watchfiles.main - INFO - 1 change detected
+2025-10-02 02:18:45,246 - watchfiles.main - INFO - 1 change detected
+2025-10-02 02:22:32,165 - watchfiles.main - INFO - 1 change detected
+2025-10-02 02:26:04,328 - watchfiles.main - INFO - 1 change detected
+2025-10-02 02:29:29,315 - watchfiles.main - INFO - 1 change detected
+2025-10-02 02:33:02,346 - watchfiles.main - INFO - 1 change detected
+2025-10-02 02:36:49,740 - watchfiles.main - INFO - 1 change detected
+2025-10-02 02:40:11,620 - watchfiles.main - INFO - 1 change detected
+2025-10-02 02:43:09,564 - watchfiles.main - INFO - 1 change detected

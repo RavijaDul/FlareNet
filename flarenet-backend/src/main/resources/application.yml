@@ -18,3 +18,10 @@ spring:
 flarenet:
   storage:
     location: uploads
+
+# ML Backend configuration
+ml:
+  backend:
+    url: http://localhost:8001
+    timeout: 30000  # 30 seconds timeout
+    enabled: true

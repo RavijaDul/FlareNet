@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+python-multipart
+Pillow
+numpy
+opencv-python
+torch
+torchvision
+anomalib
+pytorch-lightning
+omegaconf
+pydantic
+aiofiles
+requests
+matplotlib
+scikit-learn
+scipy
