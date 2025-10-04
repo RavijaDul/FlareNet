@@ -47,6 +47,7 @@ function Transformer() {
     const [comment, setComment] = React.useState(""); // current input
     const [savedComment, setSavedComment] = React.useState(""); // stored comment
     const [isEditing, setIsEditing] = React.useState(false);
+    const [analysisResult, setAnalysisResult] = React.useState(null);
     /////////////////////////////////////////////////////////// 
     const [anomalyData, setAnomalyData] = useState({
     image: "",
@@ -68,33 +69,44 @@ function Transformer() {
     //     anomalies: response.anomalies || [],
     //     });
     // };
-    const testWithDummyResponse = () => {
-        const dummyResponse = {
-        image: "T1_faulty_022.jpg",
-        status: "Anomalies",
-        anomalies: [
-            {
-            label: "Point Overload (Faulty)",
-            category: "point_overload",
-            severity: "Faulty",
-            confidence: 0.8776691854000092,
-            bbox: { x: 281, y: 267, width: 90, height: 127 },
-            },
-            {
-            label: "Point Overload (Potentially Faulty)",
-            category: "point_overload",
-            severity: "Potentially Faulty",
-            confidence: 0.9155299961566925,
-            bbox: { x: 437, y: 276, width: 139, height: 115 },
-            },
-        ],
-        };
+        // const testWithDummyResponse = () => {
+        //     const dummyResponse = {
+        //     image: "T1_faulty_022.jpg",
+        //     status: "Anomalies",
+        //     anomalies: [
+        //         {
+        //         label: "Point Overload (Faulty)",
+        //         category: "point_overload",
+        //         severity: "Faulty",
+        //         confidence: 0.8776691854000092,
+        //         bbox: { x: 281, y: 267, width: 90, height: 127 },
+        //         },
+        //         {
+        //         label: "Point Overload (Potentially Faulty)",
+        //         category: "point_overload",
+        //         severity: "Potentially Faulty",
+        //         confidence: 0.9155299961566925,
+        //         bbox: { x: 437, y: 276, width: 139, height: 115 },
+        //         },
+        //     ],
+        //     };
 
-        setAnomalyData(dummyResponse);
-    };
-      const clearResponse = () => {
-    setAnomalyData({ image: "", status: "", anomalies: [] });
-    };
+        //     setAnomalyData(dummyResponse);
+        // };
+        // const clearResponse = () => {
+        // setAnomalyData({ image: "", status: "", anomalies: [] });
+        // };
+
+        // Whenever analysisResult changes, update anomalyData
+    React.useEffect(() => {
+    if (analysisResult) {
+        setAnomalyData({
+        image: analysisResult.image || "",
+        status: analysisResult.status || "",
+        anomalies: analysisResult.anomalies || [],
+        });
+    }
+    }, [analysisResult]);
 
 
     const handleSaveComment = () => {
@@ -145,7 +157,7 @@ function Transformer() {
                 if (maintenanceResponse.data && maintenanceResponse.data.length > 0) {
                     const thermalImg = maintenanceResponse.data[0]; // Assuming one maintenance image per inspection for simplicity
                     setSelectedthermalFile({
-                        file: null,
+                        id: thermalImg.id,         
                         tag: "MAINTENANCE",
                         url: thermalImg.url,
                     });
@@ -210,6 +222,7 @@ function Transformer() {
         if (!file) return;
 
         setLoading(true);
+        setAnalysisResult(null); // clear old result
         try {
             const formData = new FormData();
             formData.append("file", file);
@@ -225,12 +238,23 @@ function Transformer() {
             const uploadedImg = response.data;
 
             setSelectedthermalFile({
-                file: null, // No actual file object needed after upload
+                id: uploadedImg.id,          // ✅ use uploadedImg from backend response
                 tag: "MAINTENANCE",
                 url: uploadedImg.url,
             });
             setThermalImageUrl(uploadedImg.url);
             console.log("Thermal image uploaded successfully:", uploadedImg);
+            if (uploadedImg.analysis) {
+            try {
+                const parsed = JSON.parse(uploadedImg.analysis);
+                console.log("Dataset:", parsed);
+                setAnalysisResult(parsed);
+
+            } catch (err) {
+                console.error("Error parsing analysis JSON:", err);
+                setAnalysisResult(uploadedImg.analysis);
+            }
+            }
             setThermalUploaded(true);
            setProgress(0);
 
@@ -556,15 +580,25 @@ function Transformer() {
     <div style={{ marginTop: "8px", display: "flex", justifyContent: "center", gap: "8px" }}>
       {/* Delete button */}
       <IconButton
-        aria-label="delete"
-        color="error"
-        onClick={() => {
-          setSelectedthermalFile(null);
-          setThermalImageUrl(null);
-        }}
-      >
-        <DeleteIcon />
-      </IconButton>
+                        aria-label="delete"
+                        color="error"
+                        onClick={async () => {
+                            if (!selectedthermalFile || !transformerId) return;
+                            try {
+                            const imgId = selectedthermalFile.id || selectedthermalFile.imageId;
+                            if (imgId) await imagesAPI.deleteImage(transformerId, imgId);
+                            setSelectedthermalFile(null);
+                            setThermalImageUrl(null);
+                            console.log("Thermal image deleted successfully",transformerId,"ID", imgId);
+                            } catch (error) {
+                            console.error("Error deleting thermal image:", error);
+                            alert("Failed to delete thermal image");
+                            }
+                        }}
+                        sx={{ marginTop: "8px" }}
+                        >
+                        <DeleteIcon />
+                        </IconButton>
 
       {/* Zoom button */}
       <IconButton aria-label="zoom" color="primary" onClick={handleOpenZoom}>
@@ -623,8 +657,8 @@ function Transformer() {
   )}
 
   <div style={{ marginTop: "12px", display: "flex", gap: "8px" }}>
-    <button onClick={testWithDummyResponse}>Load Dummy Errors</button>
-    <button onClick={clearResponse}>Clear</button>
+    {/* <button onClick={testWithDummyResponse}>Load Dummy Errors</button>
+    <button onClick={clearResponse}>Clear</button> */}
   </div>
 </div>
 
