@@ -5,8 +5,8 @@ import HomePage from './Pages/Homepage.jsx'
 import MainPage from './Pages/TransformerInfo.jsx'
 import TransformerDetails from './Pages/TransformerDetails.jsx';
 import Transformer from './Pages/Transformer.jsx';
-import Login from './Pages/Login.jsx';
-import Register from './Pages/Register.jsx';
+// import Login from './Pages/Login.jsx';
+// import Register from './Pages/Register.jsx';
 import Navbar from './components/Navbar.jsx';
 
 function App() {
@@ -14,8 +14,8 @@ function App() {
     <BrowserRouter>
       <Navbar />
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        {/* <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} /> */}
         <Route path="/" element={<HomePage />} />
         <Route path="/new" element={<MainPage />} />
         <Route path="/transformer/:id" element={<TransformerDetails />} />

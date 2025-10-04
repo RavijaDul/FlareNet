@@ -77,6 +77,35 @@ function HomePage() {
           <h2 style={{ fontSize: "1.8rem", fontWeight: "300" }}>
             Transformer Management System
           </h2>
+        <Link
+            to="/new"
+            style={{
+              background: "rgba(255, 255, 255, 0.15)",
+              color: "white",
+              border: "1px solid rgba(255,255,255,0.3)",
+              padding: "12px 32px",
+              borderRadius: "10px",
+              textDecoration: "none",
+              fontWeight: "600",
+              fontSize: "1.1rem",
+              backdropFilter: "blur(6px)",
+              transition: "all 0.3s ease",
+              display: "inline-block",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.25)",
+            }}
+            onMouseOver={(e) => {
+              e.target.style.background = "rgba(255, 255, 255, 0.25)";
+              e.target.style.transform = "scale(1.05)";
+              e.target.style.boxShadow = "0 6px 14px rgba(0,0,0,0.4)";
+            }}
+            onMouseOut={(e) => {
+              e.target.style.background = "rgba(255, 255, 255, 0.15)";
+              e.target.style.transform = "scale(1)";
+              e.target.style.boxShadow = "0 4px 10px rgba(0,0,0,0.25)";
+            }}
+          >
+            Go to Transformers
+          </Link>
         </div>
       </section>
 

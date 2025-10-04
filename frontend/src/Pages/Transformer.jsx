@@ -9,8 +9,10 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useContext } from "react";
 
 import { imagesAPI } from '../services/api'; // Ensure this path is correct
+import { ActorContext } from '../context/AuthContext';
 
 function Transformer() {
     const location = useLocation();
@@ -35,8 +37,9 @@ function Transformer() {
     const [thermalUploaded, setThermalUploaded] = React.useState(false);
     const [showComparison, setShowComparison] = React.useState(false);
     const [progress, setProgress] = React.useState(0);
+    const { actor } = useContext(ActorContext);
     // uploader is always the inspector
-    const uploader = inspectedBy;
+    const uploader = actor;// inspectedBy;
 
     const handleChange = (event) => {
         setweather(event.target.value);

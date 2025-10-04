@@ -1,9 +1,11 @@
 import { useContext, useState } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { ActorContext } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 
 export default function Navbar() {
-  const { user, logout } = useContext(AuthContext);
+  // const { user, logout } = useContext(ActorContext);
+  const { actor, setDisplayName } = useContext(ActorContext);
+
   const [open, setOpen] = useState(false);
 
   const avatarStyle = {
@@ -58,7 +60,26 @@ export default function Navbar() {
 
       {/* Right side */}
       <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
-        {user ? (
+        <div style={avatarStyle} onClick={() => setOpen((p) => !p)}>
+          {actor.charAt(0).toUpperCase()}
+        </div>
+        {open && (
+          <div style={popupStyle}>
+            <p style={{ margin: 0, fontWeight: "bold" }}>{actor}</p>
+            <input
+              type="text"
+              placeholder="Change name"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  setDisplayName(e.target.value || "guest");
+                  setOpen(false);
+                }
+              }}
+            />
+          </div>
+        )}
+      
+        {/* {user ? (
           <>
             <div
               style={avatarStyle}
@@ -101,7 +122,7 @@ export default function Navbar() {
               Sign Up
             </Link>
           </>
-        )}
+        )} */}
       </div>
     </nav>
   );

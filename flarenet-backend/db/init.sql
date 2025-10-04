@@ -19,7 +19,7 @@ CREATE TABLE users (
 -- bcrypt("admin1234") hash
 INSERT INTO users (username, password, role) VALUES
 ('admin', '2b$12$C9Q4sdy9BKJKdP7w7a2o7uUk5HMJmy0C6aEOYFZAX9GZjDGCTsDlC', 'ADMIN'),
-('user1', '2b$12$C9Q4sdy9BKJKdP7w7a2o7uUk5HMJmy0C6aEOYFZAX9GZjDGCTsDlC', 'USER'),
+('user1', '2b$12$C9Q4sdy9BKJKdP7w7a2o7uUk5HMJmy0C6aEOYFZAX9GZjDGCTsDlC', 'USER');
 
 
 -- ================= TRANSFORMERS =================

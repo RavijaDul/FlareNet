@@ -1,6 +1,4 @@
 //TransformerInfo.jsx
-
-
 import { useState, useEffect } from 'react'
 import { 
   Box, Drawer, AppBar, Toolbar, Typography, Button, Table, 
