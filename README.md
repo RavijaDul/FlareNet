@@ -58,7 +58,9 @@ cd FlareNet
 ### 2. Start Postgres with Docker
 We use Docker to run Postgres with schema and seed data automatically.
 
+
 ```bash
+docker compose down -v
 docker compose up -d
 ```
 
