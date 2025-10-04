@@ -14,8 +14,11 @@ public class AnalysisResult {
     @JoinColumn(name = "thermal_image_id")
     private ThermalImage image;
 
-    @Lob
-    private String resultJson; // JSON returned from Python backend
+    // @Lob
+    // private String resultJson; // JSON returned from Python backend
+    @Column(columnDefinition = "TEXT")
+    private String resultJson;
+
 
     private Instant analyzedAt = Instant.now();
 

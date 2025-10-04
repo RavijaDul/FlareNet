@@ -138,6 +138,7 @@ FlareNet/
 
 ```bash
 # Start database
+docker compose down -v
 docker compose up -d
 
 # Start backend
@@ -148,8 +149,29 @@ mvn spring-boot:run
 cd frontend
 npm install
 npm run dev
-```
 
+
+
+# Start python backend
+   # Go to backend folder
+   cd python-backend
+
+   # Create and activate virtual environment
+   python -m venv venv
+   # Windows:
+   venv\Scripts\activate
+   # macOS/Linux:
+   source venv/bin/activate
+
+   # Install dependencies
+   pip install -r requirements.txt
+
+   # Optional: download model weights first
+   python model_weight.py
+
+   # Run the FastAPI server
+   uvicorn app:app --host 0.0.0.0 --port 5000 --reload
+```
 ---
 
 ## 📌 Additional Tips

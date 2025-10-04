@@ -108,6 +108,34 @@ function Transformer() {
     }
     }, [analysisResult]);
 
+        // at top of Transformer() (with your other state)
+    const imgRef = React.useRef(null);
+    const [imgDims, setImgDims] = React.useState({
+    naturalWidth: 0,
+    naturalHeight: 0,
+    renderedWidth: 0,
+    renderedHeight: 0,
+    });
+
+    // keep overlay in sync on load/resize
+    const updateDims = React.useCallback(() => {
+    const img = imgRef.current;
+    if (!img) return;
+    setImgDims({
+        naturalWidth: img.naturalWidth || 0,
+        naturalHeight: img.naturalHeight || 0,
+        renderedWidth: img.clientWidth || 0,
+        renderedHeight: img.clientHeight || 0,
+    });
+    }, []);
+
+    React.useEffect(() => {
+    if (!imgRef.current) return;
+    const ro = new ResizeObserver(updateDims);
+    ro.observe(imgRef.current);
+    return () => ro.disconnect();
+    }, [updateDims, thermalImageUrl]);
+
 
     const handleSaveComment = () => {
     setSavedComment(comment);
@@ -162,6 +190,15 @@ function Transformer() {
                         url: thermalImg.url,
                     });
                     setThermalImageUrl(thermalImg.url);
+                    if (thermalImg.analysis) {
+                        try {
+                        const parsed = JSON.parse(thermalImg.analysis);
+                        setAnalysisResult(parsed);
+                        console.log("Fetched and parsed saved analysis:", parsed);
+                        } catch (err) {
+                        console.error("Error parsing saved analysis JSON:", err);
+                        }
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching existing images:", error);
@@ -545,71 +582,141 @@ function Transformer() {
                         )}
 
                         {/* Show baseline + thermal images side by side */}
-                        {!loading && thermalImageUrl && baselineImageUrl && anomalyData.status && (
-                            <div
+            {!loading && baselineImageUrl && thermalImageUrl && (
+            <div
                 style={{
-                    display: "flex",
-                    gap: "32px",            // more spacing between images
-                    marginTop: "20px",
-                    justifyContent: "center", // center horizontally
-                    alignItems: "center",     // align vertically
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 24,
+                alignItems: "start",
+                marginTop: 20,
                 }}
-                >
-                {baselineImageUrl && (
-                    <div style={{ textAlign: "center" }}>
-                    <p style={{ fontSize: "14px", fontWeight: "600", marginBottom: "8px" }}>
-                        Baseline
-                    </p>
-                    <img
-                        src={`http://localhost:8080${baselineImageUrl}`}
-                        alt="Baseline"
-                        style={{ width: "440px",height:"330px", borderRadius: "12px" }}  // larger image
-                    />
-                    </div>
-                )}
-                {thermalImageUrl && (
-  <div style={{ textAlign: "center", position: "relative" }}>
-    <p style={{ fontSize: "14px", fontWeight: "600", marginBottom: "8px" }}>
-      Thermal
-    </p>
-    <img
-      src={`http://localhost:8080${thermalImageUrl}`}
-      alt="Thermal"
-      style={{ width: "400px", height: "300px", borderRadius: "12px" }}
-    />
-    <div style={{ marginTop: "8px", display: "flex", justifyContent: "center", gap: "8px" }}>
-      {/* Delete button */}
-      <IconButton
-                        aria-label="delete"
-                        color="error"
-                        onClick={async () => {
-                            if (!selectedthermalFile || !transformerId) return;
-                            try {
-                            const imgId = selectedthermalFile.id || selectedthermalFile.imageId;
-                            if (imgId) await imagesAPI.deleteImage(transformerId, imgId);
-                            setSelectedthermalFile(null);
-                            setThermalImageUrl(null);
-                            console.log("Thermal image deleted successfully",transformerId,"ID", imgId);
-                            } catch (error) {
-                            console.error("Error deleting thermal image:", error);
-                            alert("Failed to delete thermal image");
-                            }
+            >
+                {/* Left: Baseline (no overlay) */}
+                <div style={{ textAlign: "center" }}>
+                <p style={{ fontSize: 14, fontWeight: 600, marginBottom: 8 }}>Baseline</p>
+                <img
+                    src={`http://localhost:8080${baselineImageUrl}`}
+                    alt="Baseline"
+                    style={{
+                    width: "100%",
+                    maxWidth: 700,   // keep both sides visually similar
+                    height: "auto",
+                    borderRadius: 12,
+                    display: "block",
+                    margin: "0 auto",
+                    }}
+                />
+                </div>
+
+                {/* Right: Maintenance (with overlay) */}
+                <div style={{ textAlign: "center", position: "relative", display: "inline-block" }}>
+                <p style={{ fontSize: 14, fontWeight: 600, marginBottom: 8 }}>Maintenance</p>
+
+                {/* Responsive image; ref + onLoad to capture dims */}
+                <img
+                    ref={imgRef}
+                    src={`http://localhost:8080${thermalImageUrl}`}
+                    alt="Thermal"
+                    style={{
+                    width: "100%",
+                    maxWidth: 700,   // same visual width as baseline
+                    height: "auto",
+                    borderRadius: 12,
+                    display: "block",
+                    }}
+                    onLoad={updateDims}
+                />
+
+                {/* Overlay (scaled) */}
+                {anomalyData?.status && anomalyData?.anomalies?.map((a, idx) => {
+                    const { naturalWidth, naturalHeight, renderedWidth, renderedHeight } = imgDims;
+                    if (!naturalWidth || !naturalHeight || !renderedWidth || !renderedHeight) return null;
+
+                    const { x, y, width: bw, height: bh } = a.bbox;
+
+                    // scale factors from original → rendered
+                    const sx = renderedWidth / naturalWidth;
+                    const sy = renderedHeight / naturalHeight;
+
+                    const left = x * sx;
+                    const top = y * sy;
+                    const w = bw * sx;
+                    const h = bh * sy;
+
+                    const isFaulty = (a.severity || "").toLowerCase().startsWith("faulty");
+                    const color = isFaulty ? "red" : "gold";
+
+                    return (
+                    <React.Fragment key={idx}>
+                        {/* box */}
+                        <div
+                        style={{
+                            position: "absolute",
+                            left,
+                            top,
+                            width: w,
+                            height: h,
+                            border: `2px solid ${color}`,
+                            borderRadius: 4,
+                            pointerEvents: "none",
+                            boxSizing: "border-box",
                         }}
-                        sx={{ marginTop: "8px" }}
+                        />
+
+                        {/* badge (index + confidence) */}
+                        <div
+                        style={{
+                            position: "absolute",
+                            left,
+                            top: Math.max(0, top - 20), // don't go above the image container
+                            background: color,
+                            color: isFaulty ? "#fff" : "#000",
+                            fontSize: 11,
+                            padding: "2px 6px",
+                            borderRadius: 4,
+                            fontWeight: 700,
+                            pointerEvents: "none",
+                            boxShadow: "0 1px 2px rgba(0,0,0,0.3)",
+                        }}
                         >
-                        <DeleteIcon />
-                        </IconButton>
+                        #{idx + 1} ({(a.confidence ?? 0).toFixed(2)})
+                        </div>
+                    </React.Fragment>
+                    );
+                })}
 
-      {/* Zoom button */}
-      <IconButton aria-label="zoom" color="primary" onClick={handleOpenZoom}>
-        <ZoomInIcon />
-      </IconButton>
-    </div>
-  </div>
-)}
-        </div>
+                {/* Action buttons */}
+                <div style={{ marginTop: 10, display: "flex", justifyContent: "center", gap: 10 }}>
+                    <IconButton
+                    aria-label="delete"
+                    color="error"
+                    onClick={async () => {
+                        if (!selectedthermalFile || !transformerId) return;
+                        try {
+                        const imgId = selectedthermalFile.id || selectedthermalFile.imageId;
+                        if (imgId) await imagesAPI.deleteImage(transformerId, imgId);
+                        setSelectedthermalFile(null);
+                        setThermalImageUrl(null);
+                        setAnomalyData({ image: "", status: "", anomalies: [] });
+                        console.log("Thermal image deleted", transformerId, "ID", imgId);
+                        } catch (error) {
+                        console.error("Delete error:", error);
+                        alert("Failed to delete image");
+                        }
+                    }}
+                    >
+                    <DeleteIcon />
+                    </IconButton>
 
+                    <IconButton aria-label="zoom" color="primary" onClick={handleOpenZoom}>
+                    <ZoomInIcon />
+                    </IconButton>
+                </div>
+                </div>
+            </div>
             )}
+
             </div> 
 {/* === Errors Section === */}
 <div
@@ -900,338 +1007,3 @@ function Transformer() {
 
 export default Transformer;
 
-
-
-// import * as React from 'react';
-// import { useLocation } from "react-router-dom";
-// import Button from '@mui/material/Button';
-// import Box from '@mui/material/Box';
-// import InputLabel from '@mui/material/InputLabel';
-// import MenuItem from '@mui/material/MenuItem';
-// import FormControl from '@mui/material/FormControl';
-// import Select from '@mui/material/Select';
-// import IconButton from "@mui/material/IconButton";
-// import DeleteIcon from "@mui/icons-material/Delete";
-
-// import { imagesAPI } from '../services/api';
-
-// function Transformer() {
-//     const location = useLocation();
-//     const state = location.state || {};
-//     const [selectedbaselineFile, setSelectedbaselineFile] = React.useState(null);
-//     const [selectedthermalFile, setSelectedthermalFile] = React.useState(null);
-//     const [weather, setweather] = React.useState("");
-//     const [loading, setLoading] = React.useState(false);
-//     const [baselineUpdatedAt, setBaselineUpdatedAt] = React.useState(null);
-    
-//     // Initialize state only from passed data
-//     const [transformerNo, setTransformerNo] = React.useState(state.transformerNo || "");
-//     const [poleno, setPoleno] = React.useState(state.poleNo || "");
-//     const [branch, setBranch] = React.useState(state.region || "");
-//     const [inspectedBy, setInspectedBy] = React.useState(state.inspectedBy || "H1210");
-//     const [inspectionID, setInspectionID] = React.useState(state.inspectionID || "");
-//     const [inspectionDate, setInspectionDate] = React.useState(state.inspectionDate || "");
-//     const [transformerId, setTransformerId] = React.useState(state.transformerId || "");
-
-//     // uploader is always the inspector
-//     const uploader = inspectedBy; 
-//     const handleChange = (event) => {
-//         setweather(event.target.value);
-//     };
-
-//     // Handle file selection
-//     const handlebaselineFileChange = async (event) => {
-//         const file = event.target.files[0];
-//         if (!file) return;
-
-//         try {
-//             // Step 1: Check if baseline already exists in backend
-//             const response = await imagesAPI.list(transformerId);
-//             const images = response.data;
-//             const existingBaseline = images.find((img) => img.imageType === "BASELINE");
-
-//             if (existingBaseline) {
-//                 // If backend already has baseline, just use that (skip upload)
-//                 setSelectedbaselineFile({
-//                     file: null,
-//                     tag: "BASELINE",
-//                     weather: existingBaseline.weatherCondition,
-//                     url: existingBaseline.url,
-//                 });
-//                 setBaselineUpdatedAt(new Date(existingBaseline.uploadedAt));
-//                 setweather(existingBaseline.weatherCondition);
-//                 console.log("Baseline already exists in backend, skipping upload.");
-//                 return;
-//             }
-
-//             //  Step 2: If no baseline, upload new one
-//             setSelectedbaselineFile({ file, tag: "BASELINE", weather });
-//             setBaselineUpdatedAt(new Date());
-//             console.log("Selected baseline file:", file, "Tag: BASELINE", "Weather:", weather);
-
-//             const formData = new FormData();
-//             formData.append("file", file);
-//             formData.append("imageType", "BASELINE");
-//             formData.append("weatherCondition", weather.toUpperCase());
-//             formData.append("uploader", uploader);
-//             formData.append("inspectionId", inspectionID); // Add this line
-
-//             await imagesAPI.upload(transformerId, formData);
-//             console.log("Baseline uploaded successfully");
-//         } catch (error) {
-//             console.error("Error in baseline handling:", error);
-//             if (error.response) {
-//                 console.error("Backend error response:", error.response.data);
-//                 console.error("Status:", error.response.status);
-//             }
-//         }
-//     };
-
-//     const handlethermalFileChange = async (event) => {
-//         const file = event.target.files[0];
-//         if (!file) return;
-
-//         try {
-//             const formData = new FormData();
-//             formData.append("file", file);
-//             formData.append("imageType", "MAINTENANCE");
-//             formData.append("weatherCondition", weather.toUpperCase());
-//             formData.append("uploader", uploader);
-//             formData.append("inspectionId", inspectionID); // Add this line
-
-//             setLoading(true);
-//             await imagesAPI.upload(transformerId, formData);
-//             console.log("Thermal image uploaded successfully");
-//             setSelectedthermalFile({ file, tag: "MAINTENANCE" });
-//         } catch (error) {
-//             console.error("Error in thermal image upload:", error);
-//             if (error.response) {
-//                 console.error("Backend error response:",error.response.data);
-//                 console.error("Status:", error.response.status);
-//             }
-//         } finally {
-//             setLoading(false);
-//         }
-//     };
-
-//     return (
-//         <div style={{ padding: "20px", background: "#f9fafb", minHeight: "100vh" }}>
-//             {/* Heading */}
-//             <h2 style={{ fontSize: "20px", fontWeight: "bold", marginBottom: "20px" , color: "#000000ff",textAlign: "left"}}>
-//                 Transformer
-//             </h2>
-
-//             {/* Inspection card */}
-//             <div
-//                 style={{
-//                     background: "white",
-//                     borderRadius: "12px",
-//                     boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-//                     padding: "16px",
-//                     display: "flex",
-//                     justifyContent: "space-between",
-//                     alignItems: "center",
-//                     marginBottom: "20px",
-//                 }}
-//             >
-//                 <div>
-//                     <p style={{ fontSize: "18px", fontWeight: "600", color: "#000000ff"  }}>{inspectionID}</p>
-//                     <p style={{ fontSize: "14px", color: "#000000ff" }}>
-//                         {inspectionDate}
-//                     </p>
-//                 </div>
-//                 <div>
-//                     <p style={{ fontSize: "12px", color: "#070708ff" }}>
-//                     {baselineUpdatedAt
-//                         ? `Last updated: ${baselineUpdatedAt.toLocaleString()}`
-//                         : "No baseline uploaded yet"}
-//                     </p>
-//                     {/* Hidden file input */}
-//                     <input
-//                         accept="image/*"
-//                         id="uploadbaseline-button-file"
-//                         type="file"
-//                         style={{ display: "none" }}
-//                         onChange={handlebaselineFileChange}
-//                         disabled={!weather || !!selectedbaselineFile}
-//                     />
-
-//                     {/* Upload button */}
-//                     <label htmlFor="uploadbaseline-button-file">
-//                         <Button
-//                             variant="contained"
-//                             size="small"
-//                             component="span"
-//                             disabled={!weather || !!selectedbaselineFile}
-//                         >
-//                             Baseline Image
-//                         </Button>
-//                     </label>
-
-//                     {/* Show preview + delete button if baseline is selected */}
-//                     {selectedbaselineFile && (
-//                         <div
-//                             style={{
-//                                 display: "flex",
-//                                 alignItems: "center",
-//                                 marginTop: "10px",
-//                                 gap: "8px",
-//                             }}
-//                         >
-//                             <img
-//                                 src={URL.createObjectURL(selectedbaselineFile.file)}
-//                                 alt="Baseline"
-//                                 style={{ width: "100px", borderRadius: "8px" }}
-//                             />
-//                             <IconButton
-//                                 aria-label="delete"
-//                                 color="error"
-//                                 onClick={() => setSelectedbaselineFile(null)}
-//                             >
-//                                 <DeleteIcon />
-//                             </IconButton>
-//                         </div>
-//                     )}
-//                 </div>
-//             </div>
-
-//             {/* Transformer details */}
-//             <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
-//                 <div
-//                     style={{
-//                         padding: "8px 16px",
-//                         background: "#f3f4f6",
-//                         borderRadius: "8px",
-//                         boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
-//                     }}
-//                 >
-//                     <p style={{ fontSize: "12px", color: "#040404ff" }}>Transformer No</p>
-//                     <p style={{ fontWeight: "600" , color: "#0a0a0aff"}}>{transformerNo}</p>
-//                 </div>
-
-//                 <div
-//                     style={{
-//                         padding: "8px 16px",
-//                         background: "#f3f4f6",
-//                         borderRadius: "8px",
-//                         boxShadow: "0 1px 4px rgba(16, 15, 15, 0.1)",
-//                     }}
-//                 >
-//                     <p style={{ fontSize: "极2px", color: "#0b0b0cff" }}>Pole No</p>
-//                     <p style={{ fontWeight: "600", color: "#0b0b0cff" }}>{poleno}</p>
-//                 </div>
-
-//                 <div
-//                     style={{
-//                         padding: "8px 16px",
-//                         background: "#f3f4f6",
-//                         borderRadius: "8px",
-//                         boxShadow: "0 14px rgba(0,0,0,0.1)",
-//                     }}
-//                 >
-//                     <p style={{ fontSize: "12px", color: "#060707ff" }}>Branch</p>
-//                     <p style={{ fontWeight: "600" , color: "#060707ff"}}>{branch}</p>
-//                 </div>
-
-//                 <div
-//                     style={{
-//                         padding: "8px 16px",
-//                         background: "#f3f4f6",
-//                         borderRadius: "8px",
-//                         boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
-//                     }}
-//                 >
-//                     <p style={{ fontSize: "12px", color: "#080808ff" }}>Inspected By</p>
-//                     <p style={{ fontWeight: "600" , color: "#080808ff"}}>{inspectedBy}</p>
-//                 </div>
-//             </div>
-//             <div
-//                 style={{
-//                     padding: "8px 16px",
-//                     background: "#f3f4f6",
-//                     borderRadius: "8px",
-//                     boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
-//                 }}
-//             >
-//                 <p style={{ fontSize: "16px", color: "#080808ff" }}>Thermal Image</p>
-
-//                 {/* Show weather + upload only if no thermal file selected */}
-//                 {!selectedthermalFile && !loading && (
-//                     <>
-//                         <p
-//                             style={{
-//                                 fontSize: "11px",
-//                                 fontWeight: "400",
-//                                 color: "#080808ff",
-//                                 marginBottom: "8px",
-//                             }}
-//                         >
-//                             Select the Weather
-//                         </p>
-
-//                         <FormControl fullWidth size="small">
-//                             <InputLabel id="weather-select-label">Weather</InputLabel>
-//                             <Select
-//                                 labelId="weather-select-label"
-//                                 id="weather-select"
-//                                 value={weather}
-//                                 label="Weather"
-//                                 onChange={handleChange}
-//                             >
-//                                 <MenuItem value="SUNNY">Sunny</MenuItem>
-//                                 <MenuItem value="CLOUDY">Cloudy</MenuItem>
-//                                 <MenuItem value="RAINY">Rain</MenuItem>
-//                             </Select>
-//                         </FormControl>
-
-//                         {/* Upload button */}
-//                         <input
-//                             accept="image/*"
-//                             id="uploadthermal-button-file"
-//                             type="file"
-//                             style={{ display: "none" }}
-//                             onChange={handlethermalFileChange}
-//                             disabled={!(weather && selectedbaselineFile)}
-//                         />
-//                         <label htmlFor="uploadthermal-button-file">
-//                             <Button variant="contained" size="small" component="span" disabled={!(weather && selectedbaselineFile)}>
-//                                 Thermal Image
-//                             </Button>
-//                         </label>
-//                     </>
-//                 )}
-
-//                 {/* Loading state */}
-//                 {loading && (
-//                     <p style={{ fontSize: "14px", fontWeight: "600", color: "orange" }}>
-//                         Uploading Thermal Image...
-//                     </p>
-//                 )}
-
-//                 {/* Show baseline + thermal images side by side */}
-//                 {!loading && selectedthermalFile && selectedbaselineFile && (
-//                     <div style={{ display: "flex", gap: "16px", marginTop: "12px" }}>
-//                         <div>
-//                             <p style={{ fontSize: "12px", fontWeight: "600" }}>Baseline</p>
-//                             <img
-//                                 src={URL.createObjectURL(selectedbaselineFile.file)}
-//                                 alt="Baseline"
-//                                 style={{ width: "150px", borderRadius: "8px" }}
-//                             />
-//                         </div>
-//                         <div>
-//                             <p style={{ fontSize: "12px", fontWeight: "600"}}>Thermal</p>
-//                             <img
-//                                 src={URL.createObjectURL(selectedthermalFile.file)}
-//                                 alt="Thermal"
-//                                 style={{ width: "150px", borderRadius: "8px" }}
-//                             />
-//                         </div>
-//                     </div>
-//                 )}
-//             </div>   
-//         </div>
-//     );
-// }
-
-// export default Transformer;

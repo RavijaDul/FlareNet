@@ -141,7 +141,6 @@ import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/transformers/{transformerId}/images")
@@ -176,22 +175,50 @@ public class ImageController {
     }
 
     // --- EXISTING FEATURE: Get maintenance images for an inspection ---
+    // @GetMapping("/inspection/{inspectionId}/maintenance")
+    // public List<ThermalImageResponse> getMaintenanceImagesByInspection(
+    //         @PathVariable Long transformerId, @PathVariable Long inspectionId) {
+    //     return svc.getMaintenanceImagesForInspection(inspectionId).stream()
+    //             .map(img -> {
+    //                 ThermalImageResponse r = new ThermalImageResponse();
+    //                 r.id = img.getId(); r.transformerId = img.getTransformer().getId();
+    //                 r.imageType = img.getImageType(); r.weatherCondition = img.getWeatherCondition();
+    //                 r.uploader = img.getUploader(); r.fileName = img.getFileName();
+    //                 r.contentType = img.getContentType(); r.sizeBytes = img.getSizeBytes();
+    //                 r.filePath = img.getFilePath(); r.uploadedAt = img.getUploadedAt();
+    //                 r.url = "/api/transformers/" + transformerId + "/images/" + img.getId() + "/file";
+    //                 return r;
+    //             })
+    //             .collect(java.util.stream.Collectors.toList());
+    // }
     @GetMapping("/inspection/{inspectionId}/maintenance")
     public List<ThermalImageResponse> getMaintenanceImagesByInspection(
             @PathVariable Long transformerId, @PathVariable Long inspectionId) {
         return svc.getMaintenanceImagesForInspection(inspectionId).stream()
                 .map(img -> {
                     ThermalImageResponse r = new ThermalImageResponse();
-                    r.id = img.getId(); r.transformerId = img.getTransformer().getId();
-                    r.imageType = img.getImageType(); r.weatherCondition = img.getWeatherCondition();
-                    r.uploader = img.getUploader(); r.fileName = img.getFileName();
-                    r.contentType = img.getContentType(); r.sizeBytes = img.getSizeBytes();
-                    r.filePath = img.getFilePath(); r.uploadedAt = img.getUploadedAt();
+                    r.id = img.getId();
+                    r.transformerId = img.getTransformer().getId();
+                    r.imageType = img.getImageType();
+                    r.weatherCondition = img.getWeatherCondition();
+                    r.uploader = img.getUploader();
+                    r.fileName = img.getFileName();
+                    r.contentType = img.getContentType();
+                    r.sizeBytes = img.getSizeBytes();
+                    r.filePath = img.getFilePath();
+                    r.uploadedAt = img.getUploadedAt();
                     r.url = "/api/transformers/" + transformerId + "/images/" + img.getId() + "/file";
+
+                    // ✅ Fetch the analysis JSON if exists
+                    svc.getAnalysisForImage(img.getId())
+                            .ifPresent(result -> r.analysis = result.getResultJson());
+
                     return r;
                 })
                 .collect(java.util.stream.Collectors.toList());
     }
+
+
 
     // --- UPDATED UPLOAD METHOD (Triggers Python Analysis if MAINTENANCE) ---
     @PostMapping(consumes = {"multipart/form-data"})
