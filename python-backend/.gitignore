@@ -1,3 +1,7 @@
 venv
 model_weights
 outputs
+deployenv
+old/
+__pycache__/
+*.pyc

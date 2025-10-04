@@ -67,10 +67,10 @@ INSERT INTO inspections (branch, inspected_date, inspection_number, inspection_t
 ('Moratuwa', '2025-09-02', '20002', '10:30:00', 'COMPLETED', 1),
 ('Moratuwa', '2025-09-03', '20003', '11:45:00', 'IN_PROGRESS', 1);
 
--- 2 inspections for Transformer 3
+-- 2 inspections for Transformer 2
 INSERT INTO inspections (branch, inspected_date, inspection_number, inspection_time, status, transformer_id) VALUES
-('Galle', '2025-09-04', '20004', '14:15:00', 'PENDING', 3),
-('Galle', '2025-09-05', '20005', '16:00:00', 'COMPLETED', 3);
+('Galle', '2025-09-04', '20004', '14:15:00', 'PENDING', 2),
+('Galle', '2025-09-05', '20005', '16:00:00', 'COMPLETED', 2);
 
 -- ================= THERMAL IMAGES =================
 CREATE TABLE thermal_image (
@@ -91,17 +91,28 @@ ALTER SEQUENCE thermal_image_id_seq RESTART WITH 1;
 
 -- 2 images for 1st inspection of Transformer 1 (inspection_id = 1)
 INSERT INTO thermal_image (content_type, file_name, file_path, image_type, size_bytes, uploader, weather_condition, inspection_id, transformer_id) VALUES
-('image/png', 'baseline1.png', 't-1/baseline1.png', 'BASELINE', 120000, 'admin', 'SUNNY', 1, 1),
-('image/png', 'maintenance1.png', 't-1/maintenance1.png', 'MAINTENANCE', 150000, 'admin', 'CLOUDY', 1, 1);
+('image/png', 'T1_normal_001.jpg', 'uploads/t-1/T1_normal_001.jpg', 'BASELINE', 120000, 'admin', 'SUNNY', 1, 1),
+('image/png', 'T1_faulty_047.jpg', 'uploads/t-1/T1_faulty_047.jpg', 'MAINTENANCE', 150000, 'admin', 'CLOUDY', 1, 1);
 
 -- 1 image for 2nd inspection of Transformer 1 (inspection_id = 2)
 INSERT INTO thermal_image (content_type, file_name, file_path, image_type, size_bytes, uploader, weather_condition, inspection_id, transformer_id) VALUES
-('image/png', 'baseline2.png', 't-1/baseline2.png', 'BASELINE', 110000, 'admin', 'RAINY', 2, 1);
+('image/png', 'T1_faulty_001.jpg', 'uploads/t-1/T1_faulty_047.jpg', 'MAINTENANCE', 110000, 'admin', 'RAINY', 2, 1),
+('image/png', 'T1_faulty_042.jpg', 'uploads/t-1/T1_faulty_042.jpg', 'MAINTENANCE', 110000, 'admin', 'RAINY', 3, 1);
 
 -- 2 images for inspections of Transformer 3 (inspection_id = 4,5)
 INSERT INTO thermal_image (content_type, file_name, file_path, image_type, size_bytes, uploader, weather_condition, inspection_id, transformer_id) VALUES
-('image/png', 'maintenance2.png', 't-3/maintenance2.png', 'MAINTENANCE', 180000, 'user1', 'SUNNY', 4, 3),
-('image/png', 'baseline3.png', 't-3/baseline3.png', 'BASELINE', 130000, 'user1', 'CLOUDY', 5, 3);
+('image/png', 'T2_normal_001.png', 'uploads/t-2/T2_normal_001.png', 'BASELINE', 130000, 'user1', 'CLOUDY', 5, 2),
+('image/png', 'T2_faulty_003.png', 'uploads/t-2/T2_faulty_003.png', 'MAINTENANCE', 180000, 'user1', 'SUNNY', 4, 2),
+('image/png', 'T2_faulty_002.png', 'uploads/t-2/T2_faulty_002.png', 'MAINTENANCE', 180000, 'user1', 'SUNNY', 5, 2);
 
 
+-- ================= ANALYSIS RESULTS =================
+CREATE TABLE analysis_result (
+    id BIGSERIAL PRIMARY KEY,
+    thermal_image_id BIGINT REFERENCES thermal_image(id) ON DELETE CASCADE,
+    result_json TEXT,
+    analyzed_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER SEQUENCE analysis_result_id_seq RESTART WITH 1;
 

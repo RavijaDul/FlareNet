@@ -24,6 +24,7 @@ function Transformer() {
     const [baselineUpdatedAt, setBaselineUpdatedAt] = React.useState(null);
     const [baselineImageUrl, setBaselineImageUrl] = React.useState(null); // New state for baseline image URL
     const [thermalImageUrl, setThermalImageUrl] = React.useState(null); // New state for thermal image URL
+    const [analysisResult, setAnalysisResult] = React.useState(null);
 
     // Initialize state only from passed data
     const [transformerNo, setTransformerNo] = React.useState(state.transformerNo || "");
@@ -72,7 +73,7 @@ function Transformer() {
                 if (maintenanceResponse.data && maintenanceResponse.data.length > 0) {
                     const thermalImg = maintenanceResponse.data[0]; // Assuming one maintenance image per inspection for simplicity
                     setSelectedthermalFile({
-                        file: null,
+                        id: thermalImg.id,         
                         tag: "MAINTENANCE",
                         url: thermalImg.url,
                     });
@@ -137,6 +138,7 @@ function Transformer() {
         if (!file) return;
 
         setLoading(true);
+        setAnalysisResult(null); // clear old result
         try {
             const formData = new FormData();
             formData.append("file", file);
@@ -152,12 +154,21 @@ function Transformer() {
             const uploadedImg = response.data;
 
             setSelectedthermalFile({
-                file: null, // No actual file object needed after upload
+                id: uploadedImg.id,          // ✅ use uploadedImg from backend response
                 tag: "MAINTENANCE",
                 url: uploadedImg.url,
             });
             setThermalImageUrl(uploadedImg.url);
             console.log("Thermal image uploaded successfully:", uploadedImg);
+            if (uploadedImg.analysis) {
+            try {
+                const parsed = JSON.parse(uploadedImg.analysis);
+                setAnalysisResult(parsed);
+            } catch (err) {
+                console.error("Error parsing analysis JSON:", err);
+                setAnalysisResult(uploadedImg.analysis);
+            }
+            }
             setThermalUploaded(true);
            setProgress(0);
 
@@ -462,20 +473,59 @@ function Transformer() {
                         alt="Thermal"
                         style={{ width: "400px",height:"300px", borderRadius: "12px" }}  // larger image
                     />
-                    <IconButton
+                       <IconButton
                         aria-label="delete"
                         color="error"
-                        onClick={() => {
-                        setSelectedthermalFile(null);
-                        setThermalImageUrl(null);
+                        onClick={async () => {
+                            if (!selectedthermalFile || !transformerId) return;
+                            try {
+                            const imgId = selectedthermalFile.id || selectedthermalFile.imageId;
+                            if (imgId) await imagesAPI.deleteImage(transformerId, imgId);
+                            setSelectedthermalFile(null);
+                            setThermalImageUrl(null);
+                            console.log("Thermal image deleted successfully",transformerId,"ID", imgId);
+                            } catch (error) {
+                            console.error("Error deleting thermal image:", error);
+                            alert("Failed to delete thermal image");
+                            }
                         }}
                         sx={{ marginTop: "8px" }}
-                    >
+                        >
                         <DeleteIcon />
-                    </IconButton>
+                        </IconButton>
+                     {/*  New Section: Show JSON Analysis Result */}
+                {/* {analysisResult && (
+                    <div
+                        style={{
+                        background: "#f3f4f6",
+                        marginTop: "16px",
+                        padding: "12px",
+                        borderRadius: "8px",
+                        textAlign: "left",
+                        maxWidth: "600px",
+                        maxHeight: "300px",
+                        overflow: "auto",   // allow scroll if JSON is large
+                        }}
+                    >
+                        <p style={{ fontSize: "16px", fontWeight: "600", color: "#333" }}>
+                        Analysis Result:
+                        </p>
+                        <pre
+                        style={{
+                            fontSize: "12px",
+                            color: "#1f2937",
+                            whiteSpace: "pre-wrap",
+                            wordBreak: "break-word",
+                        }}
+                        >
+                        {JSON.stringify(analysisResult, null, 2)}
+                        </pre>
                     </div>
-  )}
-</div>
+                    )} */}
+
+                    </div>
+                )}
+                </div>
 
             )}
             </div>   

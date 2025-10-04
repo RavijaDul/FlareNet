@@ -54,7 +54,9 @@ export const imagesAPI = {
   // --- NEW API CALLS ---
   getBaseline: (transformerId) => api.get(`/transformers/${transformerId}/images/baseline`),
   getMaintenanceByInspection: (transformerId, inspectionId) => api.get(`/transformers/${transformerId}/images/inspection/${inspectionId}/maintenance`),
-  deleteBaseline: (transformerId) => api.delete(`/transformers/${transformerId}/images/baseline`), // New delete method
+  deleteBaseline: (transformerId) => api.delete(`/transformers/${transformerId}/images/baseline`), 
+  deleteImage: (transformerId, imageId) => api.delete(`/transformers/${transformerId}/images/${imageId}`),
+
 };
 export default api;
 
