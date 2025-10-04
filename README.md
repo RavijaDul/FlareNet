@@ -75,7 +75,7 @@ Images will be available inside `flarenet-backend/uploads/`.
 
 ---
 
-### 3. Run the Backend
+### 3. Run the JAVA Backend
 Navigate to the backend folder and start the Spring Boot server:
 
 ```bash
@@ -86,8 +86,20 @@ mvn spring-boot:run
 The backend API will be available at `http://localhost:8080/api`.
 
 ---
+### 4. Run the python backend
+```bash
+   cd python-backend
+   python -m venv venv
+  
+   venv\Scripts\activate   # Windows:
+   source venv/bin/activate    # macOS/Linux:
 
-### 4. Run the Frontend
+   pip install -r requirements.txt
+   python model_weight.py
+   uvicorn app:app --host 0.0.0.0 --port 5000 --reload
+```
+---
+### 5. Run the Frontend
 Navigate to the frontend folder, install dependencies, and start the dev server:
 
 ```bash
