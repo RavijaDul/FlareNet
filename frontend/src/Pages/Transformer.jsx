@@ -837,7 +837,7 @@ function Transformer() {
   }}
 >
   <h3 style={{ fontSize: "16px", fontWeight: "600", marginBottom: "12px" }}>
-    Rules
+    Sensitivity
   </h3>
 
   {/* Example rule item */}
@@ -854,7 +854,7 @@ function Transformer() {
   }}
 >
   <p style={{ fontSize: "14px", marginBottom: "4px" }}>
-    <strong>Rule 1:</strong> Temperature Difference Of Baseline and Maintenance Images
+    <strong></strong>Sensitivity adjustment
   </p>
 
   {/* Slider for threshold selection */}
@@ -870,7 +870,7 @@ function Transformer() {
     margin: "8px 0",
   }}
 />
-<p>Selected Threshold: {tempthreshold}</p>
+<p>Selected Sensitivity: {tempthreshold}</p>
 </div>
 </div>
 
