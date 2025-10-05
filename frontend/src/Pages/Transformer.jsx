@@ -42,7 +42,7 @@ function Transformer() {
     const [thermalUploaded, setThermalUploaded] = React.useState(false);
     const [showComparison, setShowComparison] = React.useState(false);
     const [progress, setProgress] = React.useState(0);
-    const [tempthreshold, setTempthreshold] = React.useState(5); // default value
+    const [tempthreshold, setTempthreshold] = React.useState(50); // default value
 
     const [comment, setComment] = React.useState(""); // current input
     const [savedComment, setSavedComment] = React.useState(""); // stored comment
@@ -639,8 +639,11 @@ function Transformer() {
                     const sx = renderedWidth / naturalWidth;
                     const sy = renderedHeight / naturalHeight;
 
-                    const left = x * sx;
-                    const top = y * sy;
+                    const offsetX = 0; // move 10px to the right
+                    const offsetY = 43; // move 5px up
+
+                    const left = x * sx + offsetX;
+                    const top = y * sy + offsetY;
                     const w = bw * sx;
                     const h = bh * sy;
 
@@ -854,23 +857,20 @@ function Transformer() {
     <strong>Rule 1:</strong> Temperature Difference Of Baseline and Maintenance Images
   </p>
 
-  {/* Dropdown for threshold selection */}
-  <select
-    value={tempthreshold}
-    onChange={(e) => setTempthreshold(Number(e.target.value))}
-    style={{
-      padding: "4px 8px",
-      borderRadius: "6px",
-      border: "1px solid #ccc",
-      fontSize: "14px",
-    }}
-  >
-    {[1, 2, 3, 4, 5, 10, 15, 20].map((num) => (
-      <option key={num} value={num}>
-        {num}
-      </option>
-    ))}
-  </select>
+  {/* Slider for threshold selection */}
+<input
+  type="range"
+  min={1}
+  max={100}
+  value={tempthreshold}
+  onChange={(e) => setTempthreshold(Number(e.target.value))}
+  style={{
+    width: "200px",
+    padding: "4px 0",
+    margin: "8px 0",
+  }}
+/>
+<p>Selected Threshold: {tempthreshold}</p>
 </div>
 </div>
 
@@ -967,18 +967,79 @@ function Transformer() {
             </button>
           </div>
 
-          {/* Zoomable Image */}
+          {/* Zoomable Image + overlay */}
           <TransformComponent>
-            <img
-              src={`http://localhost:8080${thermalImageUrl}`}
-              alt="Zoomed Thermal"
-              style={{
-                maxWidth: "100%",
-                maxHeight: "90vh",
-                borderRadius: "8px",
-                display: "block",
-              }}
-            />
+            <div style={{ position: "relative", display: "inline-block" }}>
+              <img
+                src={`http://localhost:8080${thermalImageUrl}`}
+                alt="Zoomed Thermal"
+                style={{
+                  display: "block",
+                  width: "100%",
+                  height: "auto",
+                  borderRadius: "8px",
+                }}
+                ref={imgRef} // optional, if you want dims
+                onLoad={updateDims} // optional, if you want to recalc overlay
+              />
+
+              {/* Overlay inside the zoom */}
+              {anomalyData?.status &&
+                anomalyData?.anomalies?.map((a, idx) => {
+                  const { naturalWidth, naturalHeight, renderedWidth, renderedHeight } = imgDims;
+                  if (!naturalWidth || !naturalHeight || !renderedWidth || !renderedHeight) return null;
+
+                  const { x, y, width: bw, height: bh } = a.bbox;
+                  const sx = renderedWidth / naturalWidth;
+                  const sy = renderedHeight / naturalHeight;
+
+                  const left = x * sx;
+                  const top = y * sy;
+                  const w = bw * sx;
+                  const h = bh * sy;
+
+                  const isFaulty = (a.severity || "").toLowerCase().startsWith("faulty");
+                  const color = isFaulty ? "red" : "gold";
+
+                  return (
+                    <React.Fragment key={idx}>
+                      {/* Bounding box */}
+                      <div
+                        style={{
+                          position: "absolute",
+                          left,
+                          top,
+                          width: w,
+                          height: h,
+                          border: `2px solid ${color}`,
+                          borderRadius: 4,
+                          pointerEvents: "none",
+                          boxSizing: "border-box",
+                        }}
+                      />
+
+                      {/* Badge */}
+                      <div
+                        style={{
+                          position: "absolute",
+                          left,
+                          top: Math.max(0, top - 20),
+                          background: color,
+                          color: isFaulty ? "#fff" : "#000",
+                          fontSize: 11,
+                          padding: "2px 6px",
+                          borderRadius: 4,
+                          fontWeight: 700,
+                          pointerEvents: "none",
+                          boxShadow: "0 1px 2px rgba(0,0,0,0.3)",
+                        }}
+                      >
+                        #{idx + 1} ({(a.confidence ?? 0).toFixed(2)})
+                      </div>
+                    </React.Fragment>
+                  );
+                })}
+            </div>
           </TransformComponent>
         </>
       )}
@@ -997,6 +1058,7 @@ function Transformer() {
     </Button>
   </div>
 </Dialog>
+
 
 
 
