@@ -2,6 +2,10 @@ server:
   port: 8080
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:flarenet}
     username: ${DB_USER:flarenet}
@@ -9,12 +13,18 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none #update
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
 # Storage configuration
 flarenet:
   storage:
     location: uploads
+
+# JWT configuration
+jwt:
+  secret: my-super-strong-secret-key-please-change-1234567890
+  expiration: 86400000   # 24 hours

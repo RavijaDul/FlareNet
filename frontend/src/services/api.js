@@ -9,6 +9,21 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
+// Auth API
+// export const authAPI = {
+//   register: (data) => api.post('/auth/register', data),
+//   login: (data) => api.post('/auth/login', data),
+//   promote: (id) => api.post(`/auth/promote/${id}`), // only admins
+// };
+
+// // attach token if exists
+// api.interceptors.request.use((config) => {
+//   const token = localStorage.getItem("token");
+//   if (token) {
+//     config.headers.Authorization = `Bearer ${token}`;
+//   }
+//   return config;
+// });
 
 // Transformers API
 export const transformersAPI = {
@@ -39,9 +54,11 @@ export const imagesAPI = {
   // --- NEW API CALLS ---
   getBaseline: (transformerId) => api.get(`/transformers/${transformerId}/images/baseline`),
   getMaintenanceByInspection: (transformerId, inspectionId) => api.get(`/transformers/${transformerId}/images/inspection/${inspectionId}/maintenance`),
-  deleteBaseline: (transformerId) => api.delete(`/transformers/${transformerId}/images/baseline`), // New delete method
-};
+  deleteBaseline: (transformerId) => api.delete(`/transformers/${transformerId}/images/baseline`), 
+  deleteImage: (transformerId, imageId) => api.delete(`/transformers/${transformerId}/images/${imageId}`),
 
+};
+export default api;
 
 
 // import axios from 'axios';

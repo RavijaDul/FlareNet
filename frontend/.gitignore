@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+INTEGRATION_PLAN.md
+TODO.md

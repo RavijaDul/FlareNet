@@ -11,4 +11,5 @@ public class ThermalImageResponse {
   public String uploader, fileName, contentType, filePath, url;
   public Long sizeBytes;
   public Instant uploadedAt;
+  public String analysis;
 }

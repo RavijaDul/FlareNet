@@ -34,7 +34,7 @@ build/
 
 ### Application Specific ###
 # Uploaded files - these should not be in version control
-uploads/
+# uploads/
 # Database files
 *.db
 *.sqlite
@@ -57,3 +57,7 @@ application-dev.yml
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+
+
+old/
