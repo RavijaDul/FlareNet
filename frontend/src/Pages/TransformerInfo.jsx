@@ -159,7 +159,7 @@ const handleViewDetails = (transformer) => {
 
       {/* Main Content */}
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Toolbar />
+       
 
         {/* View Toggle Buttons */}
         <Box sx={{ mb: 2 }}>
