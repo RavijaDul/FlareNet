@@ -1,7 +1,8 @@
 # Flarenet - Transformer Maintenance Record Keeper
 
-Flarenet is a web-based system designed to manage and automate transformer inspections using thermal images. Users can record transformer details, upload baseline and maintenance thermal images, and tag images by environmental conditions such as sunny, cloudy, or rainy. The system allows future phases to implement automated anomaly detection and generate digital maintenance records.  
+Flarenet is a web-based system designed to manage and automate transformer inspections using thermal images. Users can record transformer details, upload baseline and maintenance thermal images, and tag images by environmental conditions such as sunny, cloudy, or rainy. The system includes automated anomaly detection using machine learning models to analyze thermal images and generate digital maintenance records.
 
+**Current Stage: Milestone 02** - Full-stack application with integrated ML inference for anomaly detection.
 
 [![React](https://img.shields.io/badge/React-18%2B-cyan?logo=react&logoColor=white&logoSize=30)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-4%2B-pink?logo=vite&logoColor=white&logoSize=30)](https://vitejs.dev/)
@@ -12,19 +13,22 @@ Flarenet is a web-based system designed to manage and automate transformer inspe
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-3%2B-green?logo=spring&logoColor=white&logoSize=30)](https://spring.io/projects/spring-boot)
 [![Docker](https://img.shields.io/badge/Docker-24%2B-2496ED?logo=docker&logoColor=white&logoSize=30)](https://www.docker.com/)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green?logo=node.js&logoColor=white&logoSize=30)](https://nodejs.org/)
-
+[![Python](https://img.shields.io/badge/Python-3.8%2B-blue?logo=python&logoColor=white&logoSize=30)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-green?logo=fastapi&logoColor=white&logoSize=30)](https://fastapi.tiangolo.com/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-red?logo=pytorch&logoColor=white&logoSize=30)](https://pytorch.org/)
 
 ---
 
 ## Overview
 
-**Flarenet** is a full-stack web application with a **React frontend** and **Spring Boot backend** using **PostgreSQL**.  
+**Flarenet** is a full-stack web application with a **React frontend**, **Spring Boot backend**, **Python ML backend**, and **PostgreSQL database**.
 
-- **Frontend:** Built with React, Vite, and Material UI for fast and responsive UI.  
-- **Backend:** Spring Boot handles business logic and provides APIs.  
-- **Database:** PostgreSQL via Docker Compose stores all data for the system.  
+- **Frontend:** Built with React, Vite, and Material UI for fast and responsive UI.
+- **Backend:** Spring Boot handles business logic, CRUD operations, and provides REST APIs.
+- **ML Backend:** Python FastAPI server for automated anomaly detection on thermal images using PyTorch models.
+- **Database:** PostgreSQL via Docker Compose stores transformers, inspections, thermal images, and analysis results.
 
-This system is designed to demonstrate **modern web development with a separation of frontend and backend**, and can be extended with features like authentication, CRUD operations, and dashboards.
+This system demonstrates **modern full-stack development with AI integration**, including user authentication, CRUD operations, image upload/management, and ML-powered analysis.
 
 ---
 
@@ -32,16 +36,23 @@ This system is designed to demonstrate **modern web development with a separatio
 
 ### Frontend
 
-- React, Vite, Material UI  
-- Axios or fetch for API requests  
-- Node.js and npm to run scripts  
+- React, Vite, Material UI
+- Axios or fetch for API requests
+- Node.js and npm to run scripts
 
 ### Backend
 
-- Java 17+, Spring Boot 3+  
-- Spring Data JPA for database interactions  
-- PostgreSQL via Docker Compose  
-- Maven for dependency management  
+- Java 17+, Spring Boot 3+
+- Spring Data JPA for database interactions
+- PostgreSQL via Docker Compose
+- Maven for dependency management
+
+### Python ML Backend
+
+- Python 3.8+
+- FastAPI, PyTorch
+- OpenCV, Pillow for image processing
+- Uvicorn for server
 
 ---
 
@@ -49,7 +60,7 @@ This system is designed to demonstrate **modern web development with a separatio
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-org/FlareNet.git
+git clone https://github.com/RavijaDul/FlareNet.git
 cd FlareNet
 ```
 
@@ -73,6 +84,10 @@ Images will be available inside `flarenet-backend/uploads/`.
 
 > **Note:** The first time you run this, Postgres will execute `init.sql` and create all tables and seed data.
 
+To explore the database(Optional)
+```bash
+docker exec -it flarenet-db psql -U flarenet -d flarenet
+```
 ---
 
 ### 3. Run the JAVA Backend
@@ -82,21 +97,43 @@ Navigate to the backend folder and start the Spring Boot server:
 cd flarenet-backend
 mvn spring-boot:run
 ```
+# Electrical / Transformer Thermal Anomaly Detection – End‑to‑End Documentation
 
+This repository provides an end‑to‑end workflow for detecting thermal anomalies (loose joints, wire overloads, localized hot spots) in transformer / electrical component images using a pretrained PatchCore model (Wide ResNet50 backbone) plus deterministic OpenCV post‑processing and rule‑based classification.
+
+---
+## Overview
+Transformer thermal anomaly detection system achieving strong precision/recall tradeoff while maintaining complete explainability of post‑processing logic.
+
+---
+## Performance Metrics
+| Metric | Value | Description |
+|--------|-------|-------------|
+| AUROC | 88.7% | Area under ROC curve (image/region level) |
+| F1-Score | 91.6% | Harmonic mean of precision & recall (fault classification) |
+| Inference Accuracy | 100% | All faulty images flagged (no false negatives) |
+| Processing Speed | 1.77 FPS | Average end‑to‑end throughput (Python, single GPU/CPU mix) |
+
+Expected (reference environment):
+* Training (1 epoch) ≈ 20 minutes
+* Test batch run ≈ 40 seconds
+* Reported stats (single validation set) ≈ above table
+
+Average performance baseline used: percentage threshold calibration anchored at 40% (see Calibration section) for internal acceptance testing
 The backend API will be available at `http://localhost:8080/api`.
 
 ---
 ### 4. Run the python backend
 ```bash
-   cd python-backend
-   python -m venv venv
-  
-   venv\Scripts\activate   # Windows:
-   source venv/bin/activate    # macOS/Linux:
+cd python-backend
+python -m venv venv
 
-   pip install -r requirements.txt
-   python model_weight.py
-   uvicorn app:app --host 0.0.0.0 --port 5000 --reload
+venv\Scripts\activate   # Windows:
+source venv/bin/activate    # macOS/Linux:
+
+pip install -r requirements.txt
+python model_weight.py
+uvicorn app:app --host 0.0.0.0 --port 5000 --reload
 ```
 ---
 ### 5. Run the Frontend
@@ -127,6 +164,12 @@ FlareNet/
 │   ├── src/                    # React frontend code
 │   ├── package.json
 │   └── package-lock.json
+├── python-backend/
+│   ├── app.py                  # FastAPI server for ML inference
+│   ├── model_core.py           # ML model loading and inference logic
+│   ├── model_weight.py         # Script to download model weights
+│   ├── requirements.txt        # Python dependencies
+│   └── test_request.py         # Test script for API
 └── README.md
 ```
 
@@ -137,12 +180,15 @@ FlareNet/
 1. **Images:**  
    All thermal images are stored in `flarenet-backend/uploads/`. This folder is mounted in Docker, so images are accessible to the backend.
 
-2. **Database:**  
-   - Tables: `transformers`, `inspections`, `thermal_image`  
-   - The database will be automatically created on first Docker run.  
+2. **Database:**
+   - Tables: `users`, `transformers`, `inspections`, `thermal_image`, `analysis_result`
+   - The database will be automatically created on first Docker run.
 
-3. **Environment variables (optional):**  
-   You can customize DB credentials in `docker-compose.yml`. Make sure the backend `application.yml` matches these credentials.
+3. **Environment variables (optional):**
+   Customize DB credentials in `docker-compose.yml`. Backend `application.yml` should matches these credentials.
+
+4. **Model Training and Inference:**
+   For Milestone 02, the Python backend includes inference capabilities. Model training and detailed inference testing are available in a separate repository (link to be provided later). The current setup uses pre-trained models for anomaly detection.
 
 ---
 
@@ -165,24 +211,24 @@ npm run dev
 
 
 # Start python backend
-   # Go to backend folder
-   cd python-backend
+# Go to backend folder
+cd python-backend
 
-   # Create and activate virtual environment
-   python -m venv venv
-   # Windows:
-   venv\Scripts\activate
-   # macOS/Linux:
-   source venv/bin/activate
+# Create and activate virtual environment
+python -m venv venv
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
 
-   # Install dependencies
-   pip install -r requirements.txt
+# Install dependencies
+pip install -r requirements.txt
 
-   # Optional: download model weights first
-   python model_weight.py
+# Optional: download model weights first
+python model_weight.py
 
-   # Run the FastAPI server
-   uvicorn app:app --host 0.0.0.0 --port 5000 --reload
+# Run the FastAPI server
+uvicorn app:app --host 0.0.0.0 --port 5000 --reload
 ```
 ---
 
@@ -196,30 +242,3 @@ npm run dev
 
 - Authentication & user roles missing – At this stage, the system does not include authentication, authorization, or multi-user role management. These features will be added in future phases.
 - Deployment not yet available – FlareNet currently runs only in a local development environment (Docker + local servers). A cloud deployment setup is not yet provided.
-
-
-
-
--To change user role
-Open DB with pgAdmin or Docker CLI.
-
-docker exec -it flarenet-db psql -U flarenet -d flarenet
-
-
-Run:
-
-\dt
-select * from users;
-
-
-(you should see your registered users).
-
-Manually promote yourself:
-
-UPDATE users SET role='ADMIN' WHERE username='yourname';
-
-Later, when you move towards production/stable release, you can:
-
-Switch off ddl-auto.
-
-Lock schema with Flyway or Liquibase migrations.

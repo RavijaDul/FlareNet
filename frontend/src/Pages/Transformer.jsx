@@ -882,11 +882,13 @@ function Transformer() {
   PaperProps={{
     style: {
       backgroundColor: "black",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
+      position: "absolute",      // make it absolute
+      right: 0,                   // align to the left
+      top: "50%",                // vertical center
+      transform: "translateY(-50%)", // center vertically
       overflow: "hidden",
       padding: 0,
+      margin: 0,                 // remove default margin
     },
   }}
 >
@@ -992,7 +994,7 @@ function Transformer() {
                   const { x, y, width: bw, height: bh } = a.bbox;
                   const sx = renderedWidth / naturalWidth;
                   const sy = renderedHeight / naturalHeight;
-
+                  
                   const left = x * sx;
                   const top = y * sy;
                   const w = bw * sx;

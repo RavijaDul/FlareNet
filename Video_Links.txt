@@ -1,0 +1,17 @@
+Milestone 01:
+GitHub Link: https://github.com/RavijaDul/FlareNet 
+
+Video Links: https://drive.google.com/file/d/1qKRyumksrZPHtnMUvqLNtl3nvp669jVj/view?usp=sharing
+
+Milestone 02: 
+Note: This repository includes the fully functional software required for Assignment 02, excluding the model training and inference testing files (Not required for the python - ML backend). However, these parts are explained in the video. If you wish to check the model training or inference, we will create a separate repository and add them later along with the necessary guidelines.
+
+Video Links: https://drive.google.com/file/d/1weoFCDfgR8KZ3KQ385Yg-EiV3VY98KO2/view?usp=sharing
+
+Model Training and Model Inference Repository link: 
+
+
+Milestone 03:
+
+Milestone 04:
+ 
