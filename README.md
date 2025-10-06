@@ -101,6 +101,9 @@ mvn spring-boot:run
 
 This provides an end‑to‑end workflow for detecting thermal anomalies (loose joints, wire overloads, localized hot spots) in transformer / electrical component images using a pretrained PatchCore model (Wide ResNet50 backbone) plus deterministic OpenCV post‑processing and rule‑based classification.
 
+Patchcore anomalib guidlines: https://anomalib.readthedocs.io/en/v2.0.0/markdown/guides/reference/models/image/patchcore.html 
+Model Training and Inference Explanation: https://drive.google.com/file/d/1rH2tm_9AG-j8Pgugy6kL4hvsKc8s6xXF/view?usp=sharing 
+
 ---
 ## Overview
 Transformer thermal anomaly detection system achieving strong precision/recall tradeoff while maintaining complete explainability of post‑processing logic.
@@ -127,6 +130,9 @@ Expected (reference environment):
 
 Average performance baseline used: percentage threshold calibration anchored at 40% (see Calibration section) for internal acceptance testing
 The backend API will be available at `http://localhost:8080/api`.
+
+Some Tested examples: https://drive.google.com/file/d/1oB7vqYwXO6YeScPZUGsK__g6Zrj72mPX/view?usp=sharing 
+(Segmented + OpenCV processed + Reconstructed)
 
 ---
 ### 4. Run the python backend
