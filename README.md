@@ -118,6 +118,9 @@ learning - starting with pre-trained weights from ImageNet and fine-tuning on ou
 specific dataset. Through iterative gradient descent optimization, the network minimized
 classification loss while the residual blocks preserved important information flow.
 
+Model Tested Repository: https://github.com/RavijaDul/flarenet-ml.git
+
+
 ---
 ## Performance Metrics
 | Metric | Value | Description |
