@@ -15,7 +15,7 @@ Model Training and Inference Explanation: https://drive.google.com/file/d/1rH2tm
 
 Some Tested examples: https://drive.google.com/file/d/1oB7vqYwXO6YeScPZUGsK__g6Zrj72mPX/view?usp=sharing (Segmented + OpenCV processed + Reconstructed)
 
-Model Training and Model Inference Repository link: 
+Model Training and Model Inference Repository link: https://github.com/RavijaDul/flarenet-ml.git
 
 
 Milestone 03:
