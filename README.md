@@ -99,11 +99,17 @@ mvn spring-boot:run
 ```
 # Electrical / Transformer Thermal Anomaly Detection – End‑to‑End Documentation
 
-This repository provides an end‑to‑end workflow for detecting thermal anomalies (loose joints, wire overloads, localized hot spots) in transformer / electrical component images using a pretrained PatchCore model (Wide ResNet50 backbone) plus deterministic OpenCV post‑processing and rule‑based classification.
+This provides an end‑to‑end workflow for detecting thermal anomalies (loose joints, wire overloads, localized hot spots) in transformer / electrical component images using a pretrained PatchCore model (Wide ResNet50 backbone) plus deterministic OpenCV post‑processing and rule‑based classification.
 
 ---
 ## Overview
 Transformer thermal anomaly detection system achieving strong precision/recall tradeoff while maintaining complete explainability of post‑processing logic.
+
+Implemented ResNet-50, a deep neural network with 50 layers that uses residual
+connections to solve the vanishing gradient problem. For training, we used transfer
+learning - starting with pre-trained weights from ImageNet and fine-tuning on our
+specific dataset. Through iterative gradient descent optimization, the network minimized
+classification loss while the residual blocks preserved important information flow.
 
 ---
 ## Performance Metrics
