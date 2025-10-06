@@ -106,7 +106,7 @@ This provides an end‑to‑end workflow for detecting thermal anomalies (loose 
 
 Patchcore anomalib guidlines: https://anomalib.readthedocs.io/en/v2.0.0/markdown/guides/reference/models/image/patchcore.html 
 
-Model Training and Inference Explanation: https://drive.google.com/file/d/1rH2tm_9AG-j8Pgugy6kL4hvsKc8s6xXF/view?usp=sharing 
+Model Training and Inference Explanation Documentation: https://drive.google.com/file/d/1rH2tm_9AG-j8Pgugy6kL4hvsKc8s6xXF/view?usp=sharing 
 
 ---
 ## Overview
