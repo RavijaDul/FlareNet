@@ -1,0 +1,6 @@
+- [x] Add state variables for dragging and resizing
+- [x] Add useEffect for mouse move and up events
+- [x] Update the anomaly box div to use onMouseDown for drag start
+- [x] Add resize handle divs to the anomaly boxes
+- [x] Remove the old draggable and onDrag attributes
+- [ ] Test drag and resize functionality
