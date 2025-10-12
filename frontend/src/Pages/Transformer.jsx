@@ -13,6 +13,9 @@ import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 const { useState } = React;
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -29,7 +32,24 @@ function Transformer() {
     const [baselineUpdatedAt, setBaselineUpdatedAt] = React.useState(null);
     const [baselineImageUrl, setBaselineImageUrl] = React.useState(null); // New state for baseline image URL
     const [thermalImageUrl, setThermalImageUrl] = React.useState(null); // New state for thermal image URL
+    const mainImgRef = React.useRef(null);
+    const [mainImgDims, setMainImgDims] = React.useState({
+      naturalWidth: 0,
+      naturalHeight: 0,
+      renderedWidth: 0,
+      renderedHeight: 0,
+    });
 
+    const updateMainDims = React.useCallback(() => {
+      const img = mainImgRef.current;
+      if (!img) return;
+      setMainImgDims({
+        naturalWidth: img.naturalWidth || 0,
+        naturalHeight: img.naturalHeight || 0,
+        renderedWidth: img.clientWidth || 0,
+        renderedHeight: img.clientHeight || 0,
+      });
+    }, []);
     // Initialize state only from passed data
     const [transformerNo, setTransformerNo] = React.useState(state.transformerNo || "");
     const [poleno, setPoleno] = React.useState(state.poleNo || "");
@@ -55,10 +75,22 @@ function Transformer() {
     anomalies: [],
      });
 
+     // Edit mode states
+     const [isEditMode, setIsEditMode] = React.useState(false);
+     const [isAdding, setIsAdding] = React.useState(false);
+     const [selectedAnomaly, setSelectedAnomaly] = React.useState(null);
+     const [isDragging, setIsDragging] = React.useState(false);
+     const [draggedAnomaly, setDraggedAnomaly] = React.useState(null);
+     const [dragStart, setDragStart] = React.useState({ x: 0, y: 0 });
+     const [isResizing, setIsResizing] = React.useState(false);
+     const [resizedAnomaly, setResizedAnomaly] = React.useState(null);
+    const [resizeHandle, setResizeHandle] = React.useState(null);
+
      const [openZoom, setOpenZoom] = React.useState(false);
 
      const handleOpenZoom = () => setOpenZoom(true);
      const handleCloseZoom = () => setOpenZoom(false);
+     
 
     //     // Call this when the model finishes and gives a response
     // const handleModelResponse = (response) => {
@@ -136,6 +168,19 @@ function Transformer() {
     return () => ro.disconnect();
     }, [updateDims, thermalImageUrl]);
 
+    // Global mouse up to handle drag release even outside the image
+    React.useEffect(() => {
+        const handleGlobalMouseUp = () => {
+            setIsDragging(false);
+            setDraggedAnomaly(null);
+            setIsResizing(false);
+            setResizedAnomaly(null);
+            setResizeHandle(null);
+        };
+        window.addEventListener('mouseup', handleGlobalMouseUp);
+        return () => window.removeEventListener('mouseup', handleGlobalMouseUp);
+    }, []);
+
 
     const handleSaveComment = () => {
     setSavedComment(comment);
@@ -151,6 +196,157 @@ function Transformer() {
         setSavedComment("");
         setIsEditing(false);
     };
+
+    // Helper functions for edit mode
+    const convertRenderedToNatural = (renderedX, renderedY, renderedW, renderedH) => {
+        const { naturalWidth, naturalHeight, renderedWidth, renderedHeight } = mainImgDims;
+        if (!naturalWidth || !naturalHeight || !renderedWidth || !renderedHeight) return { x: 0, y: 0, width: 0, height: 0 };
+        const sx = naturalWidth / renderedWidth;
+        const sy = naturalHeight / renderedHeight;
+        const offsetX = 0;
+        const offsetY = 43;
+        return {
+            x: Math.max(0, (renderedX - offsetX) * sx),
+            y: Math.max(0, (renderedY - offsetY) * sy),
+            width: renderedW * sx,
+            height: renderedH * sy,
+        };
+    };
+
+    const convertNaturalToRendered = (naturalX, naturalY, naturalW, naturalH) => {
+        const { naturalWidth, naturalHeight, renderedWidth, renderedHeight } = mainImgDims;
+        if (!naturalWidth || !naturalHeight || !renderedWidth || !renderedHeight) return { x: 0, y: 0, width: 0, height: 0 };
+        const sx = renderedWidth / naturalWidth;
+        const sy = renderedHeight / naturalHeight;
+        const offsetX = 0;
+        const offsetY = 43;
+        return {
+            x: naturalX * sx + offsetX,
+            y: naturalY * sy + offsetY,
+            width: naturalW * sx,
+            height: naturalH * sy,
+        };
+    };
+
+    const handleEditToggle = () => {
+        setIsEditMode(!isEditMode);
+        setIsAdding(false);
+        setSelectedAnomaly(null);
+    };
+
+    const handleAddToggle = () => {
+        setIsAdding(!isAdding);
+        setSelectedAnomaly(null);
+    };
+
+    const handleImageClick = (e) => {
+        if (!isAdding) return;
+        const rect = e.target.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const newAnomaly = {
+            label: "New Anomaly",
+            category: "unknown",
+            severity: "Potentially Faulty",
+            confidence: 0.5,
+            bbox: convertRenderedToNatural(x, y, 50, 50), // default size
+        };
+        setAnomalyData(prev => ({
+            ...prev,
+            anomalies: [...prev.anomalies, newAnomaly],
+        }));
+        setIsAdding(false);
+    };
+
+    const handleDeleteAnomaly = (idx) => {
+        setAnomalyData(prev => ({
+            ...prev,
+            anomalies: prev.anomalies.filter((_, i) => i !== idx),
+        }));
+    };
+
+    const handleSeverityChange = (idx) => {
+        setAnomalyData(prev => ({
+            ...prev,
+            anomalies: prev.anomalies.map((a, i) => i === idx ? {
+                ...a,
+                severity: a.severity === "Faulty" ? "Potentially Faulty" : a.severity === "Potentially Faulty" ? "Normal" : "Faulty"
+            } : a),
+        }));
+    };
+
+    const handleLabelChange = (idx, newLabel) => {
+        setAnomalyData(prev => ({
+            ...prev,
+            anomalies: prev.anomalies.map((a, i) => i === idx ? { ...a, label: newLabel } : a),
+        }));
+    };
+
+    const isOverlapping = (bbox1, bbox2) => {
+        return !(bbox1.x + bbox1.width <= bbox2.x ||
+                 bbox2.x + bbox2.width <= bbox1.x ||
+                 bbox1.y + bbox1.height <= bbox2.y ||
+                 bbox2.y + bbox2.height <= bbox1.y);
+    };
+
+    const handleMouseMove = (e) => {
+        if (isDragging && draggedAnomaly !== null) {
+            const deltaX = e.clientX - dragStart.x;
+            const deltaY = e.clientY - dragStart.y;
+            const sx = mainImgDims.naturalWidth / mainImgDims.renderedWidth;
+            const sy = mainImgDims.naturalHeight / mainImgDims.renderedHeight;
+            const naturalDeltaX = deltaX * sx;
+            const naturalDeltaY = deltaY * sy;
+            const newX = anomalyData.anomalies[draggedAnomaly].bbox.x + naturalDeltaX;
+            const newY = anomalyData.anomalies[draggedAnomaly].bbox.y + naturalDeltaY;
+            const newBbox = { ...anomalyData.anomalies[draggedAnomaly].bbox, x: newX, y: newY };
+
+            // Check for overlaps
+            const wouldOverlap = anomalyData.anomalies.some((a, i) => i !== draggedAnomaly && isOverlapping(newBbox, a.bbox));
+            if (!wouldOverlap) {
+                setAnomalyData(prev => ({
+                    ...prev,
+                    anomalies: prev.anomalies.map((a, i) => i === draggedAnomaly ? {
+                        ...a,
+                        bbox: newBbox
+                    } : a)
+                }));
+                setDragStart({ x: e.clientX, y: e.clientY });
+            }
+        } else if (isResizing && resizedAnomaly !== null) {
+            const deltaX = e.clientX - dragStart.x;
+            const deltaY = e.clientY - dragStart.y;
+            const sx = mainImgDims.naturalWidth / mainImgDims.renderedWidth;
+            const sy = mainImgDims.naturalHeight / mainImgDims.renderedHeight;
+            const naturalDeltaX = deltaX * sx;
+            const naturalDeltaY = deltaY * sy;
+            const newWidth = Math.max(10, anomalyData.anomalies[resizedAnomaly].bbox.width + naturalDeltaX);
+            const newHeight = Math.max(10, anomalyData.anomalies[resizedAnomaly].bbox.height + naturalDeltaY);
+            const newBbox = { ...anomalyData.anomalies[resizedAnomaly].bbox, width: newWidth, height: newHeight };
+
+            // Check for overlaps
+            const wouldOverlap = anomalyData.anomalies.some((a, i) => i !== resizedAnomaly && isOverlapping(newBbox, a.bbox));
+            if (!wouldOverlap) {
+                setAnomalyData(prev => ({
+                    ...prev,
+                    anomalies: prev.anomalies.map((a, i) => i === resizedAnomaly ? {
+                        ...a,
+                        bbox: newBbox
+                    } : a)
+                }));
+                setDragStart({ x: e.clientX, y: e.clientY });
+            }
+        }
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+        setDraggedAnomaly(null);
+        setIsResizing(false);
+        setResizedAnomaly(null);
+        setResizeHandle(null);
+    };
+
     // uploader is always the inspector
     const uploader = inspectedBy;
 
@@ -615,22 +811,20 @@ function Transformer() {
 
                 {/* Responsive image; ref + onLoad to capture dims */}
                 <img
-                    ref={imgRef}
-                    src={`http://localhost:8080${thermalImageUrl}`}
-                    alt="Thermal"
-                    style={{
-                    width: "100%",
-                    maxWidth: 700,   // same visual width as baseline
-                    height: "auto",
-                    borderRadius: 12,
-                    display: "block",
-                    }}
-                    onLoad={updateDims}
+                  ref={mainImgRef}
+                  src={`http://localhost:8080${thermalImageUrl}`}
+                  alt="Thermal"
+                  style={{ width: "100%", maxWidth: 700, height: "auto", borderRadius: 12, cursor: isAdding ? "crosshair" : isDragging ? "grabbing" : "default" }}
+                  onLoad={updateMainDims}
+                  onClick={handleImageClick}
+                  onMouseMove={handleMouseMove}
+                  onMouseUp={handleMouseUp}
                 />
+
 
                 {/* Overlay (scaled) */}
                 {anomalyData?.status && anomalyData?.anomalies?.map((a, idx) => {
-                    const { naturalWidth, naturalHeight, renderedWidth, renderedHeight } = imgDims;
+                    const { naturalWidth, naturalHeight, renderedWidth, renderedHeight } = mainImgDims;
                     if (!naturalWidth || !naturalHeight || !renderedWidth || !renderedHeight) return null;
 
                     const { x, y, width: bw, height: bh } = a.bbox;
@@ -649,6 +843,7 @@ function Transformer() {
 
                     const isFaulty = (a.severity || "").toLowerCase().startsWith("faulty");
                     const color = isFaulty ? "red" : "gold";
+                    const isSelected = selectedAnomaly === idx;
 
                     return (
                     <React.Fragment key={idx}>
@@ -662,10 +857,44 @@ function Transformer() {
                             height: h,
                             border: `2px solid ${color}`,
                             borderRadius: 4,
-                            pointerEvents: "none",
                             boxSizing: "border-box",
+                            cursor: isEditMode ? "move" : "default",
+                            backgroundColor: isSelected ? "rgba(0,0,0,0.1)" : "transparent",
+                        }}
+                        onClick={() => isEditMode && setSelectedAnomaly(isSelected ? null : idx)}
+                        onMouseDown={(e) => {
+                            if (!isEditMode) return;
+                            e.stopPropagation();
+                            setIsDragging(true);
+                            setDraggedAnomaly(idx);
+                            setDragStart({ x: e.clientX, y: e.clientY });
                         }}
                         />
+
+                        {/* Resize handle */}
+                        {isEditMode && (
+                            <div
+                            style={{
+                                position: "absolute",
+                                left: left + w - 10,
+                                top: top + h - 10,
+                                width: 20,
+                                height: 20,
+                                background: isSelected ? "rgba(0,0,255,0.8)" : "rgba(0,0,255,0.5)",
+                                cursor: "se-resize",
+                                borderRadius: 2,
+                                border: "1px solid blue",
+                            }}
+                            onMouseDown={(e) => {
+                                e.stopPropagation();
+                                setSelectedAnomaly(idx);
+                                setIsResizing(true);
+                                setResizedAnomaly(idx);
+                                setResizeHandle('se');
+                                setDragStart({ x: e.clientX, y: e.clientY });
+                            }}
+                            />
+                        )}
 
                         {/* badge (index + confidence) */}
                         <div
@@ -679,18 +908,84 @@ function Transformer() {
                             padding: "2px 6px",
                             borderRadius: 4,
                             fontWeight: 700,
-                            pointerEvents: "none",
                             boxShadow: "0 1px 2px rgba(0,0,0,0.3)",
+                            cursor: isEditMode ? "pointer" : "default",
                         }}
+                        onClick={() => isEditMode && setSelectedAnomaly(isSelected ? null : idx)}
                         >
                         #{idx + 1} ({(a.confidence ?? 0).toFixed(2)})
                         </div>
+
+                        {/* Edit controls for selected anomaly */}
+                        {isEditMode && isSelected && (
+                        <>
+                            {/* Severity toggle */}
+                            <div
+                            style={{
+                                position: "absolute",
+                                left: left + w + 5,
+                                top,
+                                background: "white",
+                                border: "1px solid #ccc",
+                                borderRadius: 4,
+                                padding: "2px 4px",
+                                fontSize: 10,
+                                cursor: "pointer",
+                            }}
+                            onClick={() => handleSeverityChange(idx)}
+                            >
+                            {a.severity}
+                            </div>
+
+                            {/* Label input */}
+                            <TextField
+                                label="Label"
+                                value={a.label}
+                                onChange={(e) => handleLabelChange(idx, e.target.value)}
+                                size="small"
+                                style={{ position: "absolute", left: left + w + 5, top: top + 20 }}
+                            />
+
+                            {/* Delete button */}
+                            <IconButton
+                            style={{
+                                position: "absolute",
+                                left: left + w - 20,
+                                top: top - 20,
+                                background: "white",
+                                padding: 2,
+                            }}
+                            size="small"
+                            onClick={() => handleDeleteAnomaly(idx)}
+                            >
+                            <CloseIcon fontSize="small" />
+                            </IconButton>
+                        </>
+                        )}
                     </React.Fragment>
                     );
                 })}
 
                 {/* Action buttons */}
                 <div style={{ marginTop: 10, display: "flex", justifyContent: "center", gap: 10 }}>
+                    <IconButton
+                    aria-label="edit"
+                    color={isEditMode ? "secondary" : "default"}
+                    onClick={handleEditToggle}
+                    >
+                    <EditIcon />
+                    </IconButton>
+
+                    {isEditMode && (
+                    <IconButton
+                        aria-label="add"
+                        color={isAdding ? "secondary" : "default"}
+                        onClick={handleAddToggle}
+                        >
+                        <AddIcon />
+                        </IconButton>
+                    )}
+
                     <IconButton
                     aria-label="delete"
                     color="error"
