@@ -64,7 +64,7 @@ function Transformer() {
     const [progress, setProgress] = React.useState(0);
     const [tempthreshold, setTempthreshold] = React.useState(50); // default value
 
-    const [comment, setComment] = React.useState(""); // current input
+  const [comment, setComment] = React.useState(""); // current input
     const [savedComment, setSavedComment] = React.useState(""); // stored comment
     const [isEditing, setIsEditing] = React.useState(false);
     const [analysisResult, setAnalysisResult] = React.useState(null);
@@ -84,9 +84,11 @@ function Transformer() {
      const [dragStart, setDragStart] = React.useState({ x: 0, y: 0 });
      const [isResizing, setIsResizing] = React.useState(false);
      const [resizedAnomaly, setResizedAnomaly] = React.useState(null);
-    const [resizeHandle, setResizeHandle] = React.useState(null);
-
-     const [openZoom, setOpenZoom] = React.useState(false);
+  const [resizeHandle, setResizeHandle] = React.useState(null);
+  const [draggingState, setDraggingState] = React.useState(null); // {idx, bbox}
+  const [resizingState, setResizingState] = React.useState(null); // {idx, bbox}
+  const [openZoom, setOpenZoom] = React.useState(false);
+  const [reasonEditing, setReasonEditing] = React.useState({}); // per-anomaly edit toggle for reason
 
      const handleOpenZoom = () => setOpenZoom(true);
      const handleCloseZoom = () => setOpenZoom(false);
@@ -132,11 +134,15 @@ function Transformer() {
         // Whenever analysisResult changes, update anomalyData
     React.useEffect(() => {
     if (analysisResult) {
-        setAnomalyData({
-        image: analysisResult.image || "",
-        status: analysisResult.status || "",
-        anomalies: analysisResult.anomalies || [],
-        });
+        setAnomalyData(prev => ({
+          image: analysisResult.image || "",
+          status: analysisResult.status || "",
+          anomalies: (analysisResult.anomalies || []).map((a) => ({
+            ...a,
+            isUserAdded: a.isUserAdded ?? false,
+            isDeleted: a.isDeleted ?? false,
+          })),
+        }));
     }
     }, [analysisResult]);
 
@@ -168,9 +174,23 @@ function Transformer() {
     return () => ro.disconnect();
     }, [updateDims, thermalImageUrl]);
 
-    // Global mouse up to handle drag release even outside the image
+  // Global mouse up to handle drag release even outside the image
     React.useEffect(() => {
         const handleGlobalMouseUp = () => {
+            if (draggingState) {
+        setAnomalyData(prev => ({
+          ...prev,
+          anomalies: prev.anomalies.map((a, i) => i === draggingState.idx ? markEdited({ ...a, bbox: draggingState.bbox }) : a)
+        }));
+                setDraggingState(null);
+            }
+            if (resizingState) {
+        setAnomalyData(prev => ({
+          ...prev,
+          anomalies: prev.anomalies.map((a, i) => i === resizingState.idx ? markEdited({ ...a, bbox: resizingState.bbox }) : a)
+        }));
+                setResizingState(null);
+            }
             setIsDragging(false);
             setDraggedAnomaly(null);
             setIsResizing(false);
@@ -179,7 +199,15 @@ function Transformer() {
         };
         window.addEventListener('mouseup', handleGlobalMouseUp);
         return () => window.removeEventListener('mouseup', handleGlobalMouseUp);
-    }, []);
+    }, [draggingState, resizingState]);
+
+  // Global mouse move to keep dragging/resizing responsive even when cursor leaves the image
+  React.useEffect(() => {
+    if (!(isDragging || isResizing)) return;
+    const onMove = (e) => handleMouseMove(e);
+    window.addEventListener('mousemove', onMove);
+    return () => window.removeEventListener('mousemove', onMove);
+  }, [isDragging, isResizing]);
 
 
     const handleSaveComment = () => {
@@ -239,18 +267,38 @@ function Transformer() {
         setSelectedAnomaly(null);
     };
 
-    const handleImageClick = (e) => {
+  const currentUserId = inspectedBy || "UNKNOWN";
+
+  const markEdited = (anomaly, opts = {}) => {
+    const { setConfidenceToOne = true } = opts;
+    return {
+      ...anomaly,
+      edited: true,
+      editedAt: new Date().toISOString(),
+      editedBy: currentUserId,
+      // If the edit is a box/user-change, set confidence to 1
+      ...(setConfidenceToOne ? { confidence: 1 } : {}),
+      // preserve explicit flags if missing
+      isUserAdded: anomaly.isUserAdded ?? false,
+      isDeleted: anomaly.isDeleted ?? false,
+    };
+  };
+
+  const handleImageClick = (e) => {
         if (!isAdding) return;
         const rect = e.target.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        const newAnomaly = {
+    const newAnomaly = markEdited({
             label: "New Anomaly",
             category: "unknown",
             severity: "Potentially Faulty",
             confidence: 0.5,
             bbox: convertRenderedToNatural(x, y, 50, 50), // default size
-        };
+    editReason: "",
+    isDeleted: false,
+    isUserAdded: true,
+    });
         setAnomalyData(prev => ({
             ...prev,
             anomalies: [...prev.anomalies, newAnomaly],
@@ -258,29 +306,46 @@ function Transformer() {
         setIsAdding(false);
     };
 
-    const handleDeleteAnomaly = (idx) => {
-        setAnomalyData(prev => ({
-            ...prev,
-            anomalies: prev.anomalies.filter((_, i) => i !== idx),
-        }));
-    };
+  const handleDeleteAnomaly = (idx) => {
+    // Soft-delete: keep it in list but mark deleted and edited
+    setAnomalyData(prev => ({
+      ...prev,
+      anomalies: prev.anomalies.map((a,i)=> i===idx ? { ...markEdited(a, { setConfidenceToOne: false }), isDeleted:true } : a)
+    }));
+  };
 
-    const handleSeverityChange = (idx) => {
-        setAnomalyData(prev => ({
-            ...prev,
-            anomalies: prev.anomalies.map((a, i) => i === idx ? {
-                ...a,
-                severity: a.severity === "Faulty" ? "Potentially Faulty" : a.severity === "Potentially Faulty" ? "Normal" : "Faulty"
-            } : a),
-        }));
-    };
+  const handleSeverityChange = (idx) => {
+    setAnomalyData(prev => ({
+      ...prev,
+      anomalies: prev.anomalies.map((a, i) => i === idx ? markEdited({
+        ...a,
+        severity: a.severity === "Faulty" ? "Potentially Faulty" : a.severity === "Potentially Faulty" ? "Normal" : "Faulty"
+      }) : a),
+    }));
+  };
 
-    const handleLabelChange = (idx, newLabel) => {
-        setAnomalyData(prev => ({
-            ...prev,
-            anomalies: prev.anomalies.map((a, i) => i === idx ? { ...a, label: newLabel } : a),
-        }));
-    };
+  const handleLabelChange = (idx, newLabel) => {
+    setAnomalyData(prev => ({
+      ...prev,
+      anomalies: prev.anomalies.map((a, i) => i === idx ? markEdited({ ...a, label: newLabel }) : a),
+    }));
+  };
+
+  const handleEditReasonChange = (idx, reason) => {
+    // Do not alter editedAt/edited flag when changing reason text
+    setAnomalyData(prev => ({
+      ...prev,
+      anomalies: prev.anomalies.map((a,i)=> i===idx ? { ...a, editReason: reason } : a)
+    }));
+  };
+
+  const handleEditReasonSave = (idx) => {
+    // Save reason timestamp without changing the main editedAt (box edit time)
+    setAnomalyData(prev => ({
+      ...prev,
+      anomalies: prev.anomalies.map((a,i)=> i===idx ? { ...a, editReasonSavedAt: new Date().toISOString() } : a)
+    }));
+  };
 
     const isOverlapping = (bbox1, bbox2) => {
         return !(bbox1.x + bbox1.width <= bbox2.x ||
@@ -297,22 +362,12 @@ function Transformer() {
             const sy = mainImgDims.naturalHeight / mainImgDims.renderedHeight;
             const naturalDeltaX = deltaX * sx;
             const naturalDeltaY = deltaY * sy;
-            const newX = anomalyData.anomalies[draggedAnomaly].bbox.x + naturalDeltaX;
-            const newY = anomalyData.anomalies[draggedAnomaly].bbox.y + naturalDeltaY;
-            const newBbox = { ...anomalyData.anomalies[draggedAnomaly].bbox, x: newX, y: newY };
-
-            // Check for overlaps
-            const wouldOverlap = anomalyData.anomalies.some((a, i) => i !== draggedAnomaly && isOverlapping(newBbox, a.bbox));
-            if (!wouldOverlap) {
-                setAnomalyData(prev => ({
-                    ...prev,
-                    anomalies: prev.anomalies.map((a, i) => i === draggedAnomaly ? {
-                        ...a,
-                        bbox: newBbox
-                    } : a)
-                }));
-                setDragStart({ x: e.clientX, y: e.clientY });
-            }
+            const originalBbox = anomalyData.anomalies[draggedAnomaly].bbox;
+            const newX = originalBbox.x + naturalDeltaX;
+            const newY = originalBbox.y + naturalDeltaY;
+            const newBbox = { ...originalBbox, x: newX, y: newY };
+            setDraggingState({ idx: draggedAnomaly, bbox: newBbox });
+            setDragStart({ x: e.clientX, y: e.clientY });
         } else if (isResizing && resizedAnomaly !== null) {
             const deltaX = e.clientX - dragStart.x;
             const deltaY = e.clientY - dragStart.y;
@@ -320,26 +375,30 @@ function Transformer() {
             const sy = mainImgDims.naturalHeight / mainImgDims.renderedHeight;
             const naturalDeltaX = deltaX * sx;
             const naturalDeltaY = deltaY * sy;
-            const newWidth = Math.max(10, anomalyData.anomalies[resizedAnomaly].bbox.width + naturalDeltaX);
-            const newHeight = Math.max(10, anomalyData.anomalies[resizedAnomaly].bbox.height + naturalDeltaY);
-            const newBbox = { ...anomalyData.anomalies[resizedAnomaly].bbox, width: newWidth, height: newHeight };
-
-            // Check for overlaps
-            const wouldOverlap = anomalyData.anomalies.some((a, i) => i !== resizedAnomaly && isOverlapping(newBbox, a.bbox));
-            if (!wouldOverlap) {
-                setAnomalyData(prev => ({
-                    ...prev,
-                    anomalies: prev.anomalies.map((a, i) => i === resizedAnomaly ? {
-                        ...a,
-                        bbox: newBbox
-                    } : a)
-                }));
-                setDragStart({ x: e.clientX, y: e.clientY });
-            }
+            const originalBbox = anomalyData.anomalies[resizedAnomaly].bbox;
+            const newWidth = Math.max(10, originalBbox.width + naturalDeltaX);
+            const newHeight = Math.max(10, originalBbox.height + naturalDeltaY);
+            const newBbox = { ...originalBbox, width: newWidth, height: newHeight };
+            setResizingState({ idx: resizedAnomaly, bbox: newBbox });
+            setDragStart({ x: e.clientX, y: e.clientY });
         }
     };
 
     const handleMouseUp = () => {
+        if (draggingState) {
+      setAnomalyData(prev => ({
+        ...prev,
+        anomalies: prev.anomalies.map((a, i) => i === draggingState.idx ? markEdited({ ...a, bbox: draggingState.bbox }) : a)
+      }));
+            setDraggingState(null);
+        }
+        if (resizingState) {
+      setAnomalyData(prev => ({
+        ...prev,
+        anomalies: prev.anomalies.map((a, i) => i === resizingState.idx ? markEdited({ ...a, bbox: resizingState.bbox }) : a)
+      }));
+            setResizingState(null);
+        }
         setIsDragging(false);
         setDraggedAnomaly(null);
         setIsResizing(false);
@@ -814,20 +873,23 @@ function Transformer() {
                   ref={mainImgRef}
                   src={`http://localhost:8080${thermalImageUrl}`}
                   alt="Thermal"
-                  style={{ width: "100%", maxWidth: 700, height: "auto", borderRadius: 12, cursor: isAdding ? "crosshair" : isDragging ? "grabbing" : "default" }}
+                  style={{ width: "100%", maxWidth: 700, height: "auto", borderRadius: 12, cursor: isAdding ? "crosshair" : isDragging ? "grabbing" : "default", userSelect: "none" }}
                   onLoad={updateMainDims}
                   onClick={handleImageClick}
                   onMouseMove={handleMouseMove}
                   onMouseUp={handleMouseUp}
+                  draggable={false}
                 />
 
 
                 {/* Overlay (scaled) */}
-                {anomalyData?.status && anomalyData?.anomalies?.map((a, idx) => {
+                {anomalyData?.status && anomalyData.anomalies.filter(a=>!a.isDeleted).map((a, idx) => {
+                    const currentA = (draggingState && draggingState.idx === idx) ? { ...a, bbox: draggingState.bbox } :
+                                     (resizingState && resizingState.idx === idx) ? { ...a, bbox: resizingState.bbox } : a;
                     const { naturalWidth, naturalHeight, renderedWidth, renderedHeight } = mainImgDims;
                     if (!naturalWidth || !naturalHeight || !renderedWidth || !renderedHeight) return null;
 
-                    const { x, y, width: bw, height: bh } = a.bbox;
+                    const { x, y, width: bw, height: bh } = currentA.bbox;
 
                     // scale factors from original → rendered
                     const sx = renderedWidth / naturalWidth;
@@ -841,14 +903,14 @@ function Transformer() {
                     const w = bw * sx;
                     const h = bh * sy;
 
-                    const isFaulty = (a.severity || "").toLowerCase().startsWith("faulty");
+                    const isFaulty = (currentA.severity || "").toLowerCase().startsWith("faulty");
                     const color = isFaulty ? "red" : "gold";
                     const isSelected = selectedAnomaly === idx;
 
                     return (
                     <React.Fragment key={idx}>
                         {/* box */}
-                        <div
+            <div
                         style={{
                             position: "absolute",
                             left,
@@ -869,11 +931,16 @@ function Transformer() {
                             setDraggedAnomaly(idx);
                             setDragStart({ x: e.clientX, y: e.clientY });
                         }}
+            onMouseMove={(e) => {
+              if (!isEditMode) return;
+              if (isDragging && draggedAnomaly === idx) handleMouseMove(e);
+            }}
+            onMouseUp={handleMouseUp}
                         />
 
                         {/* Resize handle */}
                         {isEditMode && (
-                            <div
+              <div
                             style={{
                                 position: "absolute",
                                 left: left + w - 10,
@@ -893,6 +960,11 @@ function Transformer() {
                                 setResizeHandle('se');
                                 setDragStart({ x: e.clientX, y: e.clientY });
                             }}
+              onMouseMove={(e) => {
+                if (!isEditMode) return;
+                if (isResizing && resizedAnomaly === idx) handleMouseMove(e);
+              }}
+              onMouseUp={handleMouseUp}
                             />
                         )}
 
@@ -913,7 +985,7 @@ function Transformer() {
                         }}
                         onClick={() => isEditMode && setSelectedAnomaly(isSelected ? null : idx)}
                         >
-                        #{idx + 1} ({(a.confidence ?? 0).toFixed(2)})
+                        #{idx + 1} ({(currentA.confidence ?? 0).toFixed(2)})
                         </div>
 
                         {/* Edit controls for selected anomaly */}
@@ -934,16 +1006,45 @@ function Transformer() {
                             }}
                             onClick={() => handleSeverityChange(idx)}
                             >
-                            {a.severity}
+                            {currentA.severity}
                             </div>
 
-                            {/* Label input */}
+                            {/* Label input - match background color with anomaly box */}
                             <TextField
                                 label="Label"
-                                value={a.label}
+                                value={currentA.label}
                                 onChange={(e) => handleLabelChange(idx, e.target.value)}
                                 size="small"
-                                style={{ position: "absolute", left: left + w + 5, top: top + 20 }}
+                                sx={{
+                                  position: "absolute",
+                                  left: left + w + 5,
+                                  top: top + 20,
+                                  // Background of the input matches the box color
+                                  '& .MuiInputBase-root': {
+                                    backgroundColor: color,
+                                  },
+                                  // Input text color for readability
+                                  '& .MuiInputBase-input': {
+                                    color: isFaulty ? '#fff' : '#000',
+                                  },
+                                  // Label colors (normal + focused)
+                                  '& .MuiInputLabel-root': {
+                                    color: isFaulty ? '#fff' : '#000',
+                                  },
+                                  '& .MuiInputLabel-root.Mui-focused': {
+                                    color: isFaulty ? '#fff' : '#000',
+                                  },
+                                  // Outline colors (default/hover/focused)
+                                  '& .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: color,
+                                  },
+                                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: color,
+                                  },
+                                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: color,
+                                  },
+                                }}
                             />
 
                             {/* Delete button */}
@@ -1031,7 +1132,10 @@ function Transformer() {
   </h3>
 
   {anomalyData?.anomalies && anomalyData.anomalies.length > 0 ? (
-    anomalyData.anomalies.map((anomaly, idx) => (
+    anomalyData.anomalies
+      // Hide rows for user-added anomalies that the user deleted
+      .filter(a => !(a.isUserAdded && a.isDeleted))
+      .map((anomaly, idx) => (
       <div
         key={idx}
         style={{
@@ -1042,6 +1146,30 @@ function Transformer() {
           boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
         }}
       >
+        {/* Edited banner and meta */}
+        {anomaly.edited && (
+          <>
+            <div style={{
+              marginBottom: 6,
+              padding: "6px 8px",
+              borderRadius: 6,
+              background: "#fff7e6",
+              border: "1px solid #f0ad4e",
+              color: "#8a6d3b",
+              fontSize: 12,
+              display: 'flex',
+              justifyContent: 'flex-start',
+              alignItems: 'center'
+            }}>
+              <span><strong>User Edited Anomoly</strong></span>
+            </div>
+            <p style={{ marginTop: 0, marginBottom: 8, fontSize: 12, color: '#4b5563' }}>
+              Edited at {anomaly.editedAt ? new Date(anomaly.editedAt).toLocaleString() : '-'}
+              {anomaly.editedBy ? ` • by ${anomaly.editedBy}` : ''}
+            </p>
+          </>
+        )}
+
         <p style={{ fontSize: "14px", marginBottom: "4px" }}>
           <strong>Fault:</strong> {anomaly.label}
         </p>
@@ -1055,6 +1183,60 @@ function Transformer() {
         <p style={{ fontSize: "14px" }}>
           <strong>Coordinates:</strong> x: {anomaly.bbox.x}, y: {anomaly.bbox.y}
         </p>
+
+        {/* Deleted notice: only show if it was model-detected (not user-added) */}
+        {anomaly.isDeleted && !anomaly.isUserAdded && (
+          <p style={{ fontSize: 12, color: '#c62828', fontWeight: 600 }}>
+            This anomaly was deleted by user.
+          </p>
+        )}
+
+        {/* Edit reason UI (only for edited anomalies) */}
+        {anomaly.edited && (
+          reasonEditing[idx] ? (
+            <div style={{ marginTop: 8, display: 'flex', gap: 8, alignItems: 'center' }}>
+              <div style={{ flex: 1 }}>
+                <TextField
+                  label="Reason for edit"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  value={anomaly.editReason || ''}
+                  onChange={(e)=>handleEditReasonChange(idx, e.target.value)}
+                />
+              </div>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={()=>{ handleEditReasonSave(idx); setReasonEditing(prev=>({ ...prev, [idx]: false })); }}
+              >
+                Save
+              </Button>
+            </div>
+          ) : (
+            <div style={{ marginTop: 8, display: 'flex', gap: 8, alignItems: 'center' }}>
+              <div style={{ flex: 1, fontSize: 14, color: '#111827' }}>
+                {anomaly.editReason && anomaly.editReason.trim() ? (
+                  anomaly.editReason
+                ) : (
+                  <span style={{ color: '#6b7280' }}>(no reason provided)</span>
+                )}
+              </div>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={()=> setReasonEditing(prev=>({ ...prev, [idx]: true }))}
+              >
+                Edit
+              </Button>
+            </div>
+          )
+        )}
+        {anomaly.editReasonSavedAt && (
+          <p style={{ marginTop: 6, fontSize: 12, color: '#4b5563' }}>
+            Reason saved at {new Date(anomaly.editReasonSavedAt).toLocaleString()}
+          </p>
+        )}
       </div>
     ))
   ) : (
@@ -1281,61 +1463,62 @@ function Transformer() {
               />
 
               {/* Overlay inside the zoom */}
-              {anomalyData?.status &&
-                anomalyData?.anomalies?.map((a, idx) => {
-                  const { naturalWidth, naturalHeight, renderedWidth, renderedHeight } = imgDims;
-                  if (!naturalWidth || !naturalHeight || !renderedWidth || !renderedHeight) return null;
+              {anomalyData?.status && anomalyData.anomalies.filter(a=>!a.isDeleted).map((a, idx) => {
+                const currentA = (draggingState && draggingState.idx === idx) ? { ...a, bbox: draggingState.bbox } :
+                                 (resizingState && resizingState.idx === idx) ? { ...a, bbox: resizingState.bbox } : a;
+                const { naturalWidth, naturalHeight, renderedWidth, renderedHeight } = imgDims;
+                if (!naturalWidth || !naturalHeight || !renderedWidth || !renderedHeight) return null;
 
-                  const { x, y, width: bw, height: bh } = a.bbox;
-                  const sx = renderedWidth / naturalWidth;
-                  const sy = renderedHeight / naturalHeight;
-                  
-                  const left = x * sx;
-                  const top = y * sy;
-                  const w = bw * sx;
-                  const h = bh * sy;
+                const { x, y, width: bw, height: bh } = currentA.bbox;
+                const sx = renderedWidth / naturalWidth;
+                const sy = renderedHeight / naturalHeight;
+                
+                const left = x * sx;
+                const top = y * sy;
+                const w = bw * sx;
+                const h = bh * sy;
 
-                  const isFaulty = (a.severity || "").toLowerCase().startsWith("faulty");
-                  const color = isFaulty ? "red" : "gold";
+                const isFaulty = (currentA.severity || "").toLowerCase().startsWith("faulty");
+                const color = isFaulty ? "red" : "gold";
 
-                  return (
-                    <React.Fragment key={idx}>
-                      {/* Bounding box */}
-                      <div
-                        style={{
-                          position: "absolute",
-                          left,
-                          top,
-                          width: w,
-                          height: h,
-                          border: `2px solid ${color}`,
-                          borderRadius: 4,
-                          pointerEvents: "none",
-                          boxSizing: "border-box",
-                        }}
-                      />
+                return (
+                  <React.Fragment key={idx}>
+                    {/* Bounding box */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        left,
+                        top,
+                        width: w,
+                        height: h,
+                        border: `2px solid ${color}`,
+                        borderRadius: 4,
+                        pointerEvents: "none",
+                        boxSizing: "border-box",
+                      }}
+                    />
 
-                      {/* Badge */}
-                      <div
-                        style={{
-                          position: "absolute",
-                          left,
-                          top: Math.max(0, top - 20),
-                          background: color,
-                          color: isFaulty ? "#fff" : "#000",
-                          fontSize: 11,
-                          padding: "2px 6px",
-                          borderRadius: 4,
-                          fontWeight: 700,
-                          pointerEvents: "none",
-                          boxShadow: "0 1px 2px rgba(0,0,0,0.3)",
-                        }}
-                      >
-                        #{idx + 1} ({(a.confidence ?? 0).toFixed(2)})
-                      </div>
-                    </React.Fragment>
-                  );
-                })}
+                    {/* Badge */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        left,
+                        top: Math.max(0, top - 20),
+                        background: color,
+                        color: isFaulty ? "#fff" : "#000",
+                        fontSize: 11,
+                        padding: "2px 6px",
+                        borderRadius: 4,
+                        fontWeight: 700,
+                        pointerEvents: "none",
+                        boxShadow: "0 1px 2px rgba(0,0,0,0.3)",
+                      }}
+                    >
+                      #{idx + 1} ({(currentA.confidence ?? 0).toFixed(2)})
+                    </div>
+                  </React.Fragment>
+                );
+              })}
             </div>
           </TransformComponent>
         </>
