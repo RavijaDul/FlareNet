@@ -6,6 +6,9 @@ from PIL import Image
 import pickle
 from collections import deque
 import json
+from typing import Dict, List
+from adaptive_params import adaptive_params
+from feedback_handler import feedback_handler
 
 # -------------------------
 # Paths
@@ -23,11 +26,15 @@ os.makedirs(SEGMENTED_DIR, exist_ok=True)
 os.makedirs(ANNOTATION_DIR, exist_ok=True)
 
 # -----------------------------
-# Calibration parameter
+# Dynamic calibration parameters
 # -----------------------------
-# PERCENT_THRESHOLD = how sensitive you want (like your bar 0–100%)
-# Smaller % → more sensitive, Larger % → less sensitive
-PERCENT_THRESHOLD = 50   # e.g., detect at 50% temperature increase
+def get_current_threshold():
+    """Get current adaptive threshold"""
+    return adaptive_params.get_current_percent_threshold()
+
+def get_current_min_area_factor():
+    """Get current adaptive minimum area factor"""
+    return adaptive_params.get_current_min_area_factor()
 
 # Convert percent into k value in range [1.1, 2.1]
 def percent_to_k(percent):
@@ -36,9 +43,10 @@ def percent_to_k(percent):
     # Map 0% → 1.1 (very sensitive), 100% → 2.1 (least sensitive)
     return 1.1 + (percent / 100.0) * (2.1 - 1.1)
 
-k_value = percent_to_k(PERCENT_THRESHOLD)
-
-k = k_value
+def get_adaptive_k():
+    """Get adaptive k value based on current parameters"""
+    current_threshold = get_current_threshold()
+    return percent_to_k(current_threshold)
 
 # -------------------------
 # Load model
@@ -52,34 +60,47 @@ model = model.to(device)
 print("✅ Model loaded for inference.")
 
 # -------------------------
-# Heuristic anomaly classification function
+# Enhanced adaptive anomaly classification function
 # -------------------------
-def classify_anomalies(filtered_img, anomaly_map=None):
+def classify_anomalies_adaptive(filtered_img, anomaly_map=None):
+    """Enhanced classify_anomalies with adaptive parameters"""
+    
+    # Get current adaptive parameters
+    hsv_params = adaptive_params.get_param("hsv_warm_thresholds")
+    color_params = adaptive_params.get_param("color_classification")
+    geom_params = adaptive_params.get_param("geometric_rules")
+    severity_params = adaptive_params.get_param("severity_rules")
+    conf_params = adaptive_params.get_param("confidence_factors")
+    
     hsv = cv2.cvtColor(filtered_img, cv2.COLOR_RGB2HSV)
     h, w = filtered_img.shape[:2]
     total_area = float(w * h)
 
-    # Adaptive threshold for anomaly map if provided
+    # Adaptive threshold for anomaly map
+    k_adaptive = get_adaptive_k()
     if anomaly_map is not None:
-        thresh = anomaly_map.mean() + k*anomaly_map.std()
+        thresh = anomaly_map.mean() + k_adaptive * anomaly_map.std()
         bin_mask = anomaly_map > thresh
     else:
         bin_mask = np.zeros((h, w), dtype=bool)
 
-    # Warm mask (thermal hotspot rule)
+    # Warm mask with adaptive HSV thresholds
     mask = np.zeros((h, w), dtype=np.uint8)
     for y in range(h):
         for x in range(w):
             H, S, V = hsv[y, x]
             hC, sC, vC = H/180.0, S/255.0, V/255.0
-            warm_hue = (hC <= 0.17) or (hC >= 0.95)
-            warm_sat = sC >= 0.35
-            warm_val = vC >= 0.5
+            
+            # Use adaptive HSV thresholds
+            warm_hue = (hC <= hsv_params["hue_low"]) or (hC >= hsv_params["hue_high"])
+            warm_sat = sC >= hsv_params["saturation_min"]
+            warm_val = vC >= hsv_params["value_min"]
+            
             if warm_hue and warm_sat and warm_val:
                 mask[y, x] = 1
 
     # -------------------------
-    # Ignore right-side FLIR bar and thin bars
+    # Ignore right-side FLIR bar and thin bars (unchanged)
     sidebar_width = int(w * 0.10)  # right 10% width
     mask[:, w - sidebar_width : w] = 0
 
@@ -101,11 +122,12 @@ def classify_anomalies(filtered_img, anomaly_map=None):
             break
     # -------------------------
 
-    # Connected components → boxes
+    # Connected components with adaptive minimum area
     visited = np.zeros_like(mask, dtype=bool)
     boxes = []
     dirs = [(1,0),(-1,0),(0,1),(0,-1)]
-    min_area = max(32, int(w*h*0.001))
+    min_area_factor = get_current_min_area_factor()
+    min_area = max(32, int(w * h * min_area_factor))
 
     for y in range(h):
         for x in range(w):
@@ -128,13 +150,16 @@ def classify_anomalies(filtered_img, anomaly_map=None):
                 if area >= min_area:
                     boxes.append((minX, minY, maxX-minX+1, maxY-minY+1))
 
-    # Classify boxes and compute confidence
+    # Classify boxes with adaptive parameters
     labels = []
     confidences = []
-    severities = []  # 'Faulty' or 'Potentially Faulty'
+    severities = []
+    
     for (x,y,bw,bh) in boxes:
         area_frac = (bw*bh)/total_area
         aspect = max(bw, bh)/max(1.0, min(bw, bh))
+        
+        # Calculate overlap (unchanged)
         center_x0, center_y0 = int(w*0.33), int(h*0.33)
         center_x1, center_y1 = int(w*0.67), int(h*0.67)
         ox0, oy0 = max(x, center_x0), max(y, center_y0)
@@ -142,16 +167,23 @@ def classify_anomalies(filtered_img, anomaly_map=None):
         overlap = max(0, ox1-ox0) * max(0, oy1-oy0)
         overlap_frac = overlap/(bw*bh)
 
+        # Color analysis with adaptive thresholds
         box_hsv = hsv[y:y+bh, x:x+bw, :].astype(np.float32)
         H = box_hsv[...,0]  # 0..180
         S = box_hsv[...,1]  # 0..255
         V = box_hsv[...,2]  # 0..255
-        # Define color classes
-        red_mask = ((H <= 10) | (H >= 160)) & (S >= 100) & (V >= 100)
-        orange_mask = (H > 10) & (H <= 25) & (S >= 100) & (V >= 100)
-        yellow_mask = (H > 25) & (H <= 35) & (S >= 100) & (V >= 100)
+        
+        # Use adaptive color thresholds
+        red_mask = ((H <= color_params["red_hue_max"]) | (H >= color_params["red_hue_min"])) & \
+                   (S >= color_params["color_sat_min"]) & (V >= color_params["color_val_min"])
+        orange_mask = (H > color_params["orange_hue_min"]) & (H <= color_params["orange_hue_max"]) & \
+                      (S >= color_params["color_sat_min"]) & (V >= color_params["color_val_min"])
+        yellow_mask = (H > color_params["yellow_hue_min"]) & (H <= color_params["yellow_hue_max"]) & \
+                      (S >= color_params["color_sat_min"]) & (V >= color_params["color_val_min"])
+        
         warm_mask_local = red_mask | orange_mask | yellow_mask
         warm_count_local = np.count_nonzero(warm_mask_local)
+        
         if warm_count_local > 0:
             red_orange_frac = (np.count_nonzero(red_mask | orange_mask))/float(warm_count_local)
             yellow_frac_local = (np.count_nonzero(yellow_mask))/float(warm_count_local)
@@ -161,37 +193,61 @@ def classify_anomalies(filtered_img, anomaly_map=None):
 
         v_mean = float(np.mean(V/255.0))
 
-        # Base category per existing geometry rules
-        if area_frac >= 0.10 and (overlap_frac >= 0.4 or area_frac >= 0.30):
+        # Adaptive geometric classification
+        if area_frac >= geom_params["loose_joint_area_min"] and \
+           (overlap_frac >= geom_params["loose_joint_overlap_min"] or area_frac >= geom_params["loose_joint_large_area"]):
             base_label = "Loose Joint"
-            # Severity by color: red/orange → Faulty; yellow only → Potentially Faulty
-            severity = "Faulty" if red_orange_frac >= 0.5 else "Potentially Faulty"
-            labels.append(f"{base_label} ({severity})")
-            severities.append(severity)
-            confidences.append(min(1.0, 0.6 + 0.8*area_frac))
-        elif aspect >= 2.0:
-            # Distinguish full wire overload (potential) vs point on wire
-            if area_frac >= 0.30 and (yellow_frac_local >= red_orange_frac):
+            severity = "Faulty" if red_orange_frac >= severity_params["faulty_red_orange_threshold"] else "Potentially Faulty"
+            confidence = min(1.0, conf_params["loose_joint_base"] + conf_params["loose_joint_area_factor"] * area_frac)
+            
+        elif aspect >= geom_params["wire_aspect_ratio"]:
+            if area_frac >= geom_params["wire_overload_area"] and (yellow_frac_local >= red_orange_frac):
                 base_label = "Full Wire Overload"
                 severity = "Potentially Faulty"
             else:
-                # Small region on wire: decide by color
                 base_label = "Point Overload"
-                severity = "Faulty" if red_orange_frac >= 0.5 else "Potentially Faulty"
-            labels.append(f"{base_label} ({severity})")
-            severities.append(severity)
-            confidences.append(min(1.0, 0.5 + 0.2*aspect))
+                severity = "Faulty" if red_orange_frac >= severity_params["faulty_red_orange_threshold"] else "Potentially Faulty"
+            confidence = min(1.0, conf_params["wire_base"] + conf_params["wire_aspect_factor"] * aspect)
+            
         else:
             base_label = "Point Overload"
-            severity = "Faulty" if red_orange_frac >= 0.5 else "Potentially Faulty"
-            labels.append(f"{base_label} ({severity})")
-            severities.append(severity)
-            confidences.append(min(1.0, 0.5 + 0.5*v_mean))
+            severity = "Faulty" if red_orange_frac >= severity_params["faulty_red_orange_threshold"] else "Potentially Faulty"
+            confidence = min(1.0, conf_params["point_base"] + conf_params["point_brightness_factor"] * v_mean)
+
+        labels.append(f"{base_label} ({severity})")
+        severities.append(severity)
+        confidences.append(confidence)
 
     if not boxes:
         return "Normal", [], [], [], []
 
     return None, boxes, labels, confidences, severities
+
+
+# -------------------------
+# API Functions for User Feedback Processing
+# -------------------------
+def process_user_feedback_api(image_id: str, user_id: str, original_detections: List[Dict], user_corrections: List[Dict]):
+    """API endpoint to process user feedback and adapt model parameters"""
+    return feedback_handler.process_user_feedback(image_id, user_id, original_detections, user_corrections)
+
+def get_current_parameters():
+    """Get current adaptive parameters for debugging/monitoring"""
+    return adaptive_params.get_params()
+
+def get_feedback_statistics():
+    """Get statistics about feedback received"""
+    return feedback_handler.get_feedback_statistics()
+
+def export_feedback_log(format_type: str = "json"):
+    """Export feedback log for analysis"""
+    return feedback_handler.export_feedback_log(format_type)
+
+def reset_parameters_to_default():
+    """Reset all adaptive parameters to default values"""
+    adaptive_params.current_params = adaptive_params.default_params.copy()
+    adaptive_params.save_params()
+    return {"status": "success", "message": "Parameters reset to default values"}
 
 
 if __name__ == "__main__":
@@ -234,8 +290,8 @@ if __name__ == "__main__":
         filtered_img = np.zeros_like(orig_np)
         filtered_img[bin_mask] = orig_np[bin_mask]
 
-        # Classify anomalies with confidence
-        image_label, box_list, label_list, conf_list, severities = classify_anomalies(filtered_img, anomaly_map=anomaly_map)
+        # Classify anomalies with adaptive parameters
+        image_label, box_list, label_list, conf_list, severities = classify_anomalies_adaptive(filtered_img, anomaly_map=anomaly_map)
 
         # Save segmented labeled image
         segmented_img_with_labels = filtered_img.copy()
@@ -309,4 +365,4 @@ if __name__ == "__main__":
         print(f"   - Complete:  {OUT_PATH}")
         print(f"   - Annotation: {json_path}")
 
-    print("🎉 All images processed successfully.")
+    print(" All images processed successfully.")
