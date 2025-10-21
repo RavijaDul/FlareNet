@@ -16,22 +16,38 @@ import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import SaveIcon from "@mui/icons-material/Save";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
-import { imagesAPI } from '../services/api'; // Ensure this path is correct
+import { imagesAPI, annotationsAPI } from '../services/api'; // Ensure this path is correct
 
 function Transformer() {
     const location = useLocation();
     const state = location.state || {};
-    const [selectedbaselineFile, setSelectedbaselineFile] = React.useState(null);
-    const [selectedthermalFile, setSelectedthermalFile] = React.useState(null);
-    const [weather, setweather] = React.useState("");
+    const [selectedbaselineFile, setSelectedbaselineFile] = React.useState(() => {
+        const stored = localStorage.getItem('selectedbaselineFile');
+        return stored ? JSON.parse(stored) : null;
+    });
+    const [selectedthermalFile, setSelectedthermalFile] = React.useState(() => {
+        const stored = localStorage.getItem('selectedthermalFile');
+        return stored ? JSON.parse(stored) : null;
+    });
+    const [weather, setweather] = React.useState(() => {
+        return localStorage.getItem('weather') || "";
+    });
     const [loading, setLoading] = React.useState(false);
-    const [baselineUpdatedAt, setBaselineUpdatedAt] = React.useState(null);
-    const [baselineImageUrl, setBaselineImageUrl] = React.useState(null); // New state for baseline image URL
-    const [thermalImageUrl, setThermalImageUrl] = React.useState(null); // New state for thermal image URL
+    const [baselineUpdatedAt, setBaselineUpdatedAt] = React.useState(() => {
+        const stored = localStorage.getItem('baselineUpdatedAt');
+        return stored ? new Date(stored) : null;
+    });
+    const [baselineImageUrl, setBaselineImageUrl] = React.useState(() => {
+        return localStorage.getItem('baselineImageUrl') || null;
+    });
+    const [thermalImageUrl, setThermalImageUrl] = React.useState(() => {
+        return localStorage.getItem('thermalImageUrl') || null;
+    });
     const mainImgRef = React.useRef(null);
     const [mainImgDims, setMainImgDims] = React.useState({
       naturalWidth: 0,
@@ -50,15 +66,80 @@ function Transformer() {
         renderedHeight: img.clientHeight || 0,
       });
     }, []);
-    // Initialize state only from passed data
-    const [transformerNo, setTransformerNo] = React.useState(state.transformerNo || "");
-    const [poleno, setPoleno] = React.useState(state.poleNo || "");
-    const [branch, setBranch] = React.useState(state.region || "");
-    const [inspectedBy, setInspectedBy] = React.useState(state.inspectedBy || "H1210");
-    const [inspectionID, setInspectionID] = React.useState(state.inspectionID || "");
-    const [inspectionDate, setInspectionDate] = React.useState(state.inspectionDate || "");
-    const [transformerId, setTransformerId] = React.useState(state.transformerId || "");
-    const [inspectionNumber, setInspectionNumber] = React.useState(state.inspectionNumber || "");
+    // Initialize state from passed data or localStorage for persistence on refresh
+    const [transformerNo, setTransformerNo] = React.useState(() => {
+        const val = state.transformerNo || localStorage.getItem('transformerNo') || "";
+        if (state.transformerNo) localStorage.setItem('transformerNo', state.transformerNo);
+        return val;
+    });
+    const [poleno, setPoleno] = React.useState(() => {
+        const val = state.poleNo || localStorage.getItem('poleNo') || "";
+        if (state.poleNo) localStorage.setItem('poleNo', state.poleNo);
+        return val;
+    });
+    const [branch, setBranch] = React.useState(() => {
+        const val = state.region || localStorage.getItem('region') || "";
+        if (state.region) localStorage.setItem('region', state.region);
+        return val;
+    });
+    const [inspectedBy, setInspectedBy] = React.useState(() => {
+        const val = state.inspectedBy || localStorage.getItem('inspectedBy') || "H1210";
+        if (state.inspectedBy) localStorage.setItem('inspectedBy', state.inspectedBy);
+        return val;
+    });
+    const [inspectionID, setInspectionID] = React.useState(() => {
+        const val = state.inspectionID || localStorage.getItem('inspectionID') || "";
+        if (state.inspectionID) localStorage.setItem('inspectionID', state.inspectionID);
+        return val;
+    });
+    const [inspectionDate, setInspectionDate] = React.useState(() => {
+        const val = state.inspectionDate || localStorage.getItem('inspectionDate') || "";
+        if (state.inspectionDate) localStorage.setItem('inspectionDate', state.inspectionDate);
+        return val;
+    });
+    const [transformerId, setTransformerId] = React.useState(() => {
+        const val = state.transformerId || localStorage.getItem('transformerId') || "";
+        if (state.transformerId) localStorage.setItem('transformerId', state.transformerId);
+        return val;
+    });
+    const [inspectionNumber, setInspectionNumber] = React.useState(() => {
+        const val = state.inspectionNumber || localStorage.getItem('inspectionNumber') || "";
+        if (state.inspectionNumber) localStorage.setItem('inspectionNumber', state.inspectionNumber);
+        return val;
+    });
+
+    // Save to localStorage when state changes
+    React.useEffect(() => {
+        localStorage.setItem('transformerNo', transformerNo);
+    }, [transformerNo]);
+
+    React.useEffect(() => {
+        localStorage.setItem('poleNo', poleno);
+    }, [poleno]);
+
+    React.useEffect(() => {
+        localStorage.setItem('region', branch);
+    }, [branch]);
+
+    React.useEffect(() => {
+        localStorage.setItem('inspectedBy', inspectedBy);
+    }, [inspectedBy]);
+
+    React.useEffect(() => {
+        localStorage.setItem('inspectionID', inspectionID);
+    }, [inspectionID]);
+
+    React.useEffect(() => {
+        localStorage.setItem('inspectionDate', inspectionDate);
+    }, [inspectionDate]);
+
+    React.useEffect(() => {
+        localStorage.setItem('transformerId', transformerId);
+    }, [transformerId]);
+
+    React.useEffect(() => {
+        localStorage.setItem('inspectionNumber', inspectionNumber);
+    }, [inspectionNumber]);
     const [thermalUploaded, setThermalUploaded] = React.useState(false);
     const [showComparison, setShowComparison] = React.useState(false);
     const [progress, setProgress] = React.useState(0);
@@ -269,6 +350,18 @@ function Transformer() {
 
   const currentUserId = inspectedBy || "UNKNOWN";
 
+  const handleSaveAnnotations = async () => {
+    if (!selectedthermalFile || !selectedthermalFile.id) return;
+    const annotationsJson = JSON.stringify(anomalyData);
+    try {
+      await annotationsAPI.save(selectedthermalFile.id, currentUserId, annotationsJson);
+      alert("Annotations saved successfully!");
+    } catch (err) {
+      console.error("Save error:", err);
+      alert("Failed to save annotations");
+    }
+  };
+
   const markEdited = (anomaly, opts = {}) => {
     const { setConfidenceToOne = true } = opts;
     return {
@@ -440,11 +533,12 @@ function Transformer() {
                 if (maintenanceResponse.data && maintenanceResponse.data.length > 0) {
                     const thermalImg = maintenanceResponse.data[0]; // Assuming one maintenance image per inspection for simplicity
                     setSelectedthermalFile({
-                        id: thermalImg.id,         
+                        id: thermalImg.id,
                         tag: "MAINTENANCE",
                         url: thermalImg.url,
                     });
                     setThermalImageUrl(thermalImg.url);
+                    // First, set from analysis if available
                     if (thermalImg.analysis) {
                         try {
                         const parsed = JSON.parse(thermalImg.analysis);
@@ -453,6 +547,17 @@ function Transformer() {
                         } catch (err) {
                         console.error("Error parsing saved analysis JSON:", err);
                         }
+                    }
+                    // Then, fetch and override with user annotations if available
+                    try {
+                        const annotationsResponse = await annotationsAPI.get(thermalImg.id);
+                        if (annotationsResponse.data && annotationsResponse.data.annotationsJson) {
+                            const userAnnotations = JSON.parse(annotationsResponse.data.annotationsJson);
+                            setAnalysisResult(userAnnotations);
+                            console.log("Fetched and parsed user annotations:", userAnnotations);
+                        }
+                    } catch (err) {
+                        console.error("Error fetching user annotations:", err);
                     }
                 }
             } catch (error) {
@@ -1086,6 +1191,15 @@ function Transformer() {
                         <AddIcon />
                         </IconButton>
                     )}
+
+                    <IconButton
+                    aria-label="save"
+                    color="primary"
+                    onClick={handleSaveAnnotations}
+                    disabled={!selectedthermalFile || !anomalyData.anomalies || anomalyData.anomalies.length === 0}
+                    >
+                    <SaveIcon />
+                    </IconButton>
 
                     <IconButton
                     aria-label="delete"

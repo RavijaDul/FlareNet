@@ -54,9 +54,20 @@ export const imagesAPI = {
   // --- NEW API CALLS ---
   getBaseline: (transformerId) => api.get(`/transformers/${transformerId}/images/baseline`),
   getMaintenanceByInspection: (transformerId, inspectionId) => api.get(`/transformers/${transformerId}/images/inspection/${inspectionId}/maintenance`),
-  deleteBaseline: (transformerId) => api.delete(`/transformers/${transformerId}/images/baseline`), 
+  deleteBaseline: (transformerId) => api.delete(`/transformers/${transformerId}/images/baseline`),
   deleteImage: (transformerId, imageId) => api.delete(`/transformers/${transformerId}/images/${imageId}`),
 
+};
+
+// Annotations API
+export const annotationsAPI = {
+  get: (thermalImageId) => api.get(`/annotations/image/${thermalImageId}`),
+  save: (thermalImageId, userId, annotationsJson) => api.post(`/annotations/image/${thermalImageId}`, annotationsJson, {
+    params: { userId },
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }),
 };
 export default api;
 
