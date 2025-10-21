@@ -18,7 +18,7 @@ Some Tested examples: https://drive.google.com/file/d/1oB7vqYwXO6YeScPZUGsK__g6Z
 Model Training and Model Inference Repository link: https://github.com/RavijaDul/flarenet-ml.git
 
 
-Milestone 03:
+Milestone 03: 
 
 
 Milestone 04:
