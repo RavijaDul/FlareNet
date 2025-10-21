@@ -204,6 +204,13 @@ class AdaptiveParams:
     def get_current_min_area_factor(self) -> float:
         """Get current minimum area factor for use in model_core.py"""
         return self.current_params["min_area_factor"]
+    
+    def reset_to_defaults(self):
+        """Reset all parameters to default values"""
+        self.current_params = self.default_params.copy()
+        self.save_params()
+        print(" All parameters reset to default values")
+        return self.current_params
 
 # Global instance for use across modules
 adaptive_params = AdaptiveParams()

@@ -17,17 +17,51 @@ class FeedbackHandler:
         """Process user feedback and adapt parameters"""
         
         try:
+            print(f" Processing feedback for image {image_id} by user {user_id}")
+            print(f" Original: {len(original_detections)}, Corrections: {len(user_corrections)}")
+            
             # Analyze the feedback
             feedback_analysis = self._analyze_feedback(original_detections, user_corrections)
             
+            print(f" Feedback analysis: {len(feedback_analysis)} items")
+            for analysis in feedback_analysis:
+                print(f"   - {analysis['type']}")
+            
             # Store feedback for logging
             self._store_feedback(image_id, user_id, original_detections, user_corrections, feedback_analysis)
+            
+            # Store parameters BEFORE adaptation
+            params_before = adaptive_params.current_params.copy()
             
             # Adapt parameters based on feedback
             adaptations_applied = []
             for analysis in feedback_analysis:
                 adaptive_params.adapt_from_feedback(analysis)
                 adaptations_applied.append(analysis["type"])
+            
+            print(f" Applied adaptations: {adaptations_applied}")
+            
+            # Track parameter changes if any adaptations were made
+            if adaptations_applied:
+                # Import here to avoid circular imports
+                from parameter_tracker import parameter_tracker
+                
+                params_after = adaptive_params.current_params.copy()
+                detection_counts = {
+                    "original": len(original_detections),
+                    "corrected": len(user_corrections),
+                    "added": len(user_corrections) - len([c for c in user_corrections for o in original_detections if self._detections_match(c, o)]),
+                    "deleted": len(original_detections) - len([o for o in original_detections for c in user_corrections if self._detections_match(o, c)])
+                }
+                
+                parameter_tracker.log_parameter_change(
+                    image_id=image_id,
+                    user_id=user_id, 
+                    params_before=params_before,
+                    params_after=params_after,
+                    feedback_type=adaptations_applied,
+                    detection_counts=detection_counts
+                )
             
             return {
                 "status": "success", 
@@ -37,6 +71,7 @@ class FeedbackHandler:
             }
             
         except Exception as e:
+            print(f" Feedback processing error: {str(e)}")
             return {
                 "status": "error",
                 "message": f"Failed to process feedback: {str(e)}",
@@ -262,6 +297,28 @@ class FeedbackHandler:
         except Exception as e:
             print(f"Warning: Could not get feedback statistics: {e}")
             return {"total_feedback": 0, "feedback_types": {}}
+    
+    def _detections_match(self, det1: Dict, det2: Dict) -> bool:
+        """Check if two detections match (simple overlap check)"""
+        try:
+            x1_1, y1_1, x2_1, y2_1 = det1.get("x", 0), det1.get("y", 0), det1.get("x", 0) + det1.get("width", 0), det1.get("y", 0) + det1.get("height", 0)
+            x1_2, y1_2, x2_2, y2_2 = det2.get("x", 0), det2.get("y", 0), det2.get("x", 0) + det2.get("width", 0), det2.get("y", 0) + det2.get("height", 0)
+            
+            # Calculate overlap
+            overlap_x = max(0, min(x2_1, x2_2) - max(x1_1, x1_2))
+            overlap_y = max(0, min(y2_1, y2_2) - max(y1_1, y1_2))
+            overlap_area = overlap_x * overlap_y
+            
+            area1 = (x2_1 - x1_1) * (y2_1 - y1_1)
+            area2 = (x2_2 - x1_2) * (y2_2 - y1_2)
+            
+            if area1 == 0 or area2 == 0:
+                return False
+                
+            iou = overlap_area / (area1 + area2 - overlap_area)
+            return iou > 0.3  # 30% overlap threshold
+        except:
+            return False
 
 # Global instance for use across modules
 feedback_handler = FeedbackHandler()

@@ -1,0 +1,1287 @@
+{
+  "feedback_entries": [
+    {
+      "timestamp": "2025-10-21T15:26:52.266469",
+      "image_id": "11",
+      "user_id": "H1210",
+      "original_count": 3,
+      "corrected_count": 4,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_3",
+          "category": "unknown",
+          "severity": "Potentially Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 161.39883056640625,
+            "y": 253.2153812921964,
+            "width": 132.08000000000004,
+            "height": 23.956730769230763
+          },
+          "isUserAdded": true,
+          "edited": true
+        }
+      ],
+      "feedback_analysis": [
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_3",
+              "category": "unknown",
+              "severity": "Potentially Faulty",
+              "confidence": 1,
+              "bbox": {
+                "x": 161.39883056640625,
+                "y": 253.2153812921964,
+                "width": 132.08000000000004,
+                "height": 23.956730769230763
+              },
+              "isUserAdded": true,
+              "edited": true
+            },
+            "category": "unknown",
+            "confidence": 1
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-10-21T16:15:17.857910",
+      "image_id": "12",
+      "user_id": "H1210",
+      "original_count": 3,
+      "corrected_count": 3,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          },
+          "isUserAdded": false,
+          "edited": false
+        }
+      ],
+      "feedback_analysis": []
+    },
+    {
+      "timestamp": "2025-10-21T16:15:48.938895",
+      "image_id": "12",
+      "user_id": "H1210",
+      "original_count": 3,
+      "corrected_count": 3,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          },
+          "isUserAdded": false,
+          "edited": false
+        }
+      ],
+      "feedback_analysis": []
+    },
+    {
+      "timestamp": "2025-10-21T16:16:49.840818",
+      "image_id": "12",
+      "user_id": "H1210",
+      "original_count": 3,
+      "corrected_count": 4,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_3",
+          "category": "unknown",
+          "severity": "Potentially Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 152.69025913783483,
+            "y": 250.45673076923077,
+            "width": 129.17714285714285,
+            "height": 27.58653846153846
+          },
+          "isUserAdded": true,
+          "edited": true
+        }
+      ],
+      "feedback_analysis": [
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_3",
+              "category": "unknown",
+              "severity": "Potentially Faulty",
+              "confidence": 1,
+              "bbox": {
+                "x": 152.69025913783483,
+                "y": 250.45673076923077,
+                "width": 129.17714285714285,
+                "height": 27.58653846153846
+              },
+              "isUserAdded": true,
+              "edited": true
+            },
+            "category": "unknown",
+            "confidence": 1
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-10-21T16:17:00.166133",
+      "image_id": "12",
+      "user_id": "H1210",
+      "original_count": 3,
+      "corrected_count": 4,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_3",
+          "category": "unknown",
+          "severity": "Potentially Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 152.69025913783483,
+            "y": 250.45673076923077,
+            "width": 129.17714285714285,
+            "height": 27.58653846153846
+          },
+          "isUserAdded": true,
+          "edited": true
+        }
+      ],
+      "feedback_analysis": [
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_3",
+              "category": "unknown",
+              "severity": "Potentially Faulty",
+              "confidence": 1,
+              "bbox": {
+                "x": 152.69025913783483,
+                "y": 250.45673076923077,
+                "width": 129.17714285714285,
+                "height": 27.58653846153846
+              },
+              "isUserAdded": true,
+              "edited": true
+            },
+            "category": "unknown",
+            "confidence": 1
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-10-21T16:17:13.662385",
+      "image_id": "12",
+      "user_id": "H1210",
+      "original_count": 3,
+      "corrected_count": 4,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_3",
+          "category": "unknown",
+          "severity": "Potentially Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 152.69025913783483,
+            "y": 250.45673076923077,
+            "width": 129.17714285714285,
+            "height": 27.58653846153846
+          },
+          "isUserAdded": true,
+          "edited": true
+        }
+      ],
+      "feedback_analysis": [
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_3",
+              "category": "unknown",
+              "severity": "Potentially Faulty",
+              "confidence": 1,
+              "bbox": {
+                "x": 152.69025913783483,
+                "y": 250.45673076923077,
+                "width": 129.17714285714285,
+                "height": 27.58653846153846
+              },
+              "isUserAdded": true,
+              "edited": true
+            },
+            "category": "unknown",
+            "confidence": 1
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-10-21T16:19:29.926499",
+      "image_id": "12",
+      "user_id": "H1210",
+      "original_count": 3,
+      "corrected_count": 4,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_3",
+          "category": "unknown",
+          "severity": "Potentially Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 152.69025913783483,
+            "y": 250.45673076923077,
+            "width": 129.17714285714285,
+            "height": 27.58653846153846
+          },
+          "isUserAdded": true,
+          "edited": true
+        }
+      ],
+      "feedback_analysis": [
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_3",
+              "category": "unknown",
+              "severity": "Potentially Faulty",
+              "confidence": 1,
+              "bbox": {
+                "x": 152.69025913783483,
+                "y": 250.45673076923077,
+                "width": 129.17714285714285,
+                "height": 27.58653846153846
+              },
+              "isUserAdded": true,
+              "edited": true
+            },
+            "category": "unknown",
+            "confidence": 1
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-10-21T16:20:23.403764",
+      "image_id": "12",
+      "user_id": "H1210",
+      "original_count": 3,
+      "corrected_count": 4,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_3",
+          "category": "unknown",
+          "severity": "Potentially Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 152.69025913783483,
+            "y": 250.45673076923077,
+            "width": 129.17714285714285,
+            "height": 27.58653846153846
+          },
+          "isUserAdded": true,
+          "edited": true
+        }
+      ],
+      "feedback_analysis": [
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_3",
+              "category": "unknown",
+              "severity": "Potentially Faulty",
+              "confidence": 1,
+              "bbox": {
+                "x": 152.69025913783483,
+                "y": 250.45673076923077,
+                "width": 129.17714285714285,
+                "height": 27.58653846153846
+              },
+              "isUserAdded": true,
+              "edited": true
+            },
+            "category": "unknown",
+            "confidence": 1
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-10-21T16:34:44.186921",
+      "image_id": "12",
+      "user_id": "H1210",
+      "original_count": 3,
+      "corrected_count": 4,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_3",
+          "category": "unknown",
+          "severity": "Potentially Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 152.69025913783483,
+            "y": 250.45673076923077,
+            "width": 174.17142857142858,
+            "height": 23.956730769230766
+          },
+          "isUserAdded": true,
+          "edited": true
+        }
+      ],
+      "feedback_analysis": [
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_3",
+              "category": "unknown",
+              "severity": "Potentially Faulty",
+              "confidence": 1,
+              "bbox": {
+                "x": 152.69025913783483,
+                "y": 250.45673076923077,
+                "width": 174.17142857142858,
+                "height": 23.956730769230766
+              },
+              "isUserAdded": true,
+              "edited": true
+            },
+            "category": "unknown",
+            "confidence": 1
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-10-21T16:35:57.149951",
+      "image_id": "12",
+      "user_id": "H1210",
+      "original_count": 3,
+      "corrected_count": 3,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          },
+          "isUserAdded": false,
+          "edited": false
+        }
+      ],
+      "feedback_analysis": []
+    },
+    {
+      "timestamp": "2025-10-21T16:36:33.217708",
+      "image_id": "12",
+      "user_id": "H1210",
+      "original_count": 3,
+      "corrected_count": 3,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 81.45142857142856,
+            "height": 146.75
+          },
+          "isUserAdded": false,
+          "edited": true
+        },
+        {
+          "id": "corr_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          },
+          "isUserAdded": false,
+          "edited": false
+        }
+      ],
+      "feedback_analysis": [
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_1",
+              "category": "point_overload",
+              "severity": "Faulty",
+              "confidence": 0.9817008674144745,
+              "bbox": {
+                "x": 75,
+                "y": 127,
+                "width": 80,
+                "height": 109
+              }
+            },
+            "category": "point_overload",
+            "confidence": 0.9817008674144745
+          }
+        },
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_1",
+              "category": "point_overload",
+              "severity": "Faulty",
+              "confidence": 1,
+              "bbox": {
+                "x": 75,
+                "y": 127,
+                "width": 81.45142857142856,
+                "height": 146.75
+              },
+              "isUserAdded": false,
+              "edited": true
+            },
+            "category": "point_overload",
+            "confidence": 1
+          }
+        }
+      ]
+    }
+  ]
+}

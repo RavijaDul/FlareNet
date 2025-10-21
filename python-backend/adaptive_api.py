@@ -22,12 +22,18 @@ def process_feedback():
     """
     Process user feedback and adapt model parameters
     
-    Expected JSON payload:
+    Expected format from your database:
     {
-        "image_id": "thermal_001",
-        "user_id": "engineer_123", 
-        "original_detections": [...],
-        "user_corrections": [...]
+        "image_id": "123",
+        "user_id": "H1210",
+        "original_detections": {
+            "status": "Anomalies", 
+            "anomalies": [...]  // analysis_result format
+        },
+        "user_corrections": {
+            "status": "Anomalies",
+            "anomalies": [...]  // user_annotations format with isDeleted, isUserAdded, etc.
+        }
     }
     """
     try:
@@ -36,22 +42,69 @@ def process_feedback():
         if not data:
             return jsonify({"error": "No JSON data provided"}), 400
         
-        required_fields = ["image_id", "user_id", "original_detections", "user_corrections"]
-        for field in required_fields:
-            if field not in data:
-                return jsonify({"error": f"Missing required field: {field}"}), 400
+        # Extract data with defaults
+        image_id = data.get("image_id", "unknown")
+        user_id = data.get("user_id", "user")
         
-        result = process_user_feedback_api(
-            image_id=data["image_id"],
-            user_id=data["user_id"],
-            original_detections=data["original_detections"],
-            user_corrections=data["user_corrections"]
-        )
+        # Convert analysis_result format to standard format
+        original_analysis = data.get("original_detections", {})
+        original_detections = []
         
-        return jsonify(result), 200
+        if "anomalies" in original_analysis:
+            for i, anomaly in enumerate(original_analysis["anomalies"]):
+                original_detections.append({
+                    "id": f"orig_{i}",
+                    "category": anomaly.get("category", "unknown"),
+                    "severity": anomaly.get("severity", "Unknown"),
+                    "confidence": anomaly.get("confidence", 0.5),
+                    "bbox": anomaly.get("bbox", {})
+                })
+        
+        # Convert user_annotations format to standard format
+        user_annotations = data.get("user_corrections", {})
+        user_corrections = []
+        
+        if "anomalies" in user_annotations:
+            for i, anomaly in enumerate(user_annotations["anomalies"]):
+                # Skip deleted annotations 
+                if anomaly.get("isDeleted", False):
+                    continue
+                    
+                user_corrections.append({
+                    "id": f"corr_{i}",
+                    "category": anomaly.get("category", "unknown"),
+                    "severity": anomaly.get("severity", "Unknown"),
+                    "confidence": anomaly.get("confidence", 0.5),
+                    "bbox": anomaly.get("bbox", {}),
+                    "isUserAdded": anomaly.get("isUserAdded", False),
+                    "edited": anomaly.get("edited", False),
+                    "editReason": anomaly.get("editReason", "")
+                })
+        
+        # Process through adaptive system
+        result = process_user_feedback_api(image_id, user_id, original_detections, user_corrections)
+        
+        # Enhanced response with current parameters
+        response = {
+            "status": "success",
+            "message": result.get("message", "Feedback processed"),
+            "adaptations_applied": result.get("adaptations_applied", []),
+            "feedback_count": result.get("feedback_count", 0),
+            "original_count": len(original_detections),
+            "corrected_count": len(user_corrections),
+            "deleted_count": sum(1 for a in user_annotations.get("anomalies", []) if a.get("isDeleted", False)),
+            "added_count": sum(1 for a in user_annotations.get("anomalies", []) if a.get("isUserAdded", False)),
+            "current_parameters": {
+                "percent_threshold": result.get("current_threshold"),
+                "adaptations_summary": result.get("adaptations_applied", [])
+            }
+        }
+        
+        return jsonify(response), 200
         
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        print(f"Error processing feedback: {str(e)}")
+        return jsonify({"error": str(e), "status": "error"}), 500
 
 @app.route('/api/parameters', methods=['GET'])
 def get_parameters():
@@ -101,14 +154,145 @@ def export_log():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/process-annotation-feedback', methods=['POST'])
+def process_annotation_feedback():
+    """
+    Process feedback from annotation controller
+    Expects data in the exact format from your database
+    """
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({"error": "No JSON data provided"}), 400
+            
+        # Get thermal image ID from request
+        thermal_image_id = data.get("thermal_image_id")
+        user_id = data.get("user_id", "unknown")
+        
+        # Get original analysis result JSON (from analysis_result table)
+        original_json = data.get("original_analysis_json", "{}")
+        if isinstance(original_json, str):
+            original_analysis = json.loads(original_json)
+        else:
+            original_analysis = original_json
+            
+        # Get user annotations JSON (from user_annotations table) 
+        user_json = data.get("user_annotations_json", "{}")
+        if isinstance(user_json, str):
+            user_annotations = json.loads(user_json)
+        else:
+            user_annotations = user_json
+        
+        # Process the feedback
+        feedback_result = {
+            "image_id": str(thermal_image_id),
+            "user_id": user_id,
+            "original_detections": original_analysis,
+            "user_corrections": user_annotations
+        }
+        
+        # Send to main feedback processor
+        internal_response = process_feedback_internal(feedback_result)
+        
+        return jsonify({
+            "status": "success",
+            "thermal_image_id": thermal_image_id,
+            "processing_result": internal_response,
+            "message": "Annotation feedback processed successfully"
+        }), 200
+        
+    except Exception as e:
+        print(f"Error in annotation feedback: {str(e)}")
+        return jsonify({
+            "status": "error", 
+            "error": str(e),
+            "message": "Failed to process annotation feedback"
+        }), 500
+
+def process_feedback_internal(feedback_data):
+    """Internal function to process feedback data"""
+    try:
+        image_id = feedback_data.get("image_id", "unknown")
+        user_id = feedback_data.get("user_id", "user")
+        
+        # Convert analysis_result format to standard format
+        original_analysis = feedback_data.get("original_detections", {})
+        original_detections = []
+        
+        if "anomalies" in original_analysis:
+            for i, anomaly in enumerate(original_analysis["anomalies"]):
+                original_detections.append({
+                    "id": f"orig_{i}",
+                    "category": anomaly.get("category", "unknown"),
+                    "severity": anomaly.get("severity", "Unknown"),
+                    "confidence": anomaly.get("confidence", 0.5),
+                    "bbox": anomaly.get("bbox", {})
+                })
+        
+        # Convert user_annotations format to standard format
+        user_annotations = feedback_data.get("user_corrections", {})
+        user_corrections = []
+        deleted_count = 0
+        added_count = 0
+        
+        if "anomalies" in user_annotations:
+            for i, anomaly in enumerate(user_annotations["anomalies"]):
+                if anomaly.get("isDeleted", False):
+                    deleted_count += 1
+                    continue
+                    
+                if anomaly.get("isUserAdded", False):
+                    added_count += 1
+                    
+                user_corrections.append({
+                    "id": f"corr_{i}",
+                    "category": anomaly.get("category", "unknown"),
+                    "severity": anomaly.get("severity", "Unknown"),
+                    "confidence": anomaly.get("confidence", 0.5),
+                    "bbox": anomaly.get("bbox", {}),
+                    "isUserAdded": anomaly.get("isUserAdded", False),
+                    "edited": anomaly.get("edited", False)
+                })
+        
+        # Process through adaptive system
+        result = process_user_feedback_api(image_id, user_id, original_detections, user_corrections)
+        
+        # Get current parameters for response
+        current_params = get_current_parameters()
+        
+        return {
+            "adaptations_applied": result.get("adaptations_applied", []),
+            "feedback_count": result.get("feedback_count", 0),
+            "original_count": len(original_detections),
+            "corrected_count": len(user_corrections),
+            "deleted_count": deleted_count,
+            "added_count": added_count,
+            "current_threshold": current_params.get("percent_threshold", 50),
+            "processing_status": result.get("status", "unknown")
+        }
+        
+    except Exception as e:
+        return {"error": str(e), "status": "error"}
+
 @app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
-    return jsonify({
-        "status": "healthy",
-        "service": "FlareNet Adaptive Feedback System",
-        "version": "1.0.0"
-    }), 200
+    try:
+        # Test adaptive system
+        params = get_current_parameters()
+        return jsonify({
+            "status": "healthy",
+            "service": "FlareNet Adaptive Feedback System",
+            "version": "1.0.0",
+            "current_threshold": params.get("percent_threshold", 50),
+            "parameters_loaded": len(params) > 0
+        }), 200
+    except Exception as e:
+        return jsonify({
+            "status": "unhealthy",
+            "error": str(e)
+        }), 500
 
 @app.route('/api/docs', methods=['GET'])
 def api_documentation():

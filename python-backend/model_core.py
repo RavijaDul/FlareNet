@@ -229,11 +229,18 @@ def classify_anomalies_adaptive(filtered_img, anomaly_map=None):
 # -------------------------
 def process_user_feedback_api(image_id: str, user_id: str, original_detections: List[Dict], user_corrections: List[Dict]):
     """API endpoint to process user feedback and adapt model parameters"""
-    return feedback_handler.process_user_feedback(image_id, user_id, original_detections, user_corrections)
+    result = feedback_handler.process_user_feedback(image_id, user_id, original_detections, user_corrections)
+    
+    # Add current parameters to response
+    current_params = get_current_parameters()
+    result["current_threshold"] = current_params.get("percent_threshold", 50)
+    result["current_min_area_factor"] = current_params.get("min_area_factor", 0.001)
+    
+    return result
 
 def get_current_parameters():
     """Get current adaptive parameters for debugging/monitoring"""
-    return adaptive_params.get_params()
+    return adaptive_params.current_params
 
 def get_feedback_statistics():
     """Get statistics about feedback received"""

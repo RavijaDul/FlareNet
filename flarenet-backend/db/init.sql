@@ -7,6 +7,8 @@ DROP TABLE IF EXISTS thermal_image CASCADE;
 DROP TABLE IF EXISTS inspections CASCADE;
 DROP TABLE IF EXISTS transformers CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS analysis_result CASCADE;
+DROP TABLE IF EXISTS user_annotations CASCADE;
 
 -- ================= USERS =================
 CREATE TABLE users (
