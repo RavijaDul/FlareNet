@@ -158,7 +158,7 @@ Some Tested examples: https://drive.google.com/file/d/1oB7vqYwXO6YeScPZUGsK__g6Z
 
 ---
 
-## 🧠 Adaptive Learning System
+##  Adaptive Learning System
 
 FlareNet now includes an **adaptive learning system** that improves anomaly detection accuracy through user feedback without retraining the core AI model.
 
@@ -169,11 +169,11 @@ FlareNet now includes an **adaptive learning system** that improves anomaly dete
 4. **Comprehensive Tracking**: All parameter changes are logged in JSON/CSV format for analysis
 
 ### User Modifications Detected & Tuned
-- ✅ **False Negatives**: User adds missing anomalies → Increases detection sensitivity
-- ✅ **False Positives**: User deletes incorrect detections → Reduces sensitivity  
-- ✅ **Bounding Box Resize**: User adjusts detection areas → Refines geometric rules
-- ✅ **Severity Changes**: User corrects fault levels → Adjusts color classification thresholds
-- ✅ **Category Changes**: User fixes anomaly types → Logs for pattern analysis
+-  **False Negatives**: User adds missing anomalies → Increases detection sensitivity
+-  **False Positives**: User deletes incorrect detections → Reduces sensitivity  
+-  **Bounding Box Resize**: User adjusts detection areas → Refines geometric rules
+-  **Severity Changes**: User corrects fault levels → Adjusts color classification thresholds
+-  **Category Changes**: User fixes anomaly types → Logs for pattern analysis
 
 ### Mathematical Approach
 The system uses **statistical threshold adaptation** without touching the trained PatchCore model:
@@ -197,8 +197,9 @@ K = 1.1 + (sensitivity_percentage / 100) × 1.0
 
 For detailed technical documentation of the adaptive learning system, including mathematical formulas, API specifications, and troubleshooting guides, see:
 
-- **[Complete Technical Guide]([./FLARENET_ADAPTIVE_SYSTEM_COMPLETE_GUIDE.md](https://drive.google.com/file/d/1oA-8hFX2DrHVppWEXoII6MKevlmYXRBY/view?usp=sharing))** - Comprehensive end-to-end documentation
-- **[Mathematical Documentation](./ADAPTIVE_MATHEMATICS.md)** - Detailed mathematical foundations and algorithms
+- Comprehensive end-to-end documentation - https://drive.google.com/file/d/1oA-8hFX2DrHVppWEXoII6MKevlmYXRBY/view?usp=sharing
+- 
+- Detailed mathematical foundations and algorithms - https://drive.google.com/file/d/11qzIu_VQUKz2LG4rBHGnmAWeGZ505ezP/view?usp=sharing
 
 ---
 ### 4. Run the python backend
