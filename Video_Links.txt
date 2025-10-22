@@ -1,8 +1,14 @@
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 GitHub Link: https://github.com/RavijaDul/FlareNet 
 (Latest: merged to the main)
 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 Milestone 01:
 Video Links: https://drive.google.com/file/d/1qKRyumksrZPHtnMUvqLNtl3nvp669jVj/view?usp=sharing
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Milestone 02: 
 Video Links: https://drive.google.com/file/d/1weoFCDfgR8KZ3KQ385Yg-EiV3VY98KO2/view?usp=sharing
@@ -17,10 +23,11 @@ Some Tested examples: https://drive.google.com/file/d/1oB7vqYwXO6YeScPZUGsK__g6Z
 
 Model Training and Model Inference Repository link: https://github.com/RavijaDul/flarenet-ml.git
 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Milestone 03: 
+Milestone 03: https://drive.google.com/file/d/1BM7oeJ1jGDUpSBM89QExOwKWobYHGga5/view?usp=sharing
 
-
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Milestone 04:
  
