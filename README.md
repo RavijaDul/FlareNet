@@ -2,7 +2,7 @@
 
 Flarenet is a web-based system designed to manage and automate transformer inspections using thermal images. Users can record transformer details, upload baseline and maintenance thermal images, and tag images by environmental conditions such as sunny, cloudy, or rainy. The system includes automated anomaly detection using machine learning models to analyze thermal images and generate digital maintenance records.
 
-**Current Stage: Milestone 02** - Full-stack application with integrated ML inference for anomaly detection.
+**Current Stage: Milestone 03** - Full-stack application with integrated ML inference and **Adaptive Learning System** for continuous improvement through human feedback.
 
 [![React](https://img.shields.io/badge/React-18%2B-cyan?logo=react&logoColor=white&logoSize=30)](https://reactjs.org/) 
 [![Vite](https://img.shields.io/badge/Vite-4%2B-pink?logo=vite&logoColor=white&logoSize=30)](https://vitejs.dev/) 
@@ -31,7 +31,7 @@ Flarenet is a web-based system designed to manage and automate transformer inspe
 - **ML Backend:** Python FastAPI server for automated anomaly detection on thermal images using PyTorch models.
 - **Database:** PostgreSQL via Docker Compose stores transformers, inspections, thermal images, and analysis results.
 
-This system demonstrates **modern full-stack development with AI integration**, including user authentication, CRUD operations, image upload/management, and ML-powered analysis.
+This system demonstrates **modern full-stack development with AI integration**, including user authentication, CRUD operations, image upload/management, ML-powered analysis, and **human-in-the-loop adaptive learning** that improves detection accuracy over time without model retraining.
 
 ---
 
@@ -69,9 +69,8 @@ cd FlareNet
 
 ---
 
-### 2. Start Postgres with Docker
+### 2. Start Postgres with Docker (Recommended)
 We use Docker to run Postgres with schema and seed data automatically.
-
 
 ```bash
 docker compose down -v
@@ -83,13 +82,29 @@ docker compose up -d
 - Password: `flarenet`  
 - Port: `5432`  
 
-Images will be available inside `flarenet-backend/uploads/`.
+#### Alternative: Manual PostgreSQL Setup
+If Docker containers have issues, you can run PostgreSQL manually:
 
-> **Note:** The first time you run this, Postgres will execute `init.sql` and create all tables and seed data.
+1. **Install PostgreSQL locally** (version 14+)
+2. **Create database:**
+   ```sql
+   CREATE DATABASE flarenet;
+   CREATE USER flarenet WITH PASSWORD 'flarenet';
+   GRANT ALL PRIVILEGES ON DATABASE flarenet TO flarenet;
+   ```
+3. **Run schema setup:**
+   ```bash
+   psql -U flarenet -d flarenet -f flarenet-backend/db/init.sql
+   ```
+4. **Update connection:** Modify `flarenet-backend/src/main/resources/application.yml` if using different credentials.
 
-To explore the database(Optional)
+#### Database Exploration (Optional)
 ```bash
+# Via Docker
 docker exec -it flarenet-db psql -U flarenet -d flarenet
+
+# Via local PostgreSQL + pgAdmin
+# Install pgAdmin and connect to localhost:5432 with credentials above
 ```
 ---
 
@@ -142,17 +157,82 @@ Some Tested examples: https://drive.google.com/file/d/1oB7vqYwXO6YeScPZUGsK__g6Z
 (Segmented + OpenCV processed + Reconstructed)
 
 ---
+
+## 🧠 Adaptive Learning System
+
+FlareNet now includes an **adaptive learning system** that improves anomaly detection accuracy through user feedback without retraining the core AI model.
+
+### How It Works
+1. **User Corrections**: When users modify detection results (add/delete/resize annotations), the system captures this as feedback
+2. **Smart Adaptation**: Mathematical algorithms adjust detection sensitivity and classification parameters based on correction patterns
+3. **Real-time Learning**: Parameters update immediately, improving future detections on similar images
+4. **Comprehensive Tracking**: All parameter changes are logged in JSON/CSV format for analysis
+
+### User Modifications Detected & Tuned
+- ✅ **False Negatives**: User adds missing anomalies → Increases detection sensitivity
+- ✅ **False Positives**: User deletes incorrect detections → Reduces sensitivity  
+- ✅ **Bounding Box Resize**: User adjusts detection areas → Refines geometric rules
+- ✅ **Severity Changes**: User corrects fault levels → Adjusts color classification thresholds
+- ✅ **Category Changes**: User fixes anomaly types → Logs for pattern analysis
+
+### Mathematical Approach
+The system uses **statistical threshold adaptation** without touching the trained PatchCore model:
+
+```
+Detection Threshold = Mean(Anomaly_Map) + K × StdDev(Anomaly_Map)
+K = 1.1 + (sensitivity_percentage / 100) × 1.0
+```
+
+- **Lower K** = More sensitive (catches subtle anomalies)
+- **Higher K** = Less sensitive (reduces false positives)
+- **Adaptive tuning** based on user correction patterns
+
+### What Users Can Do
+- **Annotate freely**: All corrections automatically improve the system
+- **Reset parameters**: Return to default settings anytime via frontend button
+- **Track progress**: View parameter evolution and system learning trends
+- **Export data**: Download adaptation logs for analysis
+
+##  Adaptive Learning Documentation
+
+For detailed technical documentation of the adaptive learning system, including mathematical formulas, API specifications, and troubleshooting guides, see:
+
+- **[Complete Technical Guide]([./FLARENET_ADAPTIVE_SYSTEM_COMPLETE_GUIDE.md](https://drive.google.com/file/d/1oA-8hFX2DrHVppWEXoII6MKevlmYXRBY/view?usp=sharing))** - Comprehensive end-to-end documentation
+- **[Mathematical Documentation](./ADAPTIVE_MATHEMATICS.md)** - Detailed mathematical foundations and algorithms
+
+---
 ### 4. Run the python backend
 ```bash
 cd python-backend
 python -m venv venv
 
-venv\Scripts\activate   # Windows:
-source venv/bin/activate    # macOS/Linux:
+# Activate virtual environment
+venv\Scripts\activate           # Windows
+source venv/bin/activate        # macOS/Linux
 
 pip install -r requirements.txt
-python model_weight.py
+python model_weight.py          # Download AI model weights
 uvicorn app:app --host 0.0.0.0 --port 5000 --reload
+```
+
+#### Adaptive Parameter Management
+The Python backend now includes adaptive learning capabilities. Key scripts:
+
+- `adaptive_params.py` - Core parameter management and adaptation logic
+- `feedback_handler.py` - Processes user corrections and determines adaptations
+- `parameter_tracker.py` - Logs all parameter changes with visualization
+- `param_manager.py` - Command-line tool for parameter management
+
+#### Reset Parameters (if needed)
+```bash
+# Quick reset to defaults
+python -c "from adaptive_params import adaptive_params; adaptive_params.reset_to_defaults()"
+
+# Or using parameter manager
+python param_manager.py --reset
+
+# View current parameters
+python param_manager.py --show
 ```
 ---
 ### 5. Run the Frontend
@@ -186,8 +266,14 @@ FlareNet/
 ├── python-backend/
 │   ├── app.py                  # FastAPI server for ML inference
 │   ├── model_core.py           # ML model loading and inference logic
+│   ├── adaptive_params.py      # Adaptive parameter management system
+│   ├── feedback_handler.py     # User feedback analysis and processing
+│   ├── parameter_tracker.py    # Parameter change tracking and visualization
+│   ├── param_manager.py        # Command-line parameter management tool
 │   ├── model_weight.py         # Script to download model weights
 │   ├── requirements.txt        # Python dependencies
+│   ├── feedback_data/          # User feedback and parameter logs
+│   ├── parameter_tracking/     # CSV/JSON logs and trend visualizations
 │   └── test_request.py         # Test script for API
 └── README.md
 ```
@@ -199,15 +285,16 @@ FlareNet/
 1. **Images:**  
    All thermal images are stored in `flarenet-backend/uploads/`. This folder is mounted in Docker, so images are accessible to the backend.
 
-2. **Database:**
-   - Tables: `users`, `transformers`, `inspections`, `thermal_image`, `analysis_result`
+3. **Database:**
+   - Tables: `users`, `transformers`, `inspections`, `thermal_image`, `analysis_result`, `user_annotations`
    - The database will be automatically created on first Docker run.
+   - User annotations are automatically fed to the adaptive learning system for parameter tuning.
 
 3. **Environment variables (optional):**
    Customize DB credentials in `docker-compose.yml`. Backend `application.yml` should matches these credentials.
 
-4. **Model Training and Inference:**
-   For Milestone 02, the Python backend includes inference capabilities. Model training and detailed inference testing are available in a separate repository (link to be provided later). The current setup uses pre-trained models for anomaly detection.
+4. **Adaptive Learning & Model Integration:**
+   The system combines pre-trained PatchCore models with adaptive parameter tuning. User feedback automatically improves detection without retraining the core AI model. All parameter changes are tracked and can be reset to defaults anytime.
 
 ---
 
@@ -229,25 +316,27 @@ npm run dev
 
 
 
-# Start python backend
-# Go to backend folder
+# Start python backend with adaptive learning
 cd python-backend
 
 # Create and activate virtual environment
 python -m venv venv
-# Windows:
-venv\Scripts\activate
-# macOS/Linux:
-source venv/bin/activate
+venv\Scripts\activate      # Windows
+source venv/bin/activate   # macOS/Linux
 
-# Install dependencies
+# Install dependencies (includes matplotlib for visualization)
 pip install -r requirements.txt
 
-# Optional: download model weights first
+# Download model weights
 python model_weight.py
 
-# Run the FastAPI server
+# Run the FastAPI server with adaptive capabilities
 uvicorn app:app --host 0.0.0.0 --port 5000 --reload
+
+# Optional: Manage adaptive parameters
+python param_manager.py --show     # View current parameters
+python param_manager.py --reset    # Reset to defaults
+python param_manager.py --stats    # Show adaptation statistics
 ```
 ---
 
@@ -257,7 +346,9 @@ uvicorn app:app --host 0.0.0.0 --port 5000 --reload
 - To reset the DB: delete `pgdata` volume or run `docker compose down -v` and `docker compose up -d`
 - Use Postgres GUI tools (like pgAdmin or DBeaver) to inspect the database if needed
 
+
 ## ⚠️ Limitations & Issues
 
 - Authentication & user roles missing – At this stage, the system does not include authentication, authorization, or multi-user role management. These features will be added in future phases.
 - Deployment not yet available – FlareNet currently runs only in a local development environment (Docker + local servers). A cloud deployment setup is not yet provided.
+- Adaptive learning requires user interaction – The system improves over time through user feedback; initial performance depends on base model accuracy.
