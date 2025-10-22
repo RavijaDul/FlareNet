@@ -7,6 +7,8 @@ DROP TABLE IF EXISTS thermal_image CASCADE;
 DROP TABLE IF EXISTS inspections CASCADE;
 DROP TABLE IF EXISTS transformers CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS analysis_result CASCADE;
+DROP TABLE IF EXISTS user_annotations CASCADE;
 
 -- ================= USERS =================
 CREATE TABLE users (
@@ -115,6 +117,19 @@ CREATE TABLE analysis_result (
 );
 
 ALTER SEQUENCE analysis_result_id_seq RESTART WITH 1;
+
+-- ================= USER ANNOTATIONS =================
+CREATE TABLE user_annotations (
+    id BIGSERIAL PRIMARY KEY,
+    thermal_image_id BIGINT REFERENCES thermal_image(id) ON DELETE CASCADE,
+    transformer_id BIGINT REFERENCES transformers(id) ON DELETE CASCADE,
+    user_id VARCHAR(255) NOT NULL,
+    annotations_json TEXT NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER SEQUENCE user_annotations_id_seq RESTART WITH 1;
 -- Auto-generated analysis inserts
 -- Generated on 2025-10-05 11:44:14.429200
 INSERT INTO analysis_result (thermal_image_id, result_json, analyzed_at) VALUES (2, '{"status": "Anomalies", "anomalies": [{"label": "Point Overload (Potentially Faulty)", "category": "point_overload", "severity": "Potentially Faulty", "confidence": 1.0, "bbox": {"x": 328, "y": 305, "width": 124, "height": 34}}, {"label": "Point Overload (Potentially Faulty)", "category": "point_overload", "severity": "Potentially Faulty", "confidence": 1.0, "bbox": {"x": 453, "y": 312, "width": 59, "height": 20}}]}', NOW());

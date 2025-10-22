@@ -126,9 +126,12 @@ package com.flarenet.controller;
 import com.flarenet.dto.ThermalImageResponse;
 import com.flarenet.entity.AnalysisResult;
 import com.flarenet.entity.ThermalImage;
+import com.flarenet.entity.UserAnnotation;
 import com.flarenet.entity.enums.ImageType;
 import com.flarenet.entity.enums.WeatherCondition;
 import com.flarenet.service.ThermalImageService;
+import com.flarenet.service.UserAnnotationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -148,6 +151,10 @@ import java.util.*;
 public class ImageController {
 
     private final ThermalImageService svc;
+
+    @Autowired
+    private UserAnnotationService userAnnotationService;
+
     public ImageController(ThermalImageService svc){ this.svc = svc; }
 
     @GetMapping
@@ -209,9 +216,14 @@ public class ImageController {
                     r.uploadedAt = img.getUploadedAt();
                     r.url = "/api/transformers/" + transformerId + "/images/" + img.getId() + "/file";
 
-                    // ✅ Fetch the analysis JSON if exists
-                    svc.getAnalysisForImage(img.getId())
-                            .ifPresent(result -> r.analysis = result.getResultJson());
+                    // ✅ Fetch user annotations first, fallback to AI analysis if no user annotations exist
+                    Optional<UserAnnotation> userAnnotation = userAnnotationService.getAnnotationsForImage(img.getId());
+                    if (userAnnotation.isPresent()) {
+                        r.analysis = userAnnotation.get().getAnnotationsJson();
+                    } else {
+                        svc.getAnalysisForImage(img.getId())
+                                .ifPresent(result -> r.analysis = result.getResultJson());
+                    }
 
                     return r;
                 })

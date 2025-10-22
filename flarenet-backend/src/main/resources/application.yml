@@ -6,20 +6,32 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
+
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:flarenet}
-    username: ${DB_USER:flarenet}
-    password: ${DB_PASS:flarenet}
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://127.0.0.1:5432/flarenet
+    username: flarenet
+    password: "flarenet"
+    hikari:
+      initialization-fail-timeout: 60000
+      connection-timeout: 30000
+      validation-timeout: 5000
+
   jpa:
     hibernate:
-      ddl-auto: none #update
+      ddl-auto: none
+    # Let Hibernate read JDBC metadata and auto-pick the dialect (no explicit dialect!)
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+    # Best practice for APIs: avoid lazy-loads during view rendering
+    open-in-view: true
 
-# Storage configuration
+logging:
+  level:
+    com.zaxxer.hikari: DEBUG
+    org.postgresql: DEBUG
+
+# App-specific
 flarenet:
   storage:
     location: uploads
@@ -28,3 +40,43 @@ flarenet:
 jwt:
   secret: my-super-strong-secret-key-please-change-1234567890
   expiration: 86400000   # 24 hours
+
+
+# server:
+#   port: 8080
+
+# spring:
+#   servlet:
+#     multipart:
+#       max-file-size: 100MB
+#       max-request-size: 100MB
+
+#   datasource:
+#     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:flarenet}
+#     username: ${DB_USER:flarenet}
+#     password: ${DB_PASS:flarenet}
+#     # driver-class-name: org.postgresql.Driver   # optional
+#     hikari:
+#       initialization-fail-timeout: 60000   # wait up to 60s before failing fast
+#       connection-timeout: 30000
+#       validation-timeout: 5000
+
+#   jpa:
+#     hibernate:
+#       ddl-auto: none
+#     properties:
+#       hibernate:
+#         boot:
+#           allow_jdbc_metadata_access: false
+#         dialect: org.hibernate.dialect.PostgreSQLDialect
+#         format_sql: true
+
+# # Storage configuration
+# flarenet:
+#   storage:
+#     location: uploads
+
+# # JWT configuration
+# jwt:
+#   secret: my-super-strong-secret-key-please-change-1234567890
+#   expiration: 86400000   # 24 hours

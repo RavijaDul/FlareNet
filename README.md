@@ -31,7 +31,7 @@ Flarenet is a web-based system designed to manage and automate transformer inspe
 - **ML Backend:** Python FastAPI server for automated anomaly detection on thermal images using PyTorch models.
 - **Database:** PostgreSQL via Docker Compose stores transformers, inspections, thermal images, and analysis results.
 
-This system demonstrates **modern full-stack development with AI integration**, including user authentication, CRUD operations, image upload/management, and ML-powered analysis.
+This system demonstrates **modern full-stack development with AI integration**, including user authentication, CRUD operations, image upload/management, ML-powered analysis, and **human-in-the-loop adaptive learning** that improves detection accuracy over time without model retraining.
 
 ---
 
@@ -69,9 +69,8 @@ cd FlareNet
 
 ---
 
-### 2. Start Postgres with Docker
+### 2. Start Postgres with Docker (Recommended)
 We use Docker to run Postgres with schema and seed data automatically.
-
 
 ```bash
 docker compose down -v
@@ -83,13 +82,29 @@ docker compose up -d
 - Password: `flarenet`  
 - Port: `5432`  
 
-Images will be available inside `flarenet-backend/uploads/`.
+#### Alternative: Manual PostgreSQL Setup
+If Docker containers have issues, you can run PostgreSQL manually:
 
-> **Note:** The first time you run this, Postgres will execute `init.sql` and create all tables and seed data.
+1. **Install PostgreSQL locally** (version 14+)
+2. **Create database:**
+   ```sql
+   CREATE DATABASE flarenet;
+   CREATE USER flarenet WITH PASSWORD 'flarenet';
+   GRANT ALL PRIVILEGES ON DATABASE flarenet TO flarenet;
+   ```
+3. **Run schema setup:**
+   ```bash
+   psql -U flarenet -d flarenet -f flarenet-backend/db/init.sql
+   ```
+4. **Update connection:** Modify `flarenet-backend/src/main/resources/application.yml` if using different credentials.
 
-To explore the database(Optional)
+#### Database Exploration (Optional)
 ```bash
+# Via Docker
 docker exec -it flarenet-db psql -U flarenet -d flarenet
+
+# Via local PostgreSQL + pgAdmin
+# Install pgAdmin and connect to localhost:5432 with credentials above
 ```
 ---
 
@@ -147,12 +162,33 @@ Some Tested examples: https://drive.google.com/file/d/1oB7vqYwXO6YeScPZUGsK__g6Z
 cd python-backend
 python -m venv venv
 
-venv\Scripts\activate   # Windows:
-source venv/bin/activate    # macOS/Linux:
+# Activate virtual environment
+venv\Scripts\activate           # Windows
+source venv/bin/activate        # macOS/Linux
 
 pip install -r requirements.txt
-python model_weight.py
+python model_weight.py          # Download AI model weights
 uvicorn app:app --host 0.0.0.0 --port 5000 --reload
+```
+
+#### Adaptive Parameter Management
+The Python backend now includes adaptive learning capabilities. Key scripts:
+
+- `adaptive_params.py` - Core parameter management and adaptation logic
+- `feedback_handler.py` - Processes user corrections and determines adaptations
+- `parameter_tracker.py` - Logs all parameter changes with visualization
+- `param_manager.py` - Command-line tool for parameter management
+
+#### Reset Parameters (if needed)
+```bash
+# Quick reset to defaults
+python -c "from adaptive_params import adaptive_params; adaptive_params.reset_to_defaults()"
+
+# Or using parameter manager
+python param_manager.py --reset
+
+# View current parameters
+python param_manager.py --show
 ```
 ---
 ### 5. Run the Frontend
@@ -186,8 +222,14 @@ FlareNet/
 ├── python-backend/
 │   ├── app.py                  # FastAPI server for ML inference
 │   ├── model_core.py           # ML model loading and inference logic
+│   ├── adaptive_params.py      # Adaptive parameter management system
+│   ├── feedback_handler.py     # User feedback analysis and processing
+│   ├── parameter_tracker.py    # Parameter change tracking and visualization
+│   ├── param_manager.py        # Command-line parameter management tool
 │   ├── model_weight.py         # Script to download model weights
 │   ├── requirements.txt        # Python dependencies
+│   ├── feedback_data/          # User feedback and parameter logs
+│   ├── parameter_tracking/     # CSV/JSON logs and trend visualizations
 │   └── test_request.py         # Test script for API
 └── README.md
 ```
@@ -199,15 +241,16 @@ FlareNet/
 1. **Images:**  
    All thermal images are stored in `flarenet-backend/uploads/`. This folder is mounted in Docker, so images are accessible to the backend.
 
-2. **Database:**
-   - Tables: `users`, `transformers`, `inspections`, `thermal_image`, `analysis_result`
+3. **Database:**
+   - Tables: `users`, `transformers`, `inspections`, `thermal_image`, `analysis_result`, `user_annotations`
    - The database will be automatically created on first Docker run.
+   - User annotations are automatically fed to the adaptive learning system for parameter tuning.
 
 3. **Environment variables (optional):**
    Customize DB credentials in `docker-compose.yml`. Backend `application.yml` should matches these credentials.
 
-4. **Model Training and Inference:**
-   For Milestone 02, the Python backend includes inference capabilities. Model training and detailed inference testing are available in a separate repository (link to be provided later). The current setup uses pre-trained models for anomaly detection.
+4. **Adaptive Learning & Model Integration:**
+   The system combines pre-trained PatchCore models with adaptive parameter tuning. User feedback automatically improves detection without retraining the core AI model. All parameter changes are tracked and can be reset to defaults anytime.
 
 ---
 
@@ -229,25 +272,27 @@ npm run dev
 
 
 
-# Start python backend
-# Go to backend folder
+# Start python backend with adaptive learning
 cd python-backend
 
 # Create and activate virtual environment
 python -m venv venv
-# Windows:
-venv\Scripts\activate
-# macOS/Linux:
-source venv/bin/activate
+venv\Scripts\activate      # Windows
+source venv/bin/activate   # macOS/Linux
 
-# Install dependencies
+# Install dependencies (includes matplotlib for visualization)
 pip install -r requirements.txt
 
-# Optional: download model weights first
+# Download model weights
 python model_weight.py
 
-# Run the FastAPI server
+# Run the FastAPI server with adaptive capabilities
 uvicorn app:app --host 0.0.0.0 --port 5000 --reload
+
+# Optional: Manage adaptive parameters
+python param_manager.py --show     # View current parameters
+python param_manager.py --reset    # Reset to defaults
+python param_manager.py --stats    # Show adaptation statistics
 ```
 ---
 
@@ -256,6 +301,7 @@ uvicorn app:app --host 0.0.0.0 --port 5000 --reload
 - To stop the DB: `docker compose down`
 - To reset the DB: delete `pgdata` volume or run `docker compose down -v` and `docker compose up -d`
 - Use Postgres GUI tools (like pgAdmin or DBeaver) to inspect the database if needed
+
 
 ## ⚠️ Limitations & Issues
 
