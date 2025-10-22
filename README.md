@@ -198,7 +198,7 @@ K = 1.1 + (sensitivity_percentage / 100) × 1.0
 For detailed technical documentation of the adaptive learning system, including mathematical formulas, API specifications, and troubleshooting guides, see:
 
 - Comprehensive end-to-end documentation - https://drive.google.com/file/d/1oA-8hFX2DrHVppWEXoII6MKevlmYXRBY/view?usp=sharing
-- 
+  
 - Detailed mathematical foundations and algorithms - https://drive.google.com/file/d/11qzIu_VQUKz2LG4rBHGnmAWeGZ505ezP/view?usp=sharing
 
 ---
