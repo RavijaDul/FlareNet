@@ -2,7 +2,7 @@
 
 Flarenet is a web-based system designed to manage and automate transformer inspections using thermal images. Users can record transformer details, upload baseline and maintenance thermal images, and tag images by environmental conditions such as sunny, cloudy, or rainy. The system includes automated anomaly detection using machine learning models to analyze thermal images and generate digital maintenance records.
 
-**Current Stage: Milestone 03** - Full-stack application with integrated ML inference and **Adaptive Learning System** for continuous improvement through human feedback.
+**Current Stage: Milestone 02** - Full-stack application with integrated ML inference for anomaly detection.
 
 [![React](https://img.shields.io/badge/React-18%2B-cyan?logo=react&logoColor=white&logoSize=30)](https://reactjs.org/) 
 [![Vite](https://img.shields.io/badge/Vite-4%2B-pink?logo=vite&logoColor=white&logoSize=30)](https://vitejs.dev/) 
@@ -157,51 +157,6 @@ Some Tested examples: https://drive.google.com/file/d/1oB7vqYwXO6YeScPZUGsK__g6Z
 (Segmented + OpenCV processed + Reconstructed)
 
 ---
-
-##  Adaptive Learning System
-
-FlareNet now includes an **adaptive learning system** that improves anomaly detection accuracy through user feedback without retraining the core AI model.
-
-### How It Works
-1. **User Corrections**: When users modify detection results (add/delete/resize annotations), the system captures this as feedback
-2. **Smart Adaptation**: Mathematical algorithms adjust detection sensitivity and classification parameters based on correction patterns
-3. **Real-time Learning**: Parameters update immediately, improving future detections on similar images
-4. **Comprehensive Tracking**: All parameter changes are logged in JSON/CSV format for analysis
-
-### User Modifications Detected & Tuned
--  **False Negatives**: User adds missing anomalies → Increases detection sensitivity
--  **False Positives**: User deletes incorrect detections → Reduces sensitivity  
--  **Bounding Box Resize**: User adjusts detection areas → Refines geometric rules
--  **Severity Changes**: User corrects fault levels → Adjusts color classification thresholds
--  **Category Changes**: User fixes anomaly types → Logs for pattern analysis
-
-### Mathematical Approach
-The system uses **statistical threshold adaptation** without touching the trained PatchCore model:
-
-```
-Detection Threshold = Mean(Anomaly_Map) + K × StdDev(Anomaly_Map)
-K = 1.1 + (sensitivity_percentage / 100) × 1.0
-```
-
-- **Lower K** = More sensitive (catches subtle anomalies)
-- **Higher K** = Less sensitive (reduces false positives)
-- **Adaptive tuning** based on user correction patterns
-
-### What Users Can Do
-- **Annotate freely**: All corrections automatically improve the system
-- **Reset parameters**: Return to default settings anytime via frontend button
-- **Track progress**: View parameter evolution and system learning trends
-- **Export data**: Download adaptation logs for analysis
-
-##  Adaptive Learning Documentation
-
-For detailed technical documentation of the adaptive learning system, including mathematical formulas, API specifications, and troubleshooting guides, see:
-
-- Comprehensive end-to-end documentation - https://drive.google.com/file/d/1oA-8hFX2DrHVppWEXoII6MKevlmYXRBY/view?usp=sharing
-  
-- Detailed mathematical foundations and algorithms - https://drive.google.com/file/d/11qzIu_VQUKz2LG4rBHGnmAWeGZ505ezP/view?usp=sharing
-
----
 ### 4. Run the python backend
 ```bash
 cd python-backend
@@ -352,4 +307,3 @@ python param_manager.py --stats    # Show adaptation statistics
 
 - Authentication & user roles missing – At this stage, the system does not include authentication, authorization, or multi-user role management. These features will be added in future phases.
 - Deployment not yet available – FlareNet currently runs only in a local development environment (Docker + local servers). A cloud deployment setup is not yet provided.
-- Adaptive learning requires user interaction – The system improves over time through user feedback; initial performance depends on base model accuracy.
