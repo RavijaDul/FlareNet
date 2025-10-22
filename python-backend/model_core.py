@@ -27,6 +27,7 @@ os.makedirs(ANNOTATION_DIR, exist_ok=True)
 
 # -----------------------------
 # Dynamic calibration parameters
+# These read the current sensitivity from adaptive_params. percent_to_k maps our 0–100
 # -----------------------------
 def get_current_threshold():
     """Get current adaptive threshold"""
@@ -49,7 +50,7 @@ def get_adaptive_k():
     return percent_to_k(current_threshold)
 
 # -------------------------
-# Load model
+# Load model  ,a pre-trained PatchCore-like model and sets it to eval
 # -------------------------
 print("🔹 Loading model from saved file...")
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -66,6 +67,7 @@ def classify_anomalies_adaptive(filtered_img, anomaly_map=None):
     """Enhanced classify_anomalies with adaptive parameters"""
     
     # Get current adaptive parameters
+    # Pulls adaptive params (HSV thresholds, color bands, geometric/severity rules, confidence factors).
     hsv_params = adaptive_params.get_param("hsv_warm_thresholds")
     color_params = adaptive_params.get_param("color_classification")
     geom_params = adaptive_params.get_param("geometric_rules")
@@ -84,7 +86,7 @@ def classify_anomalies_adaptive(filtered_img, anomaly_map=None):
     else:
         bin_mask = np.zeros((h, w), dtype=bool)
 
-    # Warm mask with adaptive HSV thresholds
+    # Warm mask with adaptive HSV thresholds 
     mask = np.zeros((h, w), dtype=np.uint8)
     for y in range(h):
         for x in range(w):
@@ -123,6 +125,10 @@ def classify_anomalies_adaptive(filtered_img, anomaly_map=None):
     # -------------------------
 
     # Connected components with adaptive minimum area
+    # For each box: calculates geometry  and color ratios
+    # Classifies as Loose Joint / Full Wire Overload / Point Overload, 
+    # determines severity (red–orange fraction vs threshold), and 
+    # computes confidence from tuned factors.
     visited = np.zeros_like(mask, dtype=bool)
     boxes = []
     dirs = [(1,0),(-1,0),(0,1),(0,-1)]
@@ -225,7 +231,7 @@ def classify_anomalies_adaptive(filtered_img, anomaly_map=None):
 
 
 # -------------------------
-# API Functions for User Feedback Processing
+# API Functions for User Feedback Processing --- These bridge the APIs to the feedback/parameter system.
 # -------------------------
 def process_user_feedback_api(image_id: str, user_id: str, original_detections: List[Dict], user_corrections: List[Dict]):
     """API endpoint to process user feedback and adapt model parameters"""

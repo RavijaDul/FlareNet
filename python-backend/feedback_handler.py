@@ -3,16 +3,17 @@ import os
 from datetime import datetime
 from typing import Dict, List, Tuple
 from adaptive_params import adaptive_params
-
 class FeedbackHandler:
     def __init__(self):
+        # Prepares a feedback_data/ directory and a user_corrections.json log
         self.base_dir = os.path.dirname(__file__)
         self.feedback_data_dir = os.path.join(self.base_dir, "feedback_data")
         self.feedback_file = os.path.join(self.feedback_data_dir, "user_corrections.json")
         
         # Ensure feedback_data directory exists
         os.makedirs(self.feedback_data_dir, exist_ok=True)
-    
+# Takes originals vs corrections and calls _analyze_feedback 
+# to produce a list of events:   
     def process_user_feedback(self, image_id: str, user_id: str, original_detections: List[Dict], user_corrections: List[Dict]):
         """Process user feedback and adapt parameters"""
         

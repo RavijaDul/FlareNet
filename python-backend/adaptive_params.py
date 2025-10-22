@@ -2,7 +2,7 @@ import json
 import os
 from typing import Dict, List, Tuple
 from datetime import datetime
-
+# Defines all defaults and adaptive parameter handling logic
 class AdaptiveParams:
     def __init__(self):
         self.base_dir = os.path.dirname(__file__)
@@ -64,7 +64,7 @@ class AdaptiveParams:
         }
         
         self.current_params = self.load_params()
-    
+    # Persists to feedback_data/adaptive_parameters.json and merges on load.
     def load_params(self) -> Dict:
         """Load adaptive parameters or return defaults"""
         if os.path.exists(self.params_file):

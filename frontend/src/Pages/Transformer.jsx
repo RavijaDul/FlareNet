@@ -440,6 +440,125 @@ function Transformer() {
     }));
   };
 
+    // Export feedback log to CSV
+  const handleExportFeedbackLog = () => {
+    if (!anomalyData || !anomalyData.anomalies || anomalyData.anomalies.length === 0) {
+      alert('No anomalies to export');
+      return;
+    }
+
+    // CSV Headers
+    const headers = [
+      'Thermal_Image_ID',
+      'Anomaly_Index',
+      'Is_User_Added',
+      'Model_Predicted_Label',
+      'Model_Predicted_Severity',
+      'Model_Predicted_Confidence',
+      'Model_Predicted_BBox_X',
+      'Model_Predicted_BBox_Y',
+      'Model_Predicted_BBox_Width',
+      'Model_Predicted_BBox_Height',
+      'User_Edited',
+      'Current_Label',
+      'Current_Severity',
+      'Current_Confidence',
+      'Current_BBox_X',
+      'Current_BBox_Y',
+      'Current_BBox_Width',
+      'Current_BBox_Height',
+      'Is_Deleted',
+      'Is_Final_Accepted',
+      'User_ID',
+      'Edit_Timestamp',
+      'Edit_Reason'
+    ];
+
+    // Build CSV rows
+    const rows = anomalyData.anomalies.map((anomaly, idx) => {
+      const imageId = selectedthermalFile?.id || anomalyData.thermalImageId || 'N/A';
+      const isUserAdded = anomaly.isUserAdded || false;
+      const isEdited = anomaly.edited || false;
+      const isDeleted = anomaly.isDeleted || false;
+      const isFinalAccepted = !isDeleted; // Final accepted = not deleted
+      
+      // For model-predicted columns: if user-added, show 'N/A', otherwise show current values
+      const modelLabel = isUserAdded ? 'N/A' : (anomaly.label || 'Unknown');
+      const modelSeverity = isUserAdded ? 'N/A' : (anomaly.severity || 'Unknown');
+      const modelConfidence = isUserAdded ? 'N/A' : (anomaly.confidence ?? 0);
+      const modelBboxX = isUserAdded ? 'N/A' : (anomaly.bbox?.x ?? 0);
+      const modelBboxY = isUserAdded ? 'N/A' : (anomaly.bbox?.y ?? 0);
+      const modelBboxWidth = isUserAdded ? 'N/A' : (anomaly.bbox?.width ?? 0);
+      const modelBboxHeight = isUserAdded ? 'N/A' : (anomaly.bbox?.height ?? 0);
+
+      // Current values (after any user edits)
+      const currentLabel = anomaly.label || 'Unknown';
+      const currentSeverity = anomaly.severity || 'Unknown';
+      const currentConfidence = anomaly.confidence ?? 0;
+      const currentBboxX = anomaly.bbox?.x ?? 0;
+      const currentBboxY = anomaly.bbox?.y ?? 0;
+      const currentBboxWidth = anomaly.bbox?.width ?? 0;
+      const currentBboxHeight = anomaly.bbox?.height ?? 0;
+
+      const userId = anomaly.editedBy || currentUserId || 'N/A';
+      const editTimestamp = anomaly.editedAt || 'N/A';
+      const editReason = anomaly.editReason || 'N/A';
+
+      return [
+        imageId,
+        idx + 1, // 1-based anomaly index
+        isUserAdded ? 'Yes' : 'No',
+        modelLabel,
+        modelSeverity,
+        modelConfidence,
+        modelBboxX,
+        modelBboxY,
+        modelBboxWidth,
+        modelBboxHeight,
+        isEdited ? 'Yes' : 'No',
+        currentLabel,
+        currentSeverity,
+        currentConfidence,
+        currentBboxX,
+        currentBboxY,
+        currentBboxWidth,
+        currentBboxHeight,
+        isDeleted ? 'Yes' : 'No',
+        isFinalAccepted ? 'Yes' : 'No',
+        userId,
+        editTimestamp,
+        editReason
+      ];
+    });
+
+    // Build CSV string
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => {
+        // Escape cells containing commas, quotes, or newlines
+        const cellStr = String(cell);
+        if (cellStr.includes(',') || cellStr.includes('"') || cellStr.includes('\n')) {
+          return `"${cellStr.replace(/"/g, '""')}"`;
+        }
+        return cellStr;
+      }).join(','))
+    ].join('\n');
+
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    const filename = `feedback_log_${selectedthermalFile?.id || 'unknown'}_${timestamp}.csv`;
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
     const isOverlapping = (bbox1, bbox2) => {
         return !(bbox1.x + bbox1.width <= bbox2.x ||
                  bbox2.x + bbox2.width <= bbox1.x ||
@@ -1464,7 +1583,51 @@ function Transformer() {
 <p>Selected Sensitivity: {tempthreshold}</p>
 </div>
 </div>
+{/* === Feedback Log Section === */}
+<div
+  style={{
+    padding: "16px",
+    background: "#f3f4f6",
+    borderRadius: "12px",
+    boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
+    marginTop: "20px",
+  }}
+>
+  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+    <h3 style={{ fontSize: "16px", fontWeight: "600", margin: 0 }}>
+      Feedback Log
+    </h3>
+    <Button
+      variant="contained"
+      size="small"
+      onClick={handleExportFeedbackLog}
+      disabled={!anomalyData?.anomalies || anomalyData.anomalies.length === 0}
+    >
+      Export to CSV
+    </Button>
+  </div>
 
+  <div
+    style={{
+      padding: "12px",
+      background: "white",
+      borderRadius: "8px",
+      boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+    }}
+  >
+    <p style={{ fontSize: "14px", color: "#666", marginBottom: "8px" }}>
+      This log captures all model predictions and user edits for the current thermal image.
+    </p>
+    <div style={{ fontSize: "12px", color: "#888" }}>
+      <p><strong>Thermal Image ID:</strong> {selectedthermalFile?.id || 'N/A'}</p>
+      <p><strong>Total Anomalies:</strong> {anomalyData?.anomalies?.length || 0}</p>
+      <p><strong>Model Detected:</strong> {anomalyData?.anomalies?.filter(a => !a.isUserAdded).length || 0}</p>
+      <p><strong>User Added:</strong> {anomalyData?.anomalies?.filter(a => a.isUserAdded).length || 0}</p>
+      <p><strong>User Edited:</strong> {anomalyData?.anomalies?.filter(a => a.edited).length || 0}</p>
+      <p><strong>Deleted:</strong> {anomalyData?.anomalies?.filter(a => a.isDeleted).length || 0}</p>
+    </div>
+  </div>
+</div>
 
 <Dialog
   open={openZoom}

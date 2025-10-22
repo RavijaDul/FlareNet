@@ -126,7 +126,7 @@ async def process_feedback(feedback_data: dict):
                     "edited": anomaly.get("edited", False)
                 })
         
-        # Process feedback through adaptive system
+        # Process feedback which analyzes feedback and adapts parameters.
         result = process_user_feedback_api(image_id, user_id, original_detections, user_corrections)
         
         # Return success response
