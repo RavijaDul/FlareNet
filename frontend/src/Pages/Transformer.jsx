@@ -21,7 +21,8 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
-import { imagesAPI, annotationsAPI } from '../services/api'; // Ensure this path is correct
+import { imagesAPI, annotationsAPI, maintenanceAPI } from '../services/api'; // Ensure this path is correct
+import MaintenanceRecord from '../components/MaintenanceRecord.jsx';
 
 function Transformer() {
     const location = useLocation();
@@ -145,6 +146,13 @@ function Transformer() {
     const [progress, setProgress] = React.useState(0);
     const [tempthreshold, setTempthreshold] = React.useState(50); // default value
 
+    // Maintenance record dialog state
+    const [openMaintenanceDialog, setOpenMaintenanceDialog] = React.useState(false);
+    const [maintenanceMode, setMaintenanceMode] = React.useState('add'); // 'add' | 'edit'
+    const [maintenanceInitialData, setMaintenanceInitialData] = React.useState(null);
+    // store the last-saved maintenance record so Edit can pre-fill the form
+    const [savedMaintenanceRecord, setSavedMaintenanceRecord] = React.useState(null);
+
   const [comment, setComment] = React.useState(""); // current input
     const [savedComment, setSavedComment] = React.useState(""); // stored comment
     const [isEditing, setIsEditing] = React.useState(false);
@@ -171,9 +179,9 @@ function Transformer() {
   const [openZoom, setOpenZoom] = React.useState(false);
   const [reasonEditing, setReasonEditing] = React.useState({}); // per-anomaly edit toggle for reason
 
-     const handleOpenZoom = () => setOpenZoom(true);
-     const handleCloseZoom = () => setOpenZoom(false);
-     
+    const handleOpenZoom = () => setOpenZoom(true);
+    const handleCloseZoom = () => setOpenZoom(false);
+
 
     //     // Call this when the model finishes and gives a response
     // const handleModelResponse = (response) => {
@@ -356,6 +364,10 @@ function Transformer() {
     try {
       await annotationsAPI.save(selectedthermalFile.id, currentUserId, annotationsJson);
       alert("Annotations saved successfully!");
+      // Exit edit mode and clear any selected/adding state so the UI returns to view mode
+      setIsEditMode(false);
+      setSelectedAnomaly(null);
+      setIsAdding(false);
     } catch (err) {
       console.error("Save error:", err);
       alert("Failed to save annotations");
@@ -678,6 +690,23 @@ function Transformer() {
                     } catch (err) {
                         console.error("Error fetching user annotations:", err);
                     }
+                    // Fetch maintenance records for this transformer+inspection and populate UI state
+                    try {
+                      const mrResp = await maintenanceAPI.getByTransformerAndInspection(transformerId, inspectionID);
+                      if (mrResp.data && Array.isArray(mrResp.data) && mrResp.data.length > 0) {
+                        // take the most recent record (last)
+                        const rec = mrResp.data[mrResp.data.length - 1];
+                        try {
+                          const parsed = typeof rec.recordJson === 'string' ? JSON.parse(rec.recordJson) : rec.recordJson;
+                          setSavedMaintenanceRecord(parsed);
+                          console.log('Loaded maintenance record from server:', parsed);
+                        } catch (e) {
+                          console.warn('Failed to parse maintenance recordJson', e);
+                        }
+                      }
+                    } catch (err) {
+                      console.error('Error fetching maintenance records:', err);
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching existing images:", error);
@@ -813,6 +842,84 @@ function Transformer() {
             setLoading(false);
         }
     };
+    
+          // Open Add / Edit Maintenance (Inspection) dialog
+          const handleOpenAddInspection = () => {
+            setMaintenanceMode('add');
+            setMaintenanceInitialData(null);
+            setOpenMaintenanceDialog(true);
+          };
+
+          const handleOpenEditInspection = () => {
+            // Prefill with current inspection info if available
+            if (!inspectionID) {
+              // nothing to edit
+              return;
+            }
+            setMaintenanceMode('edit');
+            setMaintenanceInitialData({
+              inspectionID,
+              inspectionDate,
+              inspectionNumber,
+              transformerNo,
+              poleno,
+              branch,
+              transformerId,
+              // include previously saved maintenance values (inspector, readings, remarks etc.)
+              ...(savedMaintenanceRecord || {}),
+            });
+            setOpenMaintenanceDialog(true);
+          };
+
+          const handleCloseMaintenance = () => {
+            setOpenMaintenanceDialog(false);
+            setMaintenanceInitialData(null);
+          };
+
+          const handleSaveMaintenance = async (data) => {
+            // Persist locally for immediate UI feedback
+            setSavedMaintenanceRecord(data ? { ...(data || {}) } : null);
+
+            setOpenMaintenanceDialog(false);
+            setMaintenanceInitialData(null);
+
+            // If we have the necessary IDs, try to persist to backend
+            if (!inspectionID || !transformerId) {
+              console.warn('Missing inspectionID or transformerId; saved locally only');
+              try {
+                localStorage.setItem(`maintenance_draft_${inspectionID || 'unknown'}`, JSON.stringify(data || {}));
+              } catch (err) {
+                console.warn('Could not write maintenance draft to localStorage', err);
+              }
+              return;
+            }
+
+            try {
+              const payload = data || {};
+              const resp = await maintenanceAPI.saveForInspection(inspectionID, transformerId, inspectedBy, payload);
+              console.log('Saved maintenance record to server:', resp.data);
+              if (resp.data) {
+                // Backend returns a minimal map with recordJson as string; parse it so the UI can consume nested shape
+                let parsedRecord = null;
+                try {
+                  parsedRecord = typeof resp.data.recordJson === 'string' ? JSON.parse(resp.data.recordJson) : resp.data.recordJson;
+                } catch (e) {
+                  console.warn('Could not parse recordJson from server response', e);
+                }
+                // prefer the parsed nested object, but keep fallback to resp.data
+                setSavedMaintenanceRecord(parsedRecord || resp.data);
+              }
+              try { localStorage.removeItem(`maintenance_draft_${inspectionID}`); } catch (e) {}
+            } catch (err) {
+              console.error('Failed to save maintenance record to server:', err);
+              alert('Failed to save maintenance record to server; saved locally.');
+              try {
+                localStorage.setItem(`maintenance_draft_${inspectionID}`, JSON.stringify(data || {}));
+              } catch (e) {
+                console.warn('Could not persist maintenance draft locally', e);
+              }
+            }
+          };
     return (
         <div style={{ padding: "20px", background: "#f9fafb", minHeight: "100vh" }}>
             {/* Heading */}
@@ -886,6 +993,11 @@ function Transformer() {
                         </Button>
                     </label>
 
+                    {/* <div style={{ marginTop: 8, display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                        <Button variant="contained" size="small" onClick={handleOpenAddInspection} startIcon={<AddIcon />}>Add Maintenance Record</Button>
+                        <Button variant="outlined" size="small" onClick={handleOpenEditInspection} disabled={!inspectionID} startIcon={<EditIcon />}>Edit</Button>
+                    </div> */}
+
                     {/* Show preview + delete button if baseline is selected/uploaded */}
                     {baselineImageUrl && (
                         <div
@@ -926,7 +1038,44 @@ function Transformer() {
                     )}
                 </div>
             </div>
+            {/* Buttons aligned to the right */}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: 2,
+                width: "100%",
+                marginBottom: 2,
+              }}
+            >
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
+                {/* <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<AddIcon />}
+                  onClick={handleOpenAddInspection}
+                  disabled={Boolean(savedMaintenanceRecord)}
+                >
+                  Add Maintenance Record
+                </Button> */}
+                
+              </div>
 
+              <Button
+                variant="contained"
+                color="secondary"
+                startIcon={<EditIcon />}
+                onClick={handleOpenEditInspection}
+                disabled={!inspectionID}
+              >
+                ADD/Edit Maintenance Record
+              </Button>
+              
+            </Box>
+             {/* 🔽 text now appears below the box */}
+<p style={{ marginTop: 0, fontSize: 12, color: "#6b7280", textAlign: "right" }}>
+  Accessible for authorised users only
+</p>
             {/* Transformer details */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
                 <div
@@ -1814,6 +1963,13 @@ function Transformer() {
       CLOSE
     </Button>
   </div>
+</Dialog>
+
+{/* Maintenance Record Dialog (Add / Edit) */}
+<Dialog open={openMaintenanceDialog} onClose={handleCloseMaintenance} fullWidth maxWidth="sm">
+  <DialogContent dividers>
+    <MaintenanceRecord initialData={maintenanceInitialData} onSave={handleSaveMaintenance} onCancel={handleCloseMaintenance} />
+  </DialogContent>
 </Dialog>
 
 

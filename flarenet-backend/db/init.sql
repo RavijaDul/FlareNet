@@ -193,6 +193,23 @@ CREATE INDEX idx_annotation_action_user ON annotation_action(user_annotation_id)
 CREATE INDEX idx_annotation_action_detection ON annotation_action(detection_id);
 CREATE INDEX idx_annotation_action_type ON annotation_action(action_type);
 CREATE INDEX idx_annotation_action_created ON annotation_action(created_at);
+ 
+-- ================= MAINTENANCE RECORDS =================
+-- Stores maintenance/inspection records entered by users for each inspection
+CREATE TABLE maintenance_record (
+    id BIGSERIAL PRIMARY KEY,
+    inspection_id BIGINT REFERENCES inspections(id) ON DELETE CASCADE,
+    transformer_id BIGINT REFERENCES transformers(id) ON DELETE CASCADE,
+    user_id VARCHAR(255),
+    record_json TEXT NOT NULL, -- full payload from frontend (inspector, rectification, reinspection, timestamps)
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER SEQUENCE maintenance_record_id_seq RESTART WITH 1;
+
+CREATE INDEX idx_maintenance_record_inspection ON maintenance_record(inspection_id);
+CREATE INDEX idx_maintenance_record_transformer ON maintenance_record(transformer_id);
 -- ================= SEED DATA: ANALYSIS RESULTS =================
 -- Auto-generated analysis inserts - Generated on 2025-10-05 11:44:14.429200
 -- Keep result_json for backward compatibility during migration phase

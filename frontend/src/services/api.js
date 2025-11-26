@@ -69,6 +69,23 @@ export const annotationsAPI = {
     },
   }),
 };
+
+// Maintenance records API
+export const maintenanceAPI = {
+  // Save a maintenance record for an inspection
+  saveForInspection: (inspectionId, transformerId, userId, recordJson) =>
+    api.post(`/inspections/${inspectionId}/maintenance-records`, recordJson, {
+      params: { transformerId, userId },
+      headers: { 'Content-Type': 'application/json' },
+    }),
+
+  // Get records for an inspection
+  getByInspection: (inspectionId) => api.get(`/inspections/${inspectionId}/maintenance-records`),
+
+  // Get records for transformer + inspection
+  getByTransformerAndInspection: (transformerId, inspectionId) =>
+    api.get(`/transformers/${transformerId}/inspections/${inspectionId}/maintenance-records`),
+};
 export default api;
 
 
