@@ -2016,5 +2016,103 @@
         "delta": 0.00020053227115214838
       }
     }
+  },
+  {
+    "timestamp": "2025-11-26T22:28:39.136793",
+    "image_id": "4",
+    "user_id": "H1210",
+    "feedback_types": [
+      "false_positive",
+      "false_negative"
+    ],
+    "detection_counts": {
+      "original": 5,
+      "corrected": 5,
+      "added": 5,
+      "deleted": 5
+    },
+    "parameters_before": {
+      "percent_threshold": 35,
+      "min_area_factor": 0.0009323488839643754,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "parameters_after": {
+      "percent_threshold": 35,
+      "min_area_factor": 0.0008950549286058005,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "changes": {
+      "min_area_factor": {
+        "from": 0.0009323488839643754,
+        "to": 0.0008950549286058005,
+        "delta": -3.7293955358574894e-05
+      }
+    }
   }
 ]

@@ -27,6 +27,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { inspectionsAPI } from "../services/api";
+import VeiwRecord from './VeiwRecord';
 
 function TransformerDetails() {
   const location = useLocation();
@@ -36,6 +37,9 @@ function TransformerDetails() {
   const [inspectionData, setInspectionData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [inspectionsLoading, setInspectionsLoading] = useState(false);
+  const [viewMode, setViewMode] = useState('inspections'); // 'inspections' | 'records'
+  const [openRecordsDialog, setOpenRecordsDialog] = useState(false);
+  const [selectedInspectionForRecords, setSelectedInspectionForRecords] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   
   const [formData, setFormData] = useState({
@@ -226,106 +230,195 @@ function TransformerDetails() {
         </Box>
       </Paper>
 
-      {/* Transformer Inspection Section */}
-      <Box
-        sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}
-      >
-        <Typography variant="h5">Transformer Inspections</Typography>
-        <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
-          Add Inspection
+      {/* View toggles: Veiw Records / Veiw Inspections */}
+      <Box sx={{ display: 'flex', justifyContent: 'flex-start', gap: 2, mb: 2 }}>
+        <Button
+          variant={viewMode === 'records' ? 'contained' : 'outlined'}
+          color="primary"
+          onClick={() => setViewMode('records')}
+        >
+          Veiw Records
+        </Button>
+        <Button
+          variant={viewMode === 'inspections' ? 'contained' : 'outlined'}
+          color="primary"
+          onClick={() => setViewMode('inspections')}
+        >
+          Veiw Inspections
         </Button>
       </Box>
 
-      {/* Inspection Table */}
-      <Paper sx={{ p: 2, mb: 4 }}>
-        {inspectionsLoading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-            <CircularProgress />
-          </Box>
-        ) : inspectionData.length ? (
-          <Table>
-            <TableHead>
-          <TableRow>
-            <TableCell sx={{ width: 50 }}>Inspection Number</TableCell>
-            <TableCell sx={{ width: 200 }}>Inspection Date</TableCell>
-            <TableCell sx={{ width: 200 }}>Maintenence Date</TableCell>
-            <TableCell sx={{ width: 200 }}>Status</TableCell>
-            <TableCell sx={{ width: 200, align: "right" }}>Actions</TableCell> 
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {inspectionData.map((item) => (
-            <TableRow key={item.id}>
-              <TableCell sx={{ width: 50 }}>{item.inspectionNumber}</TableCell>
-              <TableCell sx={{ width: 200 }}>{item.inspectedDate} {item.inspectionTime}</TableCell>
-              <TableCell sx={{ width: 200 }}>{item.inspectedDate} {item.inspectionTime}</TableCell>
-              <TableCell sx={{ width: 200 }}>{item.status}</TableCell>
-              <TableCell sx={{ width: 200, display: "flex", justifyContent: "flex-end", gap: 1 }}>
-          <Button
-          variant="outlined"
-          size="small"
-          color="primary"
-          onClick={() =>
-            navigate("/transformer", {
-              state: {
-                transformerNo: transformerNo,
-                poleNo: poleNo,
-                region: region,
-                transformerId: id, // Pass transformer ID instead of inspection ID
-                inspectionID: item.id,
-                inspectionDate: item.inspectedDate,
-                inspectionTime: item.inspectionTime,
-                inspectionNumber: item.inspectionNumber,
-              },
-            })
-          }
-        >
-          View
-        </Button>
-        <Button
-          variant="outlined"
-          size="small"
-          color="warning"
-          onClick={() => {
-            setEditingId(item.id); // mark the row to edit
-            setFormData({
-              branch: item.branch,
-              transformerNo: transformerNo,
-              date: dayjs(item.inspectedDate),
-              time: dayjs(item.inspectionTime, "HH:mm:ss"),
-            });
-            setOpen(true);
-          }}
-        >
-          Edit
-        </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            color="error"
-            onClick={async () => {
-              try {
-                await inspectionsAPI.delete(item.id);
-                setInspectionData(inspectionData.filter((i) => i.id !== item.id));
-                setSnackbar({ open: true, message: 'Inspection deleted successfully', severity: 'success' });
-              } catch (err) {
-                setSnackbar({ open: true, message: 'Failed to delete inspection', severity: 'error' });
-              }
-            }}
-          >
-            Delete
+      {/* (Records dialog removed) */}
+
+      {/* Section heading: either Inspections or Records */}
+      {viewMode === 'inspections' ? (
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+          <Typography variant="h5">Transformer Inspections</Typography>
+          <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
+            Add Inspection
           </Button>
-        </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-        </Table>
-        ) : (
-          <Typography variant="body2" color="textSecondary">
-            No inspections available. Click "Add Inspection" to create one.
-          </Typography>
-        )}
+        </Box>
+      ) : (
+        <Box sx={{ display: "flex", justifyContent: "flex-start", alignItems: "center", mb: 2 }}>
+          <Typography variant="h5">Inspection Records</Typography>
+        </Box>
+      )}
+
+      {/* Inspection Table (shown when viewMode === 'inspections') */}
+      {viewMode === 'inspections' && (
+        <Paper sx={{ p: 2, mb: 4 }}>
+          {inspectionsLoading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+              <CircularProgress />
+            </Box>
+          ) : inspectionData.length ? (
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ width: 50 }}>Inspection Number</TableCell>
+                  <TableCell sx={{ width: 200 }}>Inspection Date</TableCell>
+                  <TableCell sx={{ width: 200 }}>Maintenence Date</TableCell>
+                  <TableCell sx={{ width: 200 }}>Status</TableCell>
+                  <TableCell sx={{ width: 200, align: "right" }}>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {inspectionData.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell sx={{ width: 50 }}>{item.inspectionNumber}</TableCell>
+                    <TableCell sx={{ width: 200 }}>{item.inspectedDate} {item.inspectionTime}</TableCell>
+                    <TableCell sx={{ width: 200 }}>{item.inspectedDate} {item.inspectionTime}</TableCell>
+                    <TableCell sx={{ width: 200 }}>{item.status}</TableCell>
+                    <TableCell sx={{ width: 200, display: "flex", justifyContent: "flex-end", gap: 1 }}>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color="primary"
+                        onClick={() =>
+                          navigate("/transformer", {
+                            state: {
+                              transformerNo: transformerNo,
+                              poleNo: poleNo,
+                              region: region,
+                              transformerId: id, // Pass transformer ID instead of inspection ID
+                              inspectionID: item.id,
+                              inspectionDate: item.inspectedDate,
+                              inspectionTime: item.inspectionTime,
+                              inspectionNumber: item.inspectionNumber,
+                            },
+                          })
+                        }
+                      >
+                        View
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color="warning"
+                        onClick={() => {
+                          setEditingId(item.id); // mark the row to edit
+                          setFormData({
+                            branch: item.branch,
+                            transformerNo: transformerNo,
+                            date: dayjs(item.inspectedDate),
+                            time: dayjs(item.inspectionTime, "HH:mm:ss"),
+                          });
+                          setOpen(true);
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color="error"
+                        onClick={async () => {
+                          try {
+                            await inspectionsAPI.delete(item.id);
+                            setInspectionData(inspectionData.filter((i) => i.id !== item.id));
+                            setSnackbar({ open: true, message: 'Inspection deleted successfully', severity: 'success' });
+                          } catch (err) {
+                            setSnackbar({ open: true, message: 'Failed to delete inspection', severity: 'error' });
+                          }
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <Typography variant="body2" color="textSecondary">
+              No inspections available. Click "Add Inspection" to create one.
+            </Typography>
+          )}
         </Paper>
+      )}
+
+      {/* Records Table (shown when viewMode === 'records') */}
+      {viewMode === 'records' && (
+        <Paper sx={{ p: 2, mb: 4 }}>
+          {inspectionsLoading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+              <CircularProgress />
+            </Box>
+          ) : inspectionData.length ? (
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ width: 50 }}>Inspection Number</TableCell>
+                  <TableCell sx={{ width: 200 }}>Inspection Date</TableCell>
+                  <TableCell sx={{ width: 200 }}>Maintenence Date</TableCell>
+                  <TableCell sx={{ width: 200 }}>Status</TableCell>
+                  <TableCell sx={{ width: 200, align: "right" }}>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {inspectionData.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell sx={{ width: 50 }}>{item.inspectionNumber}</TableCell>
+                    <TableCell sx={{ width: 200 }}>{item.inspectedDate} {item.inspectionTime}</TableCell>
+                    <TableCell sx={{ width: 200 }}>{item.inspectedDate} {item.inspectionTime}</TableCell>
+                    <TableCell sx={{ width: 200 }}>{item.status}</TableCell>
+                    <TableCell sx={{ width: 200, display: "flex", justifyContent: "flex-end" }}>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color="primary"
+                        onClick={() => {
+                          setSelectedInspectionForRecords(item);
+                          setOpenRecordsDialog(true);
+                        }}
+                      >
+                        veiw record
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <Typography variant="body2" color="textSecondary">
+              No records available.
+            </Typography>
+          )}
+        </Paper>
+      )}
+
+      {/* Dialog to show a single record's details using VeiwRecord component */}
+      <Dialog
+        open={openRecordsDialog}
+        onClose={() => setOpenRecordsDialog(false)}
+        fullWidth
+        maxWidth="lg"
+        PaperProps={{ sx: { width: '100%', maxWidth: 1200, height: '100vh' } }}
+      >
+        <DialogContent dividers sx={{ height: 'calc(100% - 64px)', overflow: 'auto' }}>
+          <VeiwRecord transformer={transformer} inspection={selectedInspectionForRecords} onClose={() => setOpenRecordsDialog(false)} />
+        </DialogContent>
+      </Dialog>
 
         {/* Add Inspection Dialog */}
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">

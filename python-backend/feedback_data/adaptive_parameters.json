@@ -1,6 +1,6 @@
 {
   "percent_threshold": 35,
-  "min_area_factor": 0.0009323488839643754,
+  "min_area_factor": 0.0008950549286058005,
   "hsv_warm_thresholds": {
     "hue_low": 0.17,
     "hue_high": 0.95,
