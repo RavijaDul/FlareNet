@@ -22,11 +22,13 @@ import DialogContent from "@mui/material/DialogContent";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 import { imagesAPI, annotationsAPI, maintenanceAPI } from '../services/api'; // Ensure this path is correct
+import { ActorContext } from '../context/AuthContext';
 import MaintenanceRecord from '../components/MaintenanceRecord.jsx';
 
 function Transformer() {
     const location = useLocation();
     const state = location.state || {};
+    const { name: actorName, role: actorRole } = React.useContext(ActorContext);
     const [selectedbaselineFile, setSelectedbaselineFile] = React.useState(() => {
         const stored = localStorage.getItem('selectedbaselineFile');
         return stored ? JSON.parse(stored) : null;
@@ -84,9 +86,9 @@ function Transformer() {
         return val;
     });
     const [inspectedBy, setInspectedBy] = React.useState(() => {
-        const val = state.inspectedBy || localStorage.getItem('inspectedBy') || "H1210";
-        if (state.inspectedBy) localStorage.setItem('inspectedBy', state.inspectedBy);
-        return val;
+      const val = state.inspectedBy || localStorage.getItem('inspectedBy') || actorName || "H1210";
+      if (state.inspectedBy) localStorage.setItem('inspectedBy', state.inspectedBy);
+      return val;
     });
     const [inspectionID, setInspectionID] = React.useState(() => {
         const val = state.inspectionID || localStorage.getItem('inspectionID') || "";
@@ -235,7 +237,7 @@ function Transformer() {
     }
     }, [analysisResult]);
 
-        // at top of Transformer() (with your other state)
+        // (ActorContext already read earlier)
     const imgRef = React.useRef(null);
     const [imgDims, setImgDims] = React.useState({
     naturalWidth: 0,
@@ -356,7 +358,7 @@ function Transformer() {
         setSelectedAnomaly(null);
     };
 
-  const currentUserId = inspectedBy || "UNKNOWN";
+  const currentUserId = (actorName && actorName.trim()) || inspectedBy || "UNKNOWN";
 
   const handleSaveAnnotations = async () => {
     if (!selectedthermalFile || !selectedthermalFile.id) return;
@@ -630,8 +632,8 @@ function Transformer() {
         setResizeHandle(null);
     };
 
-    // uploader is always the inspector
-    const uploader = inspectedBy;
+    // uploader defaults to currently selected actor name (engineer/inspector)
+    const uploader = (actorName && actorName.trim()) || inspectedBy;
 
     const handleChange = (event) => {
         setweather(event.target.value);
@@ -845,9 +847,11 @@ function Transformer() {
     
           // Open Add / Edit Maintenance (Inspection) dialog
           const handleOpenAddInspection = () => {
-            setMaintenanceMode('add');
-            setMaintenanceInitialData(null);
-            setOpenMaintenanceDialog(true);
+              setMaintenanceMode('add');
+              setMaintenanceInitialData(null);
+              // record the current actor as inspector when creating a new inspection
+              if (actorName && actorName.trim()) setInspectedBy(actorName);
+              setOpenMaintenanceDialog(true);
           };
 
           const handleOpenEditInspection = () => {
@@ -896,7 +900,7 @@ function Transformer() {
 
             try {
               const payload = data || {};
-              const resp = await maintenanceAPI.saveForInspection(inspectionID, transformerId, inspectedBy, payload);
+              const resp = await maintenanceAPI.saveForInspection(inspectionID, transformerId, currentUserId, payload);
               console.log('Saved maintenance record to server:', resp.data);
               if (resp.data) {
                 // Backend returns a minimal map with recordJson as string; parse it so the UI can consume nested shape
@@ -1061,15 +1065,24 @@ function Transformer() {
                 
               </div>
 
-              <Button
-                variant="contained"
-                color="secondary"
-                startIcon={<EditIcon />}
-                onClick={handleOpenEditInspection}
-                disabled={!inspectionID}
-              >
-                ADD/Edit Maintenance Record
-              </Button>
+              {actorRole === 'engineer' ? (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<EditIcon />}
+                  onClick={handleOpenEditInspection}
+                  disabled={!inspectionID}
+                >
+                  ADD/Edit Maintenance Record
+                </Button>
+              ) : (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Button variant="contained" size="small" disabled>
+                    ADD/Edit Maintenance Record
+                  </Button>
+                  <span style={{ fontSize: 12, color: '#6b7280' }}>Visible to engineers only</span>
+                </div>
+              )}
               
             </Box>
              {/* 🔽 text now appears below the box */}

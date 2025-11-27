@@ -26,7 +26,7 @@ import { LocalizationProvider, DatePicker, TimePicker } from "@mui/x-date-picker
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
-import { inspectionsAPI } from "../services/api";
+import { inspectionsAPI, maintenanceAPI } from "../services/api";
 import VeiwRecord from './VeiwRecord';
 
 function TransformerDetails() {
@@ -159,6 +159,73 @@ function TransformerDetails() {
     setSnackbar({ ...snackbar, open: false });
   };
 
+  const formatDate = (arr) => {
+    if (!arr) return "-";
+    // if array like [y, m, d]
+    if (Array.isArray(arr)) {
+      const [y, m, d] = arr;
+      return `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    }
+    // if ISO string or YYYY-MM-DD string
+    if (typeof arr === 'string') {
+      return arr.split('T')[0];
+    }
+    return "-";
+  };
+
+  const formatTime = (arr) => {
+    if (!arr) return "-";
+    if (Array.isArray(arr)) {
+      const [h, min, s = 0] = arr;
+      return `${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+    }
+    if (typeof arr === 'string') {
+      // assume HH:mm:ss or ISO timestamp
+      const t = arr.split('T').length > 1 ? arr.split('T')[1] : arr;
+      return t.split('.')[0];
+    }
+    return "-";
+  };
+
+  const formatFromISO = (iso) => {
+    if (!iso) return { date: '-', time: '-' };
+    try {
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return { date: String(iso).split('T')[0] || '-', time: String(iso).split('T')[1] || '-' };
+      const date = d.toISOString().split('T')[0];
+      const time = d.toTimeString().split(' ')[0];
+      return { date, time };
+    } catch (e) {
+      return { date: String(iso).split('T')[0] || '-', time: String(iso).split('T')[1] || '-' };
+    }
+  };
+
+  // fetch latest maintenance record for a given inspection and merge into inspectionData
+  const fetchAndMergeMaintenance = async (inspection) => {
+    if (!inspection || !inspection.id || !id) return;
+    try {
+      const resp = await maintenanceAPI.getByTransformerAndInspection(id, inspection.id);
+      if (resp?.data && Array.isArray(resp.data) && resp.data.length > 0) {
+        const rec = resp.data[resp.data.length - 1];
+        let parsedRec = null;
+        try {
+          parsedRec = typeof rec.recordJson === 'string' ? JSON.parse(rec.recordJson) : (rec.recordJson || rec);
+        } catch (e) {
+          parsedRec = rec;
+        }
+
+        // try common timestamp fields
+        const ts = parsedRec?.timestamp || parsedRec?.date || parsedRec?.savedAt || rec?.updatedAt || rec?.createdAt || parsedRec?.updatedAt;
+        if (ts) {
+          const { date, time } = formatFromISO(ts);
+          setInspectionData(prev => prev.map(it => it.id === inspection.id ? { ...it, maintenanceDate: date, maintenanceTime: time } : it));
+        }
+      }
+    } catch (e) {
+      // ignore silently — won't block opening dialog
+      console.warn('Failed to fetch maintenance for inspection', inspection.id, e);
+    }
+  };
 
   return (
     <Box sx={{ p: 3 }}>
@@ -233,19 +300,20 @@ function TransformerDetails() {
       {/* View toggles: Veiw Records / Veiw Inspections */}
       <Box sx={{ display: 'flex', justifyContent: 'flex-start', gap: 2, mb: 2 }}>
         <Button
-          variant={viewMode === 'records' ? 'contained' : 'outlined'}
-          color="primary"
-          onClick={() => setViewMode('records')}
-        >
-          Veiw Records
-        </Button>
-        <Button
           variant={viewMode === 'inspections' ? 'contained' : 'outlined'}
           color="primary"
           onClick={() => setViewMode('inspections')}
         >
           Veiw Inspections
         </Button>
+        <Button
+          variant={viewMode === 'records' ? 'contained' : 'outlined'}
+          color="primary"
+          onClick={() => setViewMode('records')}
+        >
+          View Records
+        </Button>
+
       </Box>
 
       {/* (Records dialog removed) */}
@@ -286,8 +354,13 @@ function TransformerDetails() {
                 {inspectionData.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell sx={{ width: 50 }}>{item.inspectionNumber}</TableCell>
-                    <TableCell sx={{ width: 200 }}>{item.inspectedDate} {item.inspectionTime}</TableCell>
-                    <TableCell sx={{ width: 200 }}>{item.inspectedDate} {item.inspectionTime}</TableCell>
+                    <TableCell sx={{ width: 200 }}>
+                      {formatDate(item.inspectedDate)} {formatTime(item.inspectionTime)}
+                    </TableCell>                    
+                    <TableCell sx={{ width: 200 }}>
+                      {item.maintenanceDate || item.maintenanceTime
+                        ? `${formatDate(item.maintenanceDate)} ${formatTime(item.maintenanceTime)}`
+                        : "-"}    </TableCell>                
                     <TableCell sx={{ width: 200 }}>{item.status}</TableCell>
                     <TableCell sx={{ width: 200, display: "flex", justifyContent: "flex-end", gap: 1 }}>
                       <Button
@@ -379,15 +452,22 @@ function TransformerDetails() {
                 {inspectionData.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell sx={{ width: 50 }}>{item.inspectionNumber}</TableCell>
-                    <TableCell sx={{ width: 200 }}>{item.inspectedDate} {item.inspectionTime}</TableCell>
-                    <TableCell sx={{ width: 200 }}>{item.inspectedDate} {item.inspectionTime}</TableCell>
+                    <TableCell sx={{ width: 200 }}>
+                                          {formatDate(item.inspectedDate)} {formatTime(item.inspectionTime)}
+                                        </TableCell>                          
+                    <TableCell sx={{ width: 200 }}>
+                      {item.maintenanceDate || item.maintenanceTime
+                        ? `${formatDate(item.maintenanceDate)} ${formatTime(item.maintenanceTime)}`
+                        : "-"}
+                    </TableCell>
                     <TableCell sx={{ width: 200 }}>{item.status}</TableCell>
                     <TableCell sx={{ width: 200, display: "flex", justifyContent: "flex-end" }}>
                       <Button
                         variant="outlined"
                         size="small"
                         color="primary"
-                        onClick={() => {
+                        onClick={async () => {
+                          await fetchAndMergeMaintenance(item);
                           setSelectedInspectionForRecords(item);
                           setOpenRecordsDialog(true);
                         }}

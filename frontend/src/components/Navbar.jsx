@@ -3,10 +3,11 @@ import { ActorContext } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 
 export default function Navbar() {
-  // const { user, logout } = useContext(ActorContext);
-  const { actor, setDisplayName } = useContext(ActorContext);
+  const { name, role, setDisplayName, setRole } = useContext(ActorContext);
 
   const [open, setOpen] = useState(false);
+  const [tempName, setTempName] = useState(name || "");
+  const [tempRole, setTempRole] = useState(role || "engineer");
 
   const avatarStyle = {
     width: 35,
@@ -61,21 +62,63 @@ export default function Navbar() {
       {/* Right side */}
       <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
         <div style={avatarStyle} onClick={() => setOpen((p) => !p)}>
-          {actor.charAt(0).toUpperCase()}
+          {(name || "?").charAt(0).toUpperCase()}
         </div>
         {open && (
           <div style={popupStyle}>
-            <p style={{ margin: 0, fontWeight: "bold" }}>{actor}</p>
-            <input
-              type="text"
-              placeholder="Change name"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  setDisplayName(e.target.value || "guest");
+            <p style={{ margin: 0, fontWeight: "bold" }}>{name}</p>
+
+            <div style={{ marginTop: 8 }}>
+              <label style={{ display: 'block', fontSize: 12, marginBottom: 4 }}>Role</label>
+              <select
+                value={tempRole}
+                onChange={(e) => setTempRole(e.target.value)}
+                style={{ width: '100%', padding: '6px', borderRadius: 4 }}
+              >
+                <option value="engineer">Engineer</option>
+                <option value="inspector">Inspector</option>
+              </select>
+            </div>
+
+            <div style={{ marginTop: 8 }}>
+              <input
+                type="text"
+                value={tempName}
+                placeholder="Enter your name (e.g. John Doe)"
+                onChange={(e) => setTempName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    setDisplayName(tempName || (tempRole === 'engineer' ? 'Engineer' : 'Inspector'));
+                    setRole(tempRole);
+                    setOpen(false);
+                  }
+                }}
+                style={{ width: '100%', padding: '6px', borderRadius: 4 }}
+              />
+            </div>
+
+            <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+              <button
+                style={{ flex: 1, padding: '6px', borderRadius: 6, cursor: 'pointer' }}
+                onClick={() => {
+                  setDisplayName(tempName || (tempRole === 'engineer' ? 'Engineer' : 'Inspector'));
+                  setRole(tempRole);
                   setOpen(false);
-                }
-              }}
-            />
+                }}
+              >
+                Save
+              </button>
+              <button
+                style={{ flex: 1, padding: '6px', borderRadius: 6, cursor: 'pointer' }}
+                onClick={() => {
+                  setTempName(name || '');
+                  setTempRole(role || 'engineer');
+                  setOpen(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         )}
       

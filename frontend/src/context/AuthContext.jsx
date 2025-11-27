@@ -4,15 +4,31 @@ import { createContext, useState } from "react";
 export const ActorContext = createContext();
 
 export function ActorProvider({ children }) {
-  const [actor, setActor] = useState(localStorage.getItem("actor") || "guest");
+  // persist name and role separately so other parts can consume them
+  const [name, setName] = useState(localStorage.getItem("actorName") || "Engineer");
+  const [role, setRole] = useState(localStorage.getItem("actorRole") || "engineer");
 
-  const setDisplayName = (name) => {
-    setActor(name);
-    localStorage.setItem("actor", name);
+  const setDisplayName = (newName) => {
+    const val = newName && newName.trim() ? newName : (role === "engineer" ? "Engineer" : "Inspector");
+    setName(val);
+    localStorage.setItem("actorName", val);
+  };
+
+  const setActorRole = (newRole) => {
+    const val = newRole === "inspector" ? "inspector" : "engineer";
+    setRole(val);
+    localStorage.setItem("actorRole", val);
+    // if user hasn't customized name, update default display name to match role
+    const curName = localStorage.getItem("actorName") || "";
+    if (!curName || curName.toLowerCase().startsWith("engineer") || curName.toLowerCase().startsWith("inspector")) {
+      const defaultName = val === "engineer" ? "Engineer" : "Inspector";
+      setName(defaultName);
+      localStorage.setItem("actorName", defaultName);
+    }
   };
 
   return (
-    <ActorContext.Provider value={{ actor, setDisplayName }}>
+    <ActorContext.Provider value={{ name, role, setDisplayName, setRole: setActorRole }}>
       {children}
     </ActorContext.Provider>
   );

@@ -155,51 +155,20 @@ export default function VeiwRecord({ transformer = {}, inspection = null, onClos
             }
           }
 
-          // localStorage fallbacks
-          // 1) transformer-specific key (primary in MaintenanceRecord.jsx)
-          if (!loaded) {
+          // localStorage fallback: only use inspection-specific record.
+          // Avoid using transformer/global/draft/latest fallbacks here so
+          // inspections with no maintenance records render blank rather
+          // than showing unrelated previous data.
+          if (!loaded && insId) {
             try {
-              if (transformer?.id) {
-                const rawT = localStorage.getItem(`maintenanceRecord_${transformer.id}`);
-                if (rawT) {
-                  loaded = JSON.parse(rawT);
-                  setMaintenanceSource(`local:transformer:${transformer.id}`);
-                }
+              const rawI = localStorage.getItem(`maintenanceRecord_${insId}`);
+              if (rawI) {
+                loaded = JSON.parse(rawI);
+                setMaintenanceSource(`local:inspection:${insId}`);
               }
-            } catch (e) { /* ignore parse errors */ }
-          }
-
-          // 2) inspection-specific key
-          if (!loaded) {
-            try {
-              if (insId) {
-                const rawI = localStorage.getItem(`maintenanceRecord_${insId}`);
-                if (rawI) {
-                  loaded = JSON.parse(rawI);
-                  setMaintenanceSource(`local:inspection:${insId}`);
-                }
-              }
-            } catch (e) { /* ignore parse errors */ }
-          }
-
-          if (!loaded) {
-            try {
-              const draftRaw = localStorage.getItem('maintenanceRecord_draft');
-              if (draftRaw) {
-                loaded = JSON.parse(draftRaw);
-                setMaintenanceSource('local:draft');
-              }
-            } catch (e) { }
-          }
-
-          if (!loaded) {
-            try {
-              const latest = localStorage.getItem('maintenanceRecord_latest');
-              if (latest) {
-                loaded = JSON.parse(latest);
-                setMaintenanceSource('local:latest');
-              }
-            } catch (e) { }
+            } catch (e) {
+              // ignore parse errors
+            }
           }
 
           if (loaded) setMaintenanceData(loaded);

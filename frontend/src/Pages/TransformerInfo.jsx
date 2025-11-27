@@ -10,7 +10,7 @@ import MenuIcon from '@mui/icons-material/Menu'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import { FormControl, InputLabel, Select } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { transformersAPI } from '../services/api';
+import { transformersAPI, inspectionsAPI } from '../services/api';
 
 function MainPage() {
   const [view, setView] = useState('transformers') // 'transformers' or 'inspections'
@@ -45,12 +45,69 @@ function MainPage() {
   const [error, setError] = useState(null)
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' })
   
-  const inspectionsData = []
+  const [inspectionsData, setInspectionsData] = useState([])
+  const [inspectionsLoading, setInspectionsLoading] = useState(false)
+
+  // Helpers to format dates/times that may be arrays like [2025,11,27] and [9,13,37]
+  const formatDate = (arr) => {
+    if (!arr) return '-'
+    if (Array.isArray(arr)) {
+      const [y, m, d] = arr
+      return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`
+    }
+    if (typeof arr === 'string') return arr.split('T')[0]
+    return '-'
+  }
+
+  const formatTime = (arr) => {
+    if (!arr) return ''
+    if (Array.isArray(arr)) {
+      const [h, min, s = 0] = arr
+      return `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+    }
+    if (typeof arr === 'string') {
+      const t = arr.split('T').length > 1 ? arr.split('T')[1] : arr
+      return t.split('.')[0]
+    }
+    return ''
+  }
   
   // Fetch transformers on component mount
   useEffect(() => {
     fetchTransformers()
   }, [])
+
+  // Fetch inspections for each transformer when inspections view is selected
+  useEffect(() => {
+    const fetchInspectionsForAll = async () => {
+      if (!transformersData || transformersData.length === 0) {
+        setInspectionsData([])
+        return
+      }
+
+      setInspectionsLoading(true)
+      try {
+        const promises = transformersData.map(t =>
+          inspectionsAPI.getByTransformer(t.id)
+            .then(r => (Array.isArray(r.data) ? r.data : []).map(i => ({ ...i, transformerId: t.id, transformerNo: t.transformerNo })))
+            .catch(err => {
+              console.warn('Failed to fetch inspections for transformer', t.id, err)
+              return []
+            })
+        )
+
+        const results = await Promise.all(promises)
+        const flattened = results.flat()
+        setInspectionsData(flattened)
+      } catch (err) {
+        console.error('Failed to fetch inspections:', err)
+      } finally {
+        setInspectionsLoading(false)
+      }
+    }
+
+    if (view === 'inspections') fetchInspectionsForAll()
+  }, [view, transformersData])
 
   const fetchTransformers = async () => {
     setLoading(true)
@@ -378,14 +435,59 @@ const handleViewDetails = (transformer) => {
             </TableContainer>
           </>
           ) : (
-          /* Inspections View Placeholder */
-            <Paper sx={{ p: 3, textAlign: 'center' }}>
-              <Typography variant="h6" gutterBottom>
-                Inspections View
-              </Typography>
-              <Typography variant="body1" color="textSecondary">
-                Inspection data will be displayed here.
-              </Typography>
+          /* Inspections View: list all inspections with branch and date */
+            <Paper sx={{ p: 2 }}>
+              {inspectionsLoading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+                  <CircularProgress />
+                </Box>
+              ) : inspectionsData && inspectionsData.length ? (
+                <TableContainer component={Paper} sx={{ mt: 1 }}>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Transformer</TableCell>
+                        <TableCell>Branch</TableCell>
+                        <TableCell>Inspection Date</TableCell>
+                        <TableCell align="right">Action</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {inspectionsData.map((ins) => {
+                        const trans = transformersData.find(t => t.id === ins.transformerId) || {}
+                        const inspectedDate = formatDate(ins.inspectedDate) || formatDate(ins.inspectionDate)
+                        const inspectionTime = formatTime(ins.inspectionTime)
+                        return (
+                          <TableRow key={ins.id}>
+                            <TableCell>{trans.transformerNo || trans.transformerNumber || ins.transformerNumber || ins.transformerNo || ins.transformerId}</TableCell>
+                            <TableCell>{ins.branch || '-'}</TableCell>
+                            <TableCell>{inspectedDate} {inspectionTime}</TableCell>
+                            <TableCell align="right">
+                              <Button
+                                variant="outlined"
+                                size="small"
+                                onClick={() => {
+                                  // navigate to TransformerDetails and pass transformer + inspection info
+                                  const navState = trans.id ? { ...trans } : { id: ins.transformerId, transformerNo: ins.transformerNo }
+                                  // attach inspection info so TransformerDetails can open that inspection
+                                  navState.inspectionID = ins.id
+                                  navState.inspectionDate = ins.inspectedDate || ins.inspectionDate
+                                  navState.inspectionTime = ins.inspectionTime
+                                  navigate(`/transformer/${ins.transformerId}`, { state: navState })
+                                }}
+                              >
+                                View
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              ) : (
+                <Typography variant="body1" color="textSecondary">No inspections available.</Typography>
+              )}
             </Paper>
           )}
       </Box>
