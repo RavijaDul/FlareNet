@@ -196,7 +196,8 @@ export default function VeiwRecord({ transformer = {}, inspection = null, onClos
 
   return (
     <Box sx={{ p: 2 }} ref={rootRef} id="view-record-root">
-      <Typography variant="h6" gutterBottom>
+      {/* ✅ Bold Record Details */}
+      <Typography variant="h6" gutterBottom sx={{ fontWeight: 700 }}>
         Record Details
       </Typography>
 
@@ -228,7 +229,13 @@ export default function VeiwRecord({ transformer = {}, inspection = null, onClos
 
       <Divider sx={{ my: 1 }} />
 
-      <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}>Detected / Annotated Anomalies</Typography>
+      {/* ✅ Bold Detected / Annotated Anomalies */}
+      <Typography
+        variant="subtitle1"
+        sx={{ mt: 2, mb: 1, fontWeight: 700 }}
+      >
+        Detected / Annotated Anomalies
+      </Typography>
 
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
@@ -238,12 +245,13 @@ export default function VeiwRecord({ transformer = {}, inspection = null, onClos
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Type</TableCell>
-              <TableCell>Category</TableCell>
-              <TableCell>Location (x,y,w,h)</TableCell>
-              <TableCell>Severity / Confidence</TableCell>
-              <TableCell>Source</TableCell>
-              <TableCell>Details</TableCell>
+              {/* ✅ Bold table headers */}
+              <TableCell sx={{ fontWeight: 700 }}>Type</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Category</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Location (x,y,w,h)</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Severity / Confidence</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Source</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Details</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
