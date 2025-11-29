@@ -69,19 +69,7 @@ git clone https://github.com/RavijaDul/FlareNet.git
 cd FlareNet
 ```
 
----
-
-#### Database Exploration (Optional)
-```bash
-# Via Docker
-docker exec -it flarenet-db psql -U flarenet -d flarenet
-
-# Via local PostgreSQL + pgAdmin
-# Install pgAdmin and connect to localhost:5432 with credentials above
-```
----
-
-### 3. Run the JAVA Backend
+### 2. Run the JAVA Backend
 Navigate to the backend folder and start the Spring Boot server:
 
 ```bash
@@ -175,7 +163,7 @@ For detailed technical documentation of the adaptive learning system, including 
 - Detailed mathematical foundations and algorithms - https://drive.google.com/file/d/11qzIu_VQUKz2LG4rBHGnmAWeGZ505ezP/view?usp=sharing
 
 ---
-### 4. Run the python backend
+### 3. Run the python backend
 ```bash
 cd python-backend
 python -m venv venv
@@ -209,7 +197,7 @@ python param_manager.py --reset
 python param_manager.py --show
 ```
 ---
-### 5. Run the Frontend
+### 4. Run the Frontend
 Navigate to the frontend folder, install dependencies, and start the dev server:
 
 ```bash
@@ -222,7 +210,7 @@ The frontend will be available at `http://localhost:5173`.
 
 ---
 
-### 2. Start Postgres with Docker (Recommended)
+### 5. Start Postgres with Docker (Optional)
 We use Docker to run Postgres with schema and seed data automatically.
 
 ```bash
@@ -250,6 +238,8 @@ If Docker containers have issues, you can run PostgreSQL manually:
    psql -U flarenet -d flarenet -f flarenet-backend/db/init.sql
    ```
 4. **Update connection:** Modify `flarenet-backend/src/main/resources/application.yml` if using different credentials.
+
+---
 
 
 ## 🗂️ Project Structure
