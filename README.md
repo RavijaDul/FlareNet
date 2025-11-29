@@ -527,9 +527,8 @@ python param_manager.py --stats    # Show adaptation statistics
 
 ###  Start Postgres with Docker (Earlier Design stages)
 
-⚠️ Deprecated: Old Local PostgreSQL Setup (Replaced by Supabase)
-
-**Note: This PostgreSQL/Docker setup is from earlier development stages.
+**⚠️ Deprecated: Old Local PostgreSQL Setup (Replaced by Supabase)
+This PostgreSQL/Docker setup is from earlier development stages.
 We now use Supabase as the primary database platform, so this section is kept only for reference and historical context. The latest implementation no longer relies on local Postgres containers.**
 
 To run the backend using a local or Docker-based PostgreSQL instance, update your database configuration in:
