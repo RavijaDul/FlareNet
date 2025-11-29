@@ -36,6 +36,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+        // Use BCrypt for hashing passwords. This expects DB password values to be bcrypt hashes.
         return new BCryptPasswordEncoder();
     }
 

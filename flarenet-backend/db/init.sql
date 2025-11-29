@@ -18,10 +18,13 @@ CREATE TABLE users (
     role VARCHAR(50) NOT NULL
 );
 
--- bcrypt("admin1234") hash
+-- Development seed: 2 engineers and 2 inspectors
+-- Passwords: bcrypt hashes for 'engineer' and 'inspector' (both engineers share same password 'engineer', inspectors share 'inspector')
 INSERT INTO users (username, password, role) VALUES
-('admin', '2b$12$C9Q4sdy9BKJKdP7w7a2o7uUk5HMJmy0C6aEOYFZAX9GZjDGCTsDlC', 'ADMIN'),
-('user1', '2b$12$C9Q4sdy9BKJKdP7w7a2o7uUk5HMJmy0C6aEOYFZAX9GZjDGCTsDlC', 'USER');
+('engineer1', '$2b$10$aqdNHjOoYJzflOoS2PMMuOElG6twBAU7DKQWiKx21dr1wcLax.cQS', 'ENGINEER'),
+('engineer2', '$2b$10$aqdNHjOoYJzflOoS2PMMuOElG6twBAU7DKQWiKx21dr1wcLax.cQS', 'ENGINEER'),
+('inspector1', '$2b$10$Qc.TW5lrkGXIiWFV2kjY1uwobUizMUY0cDaxIsIB45OVJMqDd1Bd2', 'INSPECTOR'),
+('inspector2', '$2b$10$Qc.TW5lrkGXIiWFV2kjY1uwobUizMUY0cDaxIsIB45OVJMqDd1Bd2', 'INSPECTOR');
 
 
 -- ================= TRANSFORMERS =================

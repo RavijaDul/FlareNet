@@ -10,20 +10,20 @@ const api = axios.create({
   },
 });
 // Auth API
-// export const authAPI = {
-//   register: (data) => api.post('/auth/register', data),
-//   login: (data) => api.post('/auth/login', data),
-//   promote: (id) => api.post(`/auth/promote/${id}`), // only admins
-// };
+export const authAPI = {
+  register: (data) => api.post('/auth/register', data),
+  login: (data) => api.post('/auth/login', data),
+  promote: (id) => api.post(`/auth/promote/${id}`), // only admins
+};
 
-// // attach token if exists
-// api.interceptors.request.use((config) => {
-//   const token = localStorage.getItem("token");
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`;
-//   }
-//   return config;
-// });
+// attach token if exists
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 // Transformers API
 export const transformersAPI = {
@@ -74,8 +74,9 @@ export const annotationsAPI = {
 export const maintenanceAPI = {
   // Save a maintenance record for an inspection
   saveForInspection: (inspectionId, transformerId, userId, recordJson) =>
+    // userId is determined from JWT on the backend; do not send userId from client
     api.post(`/inspections/${inspectionId}/maintenance-records`, recordJson, {
-      params: { transformerId, userId },
+      params: { transformerId },
       headers: { 'Content-Type': 'application/json' },
     }),
 

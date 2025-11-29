@@ -77,35 +77,48 @@ function HomePage() {
           <h2 style={{ fontSize: "1.8rem", fontWeight: "300" }}>
             Transformer Management System
           </h2>
-        <Link
-            to="/new"
-            style={{
-              background: "rgba(255, 255, 255, 0.15)",
-              color: "white",
-              border: "1px solid rgba(255,255,255,0.3)",
-              padding: "12px 32px",
-              borderRadius: "10px",
-              textDecoration: "none",
-              fontWeight: "600",
-              fontSize: "1.1rem",
-              backdropFilter: "blur(6px)",
-              transition: "all 0.3s ease",
-              display: "inline-block",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.25)",
-            }}
-            onMouseOver={(e) => {
-              e.target.style.background = "rgba(255, 255, 255, 0.25)";
-              e.target.style.transform = "scale(1.05)";
-              e.target.style.boxShadow = "0 6px 14px rgba(0,0,0,0.4)";
-            }}
-            onMouseOut={(e) => {
-              e.target.style.background = "rgba(255, 255, 255, 0.15)";
-              e.target.style.transform = "scale(1)";
-              e.target.style.boxShadow = "0 4px 10px rgba(0,0,0,0.25)";
-            }}
-          >
-            Go to Transformers
-          </Link>
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: 18 }}>
+            <Link
+              to="/login"
+              style={{
+                background: "#1976d2",
+                color: "white",
+                padding: "12px 28px",
+                borderRadius: "10px",
+                textDecoration: "none",
+                fontWeight: "600",
+                fontSize: "1.05rem",
+                boxShadow: "0 6px 18px rgba(25,118,210,0.25)",
+                transition: "transform 0.18s ease",
+                display: "inline-block",
+              }}
+              onMouseOver={(e) => { e.target.style.transform = "translateY(-3px)"; }}
+              onMouseOut={(e) => { e.target.style.transform = "translateY(0px)"; }}
+            >
+              Log In
+            </Link>
+
+            <Link
+              to="/new"
+              style={{
+                background: "rgba(255, 255, 255, 0.12)",
+                color: "white",
+                border: "1px solid rgba(255,255,255,0.22)",
+                padding: "12px 28px",
+                borderRadius: "10px",
+                textDecoration: "none",
+                fontWeight: "600",
+                fontSize: "1.05rem",
+                backdropFilter: "blur(6px)",
+                transition: "transform 0.18s ease",
+                display: "inline-block",
+              }}
+              onMouseOver={(e) => { e.target.style.transform = "translateY(-3px)"; }}
+              onMouseOut={(e) => { e.target.style.transform = "translateY(0px)"; }}
+            >
+              Go to Transformers
+            </Link>
+          </div>
         </div>
       </section>
 

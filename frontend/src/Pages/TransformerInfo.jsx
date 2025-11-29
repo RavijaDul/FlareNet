@@ -18,6 +18,8 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { FormControl, InputLabel, Select } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { transformersAPI, inspectionsAPI } from '../services/api';
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 function MainPage() {
   const [view, setView] = useState('transformers') // 'transformers' or 'inspections'
@@ -333,6 +335,23 @@ function MainPage() {
   const navigate = useNavigate()
   const handleViewDetails = (transformer) => {
     navigate(`/transformer/${transformer.id}`, { state: transformer })
+  }
+
+  // Responsive: show inline action buttons on medium+ screens, dropdown on smaller screens
+  const theme = useTheme()
+  // collapse action buttons earlier (at md) to avoid overlapping when window shrinks
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
+  const [actionAnchorEl, setActionAnchorEl] = useState(null)
+  const [actionRow, setActionRow] = useState(null)
+
+  const openActionMenu = (event, row) => {
+    setActionAnchorEl(event.currentTarget)
+    setActionRow(row)
+  }
+
+  const closeActionMenu = () => {
+    setActionAnchorEl(null)
+    setActionRow(null)
   }
 
   const handleCloseSnackbar = () => {
@@ -878,67 +897,91 @@ function MainPage() {
                           <TableCell>{row.transformerNo}</TableCell>
                           <TableCell>{row.poleNo}</TableCell>
                           <TableCell align="right">
-                            {/* View button */}
-                            <Button 
-                              variant="contained"
-                              size="small"
-                              onClick={() => handleViewDetails(row)}
-                              sx={{ 
-                                mr: 1,
-                                borderRadius: 2,
-                                textTransform: 'none',
-                                fontWeight: 600,
-                                px: 3,
-                                boxShadow: 'none',
-                                backgroundColor: '#283593',
-                                '&:hover': {
-                                  backgroundColor: '#1A237E'
-                                }
-                              }}
-                            >
-                              View
-                            </Button>
+                            {!isSmallScreen ? (
+                              <>
+                                {/* View button */}
+                                <Button 
+                                  variant="contained"
+                                  size="small"
+                                  onClick={() => handleViewDetails(row)}
+                                  sx={{ 
+                                    mr: 1,
+                                    borderRadius: 2,
+                                    textTransform: 'none',
+                                    fontWeight: 600,
+                                    px: 2,
+                                    boxShadow: 'none',
+                                    backgroundColor: '#283593',
+                                    '&:hover': {
+                                      backgroundColor: '#1A237E'
+                                    },
+                                    minWidth: 0
+                                  }}
+                                >
+                                  View
+                                </Button>
 
-                            {/* Edit button */}
-                            <Button 
-                              variant="contained"
-                              size="small"
-                              onClick={() => handleEdit(row)}
-                              sx={{ 
-                                mr: 1,
-                                borderRadius: 2,
-                                textTransform: 'none',
-                                fontWeight: 600,
-                                px: 3,
-                                boxShadow: 'none',
-                                backgroundColor: '#336fb9ff',
-                                '&:hover': {
-                                  backgroundColor: '#336fb9ff'
-                                }
-                              }}
-                            >
-                              Edit
-                            </Button>
+                                {/* Edit button */}
+                                <Button 
+                                  variant="contained"
+                                  size="small"
+                                  onClick={() => handleEdit(row)}
+                                  sx={{ 
+                                    mr: 1,
+                                    borderRadius: 2,
+                                    textTransform: 'none',
+                                    fontWeight: 600,
+                                    px: 2,
+                                    boxShadow: 'none',
+                                    backgroundColor: '#336fb9ff',
+                                    '&:hover': {
+                                      backgroundColor: '#336fb9ff'
+                                    },
+                                    minWidth: 0
+                                  }}
+                                >
+                                  Edit
+                                </Button>
 
-                            {/* Delete button */}
-                            <Button 
-                              variant="contained"
-                              size="small"
-                              onClick={() => handleDelete(row.id)}
-                              sx={{ 
-                                borderRadius: 2,
-                                textTransform: 'none',
-                                fontWeight: 600,
-                                px: 3,
-                                boxShadow: 'none',
-                                backgroundColor: '#e53935',
-                                '&:hover': {
-                                  backgroundColor: '#c62828'
-                                }
-                              }}
-                            >
-                              Delete
-                            </Button>
+                                {/* Delete button */}
+                                <Button 
+                                  variant="contained"
+                                  size="small"
+                                  onClick={() => handleDelete(row.id)}
+                                  sx={{ 
+                                    borderRadius: 2,
+                                    textTransform: 'none',
+                                    fontWeight: 600,
+                                    px: 2,
+                                    boxShadow: 'none',
+                                    backgroundColor: '#e53935',
+                                    '&:hover': {
+                                      backgroundColor: '#c62828'
+                                    },
+                                    minWidth: 0
+                                  }}
+                                >
+                                  Delete
+                                </Button>
+                              </>
+                            ) : (
+                              <>
+                                <IconButton size="small" onClick={(e) => openActionMenu(e, row)}>
+                                  <ExpandMoreIcon />
+                                </IconButton>
+                                <Menu
+                                  anchorEl={actionAnchorEl}
+                                  open={Boolean(actionAnchorEl) && actionRow?.id === row.id}
+                                  onClose={closeActionMenu}
+                                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                                  transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                                >
+                                  <MenuItem onClick={() => { closeActionMenu(); handleViewDetails(row); }}>View</MenuItem>
+                                  <MenuItem onClick={() => { closeActionMenu(); handleEdit(row); }}>Edit</MenuItem>
+                                  <MenuItem onClick={() => { closeActionMenu(); handleDelete(row.id); }}>Delete</MenuItem>
+                                </Menu>
+                              </>
+                            )}
                           </TableCell>
                         </TableRow>
                       )

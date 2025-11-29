@@ -5,6 +5,9 @@ import com.flarenet.service.MaintenanceRecordService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletRequest;
+import com.flarenet.security.JwtUtil;
+import com.flarenet.model.Role;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +22,12 @@ public class MaintenanceRecordController {
     @Autowired
     private MaintenanceRecordService service;
 
+    private final JwtUtil jwtUtil;
+
+    public MaintenanceRecordController(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(MaintenanceRecordController.class);
 
     // Save a new maintenance record for a given inspection
@@ -26,11 +35,40 @@ public class MaintenanceRecordController {
     public ResponseEntity<?> saveForInspection(
             @PathVariable Long inspectionId,
             @RequestParam(value = "transformerId", required = false) Long transformerId,
-            @RequestParam(value = "userId", required = false, defaultValue = "user") String userId,
-            @RequestBody String recordJson
+            @RequestBody String recordJson,
+            HttpServletRequest request
     ) {
         try {
-            MaintenanceRecord saved = service.save(inspectionId, transformerId, userId, recordJson);
+            // Extract JWT from Authorization header and enforce role
+            final String authHeader = request.getHeader("Authorization");
+            String username = null;
+            String role = null;
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                String jwt = authHeader.substring(7);
+                try {
+                    username = jwtUtil.extractUsername(jwt);
+                    role = jwtUtil.extractRole(jwt);
+                } catch (Exception e) {
+                    // invalid token
+                }
+            }
+
+            if (username == null) {
+                Map<String, Object> err = new HashMap<>();
+                err.put("error", "Unauthorized");
+                err.put("message", "Missing or invalid token");
+                return ResponseEntity.status(401).body(err);
+            }
+
+            // Only ENGINEERs may create/edit maintenance records
+            if (!Role.ENGINEER.name().equalsIgnoreCase(role)) {
+                Map<String, Object> err = new HashMap<>();
+                err.put("error", "Forbidden");
+                err.put("message", "Only users with role ENGINEER can add or edit maintenance records");
+                return ResponseEntity.status(403).body(err);
+            }
+
+            MaintenanceRecord saved = service.save(inspectionId, transformerId, username, recordJson);
             // Return a minimal payload to avoid Jackson serializing lazy-loaded entities
             Map<String, Object> result = new HashMap<>();
             result.put("id", saved.getId());

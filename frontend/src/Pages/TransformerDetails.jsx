@@ -27,6 +27,9 @@ import IconButton from "@mui/material/IconButton";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import CloseIcon from "@mui/icons-material/Close";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 
 import {
   LocalizationProvider,
@@ -37,6 +40,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { inspectionsAPI, maintenanceAPI } from "../services/api";
 import VeiwRecord from "./VeiwRecord";
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 function TransformerDetails() {
   const location = useLocation();
@@ -76,6 +81,17 @@ function TransformerDetails() {
     date: dayjs(),
     time: dayjs(),
   });
+
+  const theme = useTheme()
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const [actionAnchorEl, setActionAnchorEl] = useState(null)
+  const [actionItem, setActionItem] = useState(null)
+
+  const openActionMenu = (e, item) => {
+    setActionAnchorEl(e.currentTarget)
+    setActionItem(item)
+  }
+  const closeActionMenu = () => { setActionAnchorEl(null); setActionItem(null); }
 
   if (!transformer) {
     return (
@@ -230,6 +246,17 @@ function TransformerDetails() {
     }
   };
 
+  const handleDeleteInspection = async (inspectionId) => {
+    try {
+      await inspectionsAPI.delete(inspectionId)
+      setInspectionData(prev => prev.filter(i => i.id !== inspectionId))
+      setSnackbar({ open: true, message: 'Inspection deleted', severity: 'success' })
+    } catch (e) {
+      console.error('Failed to delete inspection', e)
+      setSnackbar({ open: true, message: 'Failed to delete inspection', severity: 'error' })
+    }
+  }
+
   // fetch latest maintenance record for a given inspection and merge into inspectionData
   const fetchAndMergeMaintenance = async (inspection) => {
     if (!inspection || !inspection.id || !id) return;
@@ -324,7 +351,7 @@ function TransformerDetails() {
           boxShadow: "0px 2px 10px rgba(0,0,0,0.08)",
         }}
       >
-        <Box sx={{ minWidth: 160 }}>
+        <Box sx={{ minWidth: 160, flex: '1 1 160px' }}>
           <Typography variant="caption" color="textSecondary">
             Transformer No
           </Typography>
@@ -333,7 +360,7 @@ function TransformerDetails() {
           </Typography>
         </Box>
 
-        <Box sx={{ minWidth: 160 }}>
+        <Box sx={{ minWidth: 160, flex: '1 1 160px' }}>
           <Typography variant="caption" color="textSecondary">
             Pole No
           </Typography>
@@ -342,7 +369,7 @@ function TransformerDetails() {
           </Typography>
         </Box>
 
-        <Box sx={{ minWidth: 160 }}>
+        <Box sx={{ minWidth: 160, flex: '1 1 160px' }}>
           <Typography variant="caption" color="textSecondary">
             Region
           </Typography>
@@ -351,7 +378,7 @@ function TransformerDetails() {
           </Typography>
         </Box>
 
-        <Box sx={{ minWidth: 160 }}>
+        <Box sx={{ minWidth: 160, flex: '1 1 160px' }}>
           <Typography variant="caption" color="textSecondary">
             Type
           </Typography>
@@ -364,7 +391,7 @@ function TransformerDetails() {
           </Box>
         </Box>
 
-        <Box sx={{ minWidth: 160 }}>
+        <Box sx={{ minWidth: 160, flex: '1 1 160px' }}>
           <Typography variant="caption" color="textSecondary">
             Capacity (KVA)
           </Typography>
@@ -373,7 +400,7 @@ function TransformerDetails() {
           </Typography>
         </Box>
 
-        <Box sx={{ minWidth: 200 }}>
+        <Box sx={{ minWidth: 200, flex: '1 1 200px' }}>
           <Typography variant="caption" color="textSecondary">
             Location
           </Typography>
@@ -502,7 +529,8 @@ function TransformerDetails() {
                 <CircularProgress />
               </Box>
             ) : inspectionData.length ? (
-              <Table sx={{ tableLayout: "fixed" }}>
+              !isSmallScreen ? (
+                <Table sx={{ tableLayout: "fixed" }}>
                 <TableHead>
                   <TableRow>
                     {/* ⭐ Star column */}
@@ -699,6 +727,34 @@ function TransformerDetails() {
                   })}
                 </TableBody>
               </Table>
+              ) : (
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  {paginatedData.map(item => (
+                    <Paper key={item.id} sx={{ p:2 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 2 }}>
+                        <Box>
+                          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>{item.inspectionNumber || item.inspectionNo || ''}</Typography>
+                          <Typography variant="body2">{formatDate(item.inspectedDate)} {formatTime(item.inspectionTime)}</Typography>
+                          <Typography variant="caption" color="textSecondary">Status: {item.status}</Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap:1 }}>
+                          <IconButton onClick={() => navigate('/transformer', { state: { transformerNo, poleNo, region, transformerId: id, inspectionID: item.id, inspectionDate: item.inspectedDate, inspectionTime: item.inspectionTime, inspectionNumber: item.inspectionNumber }})}>
+                            View
+                          </IconButton>
+                          <IconButton onClick={(e) => openActionMenu(e, item)}>
+                            <ExpandMoreIcon />
+                          </IconButton>
+                          <Menu anchorEl={actionAnchorEl} open={Boolean(actionAnchorEl) && actionItem?.id === item.id} onClose={closeActionMenu}>
+                            <MenuItem onClick={() => { closeActionMenu(); navigate('/transformer', { state: { transformerNo, poleNo, region, transformerId: id, inspectionID: item.id, inspectionDate: item.inspectedDate, inspectionTime: item.inspectionTime, inspectionNumber: item.inspectionNumber }})}}>View</MenuItem>
+                            <MenuItem onClick={() => { closeActionMenu(); setEditingId(item.id); setFormData({ branch: item.branch, transformerNo, date: dayjs(item.inspectedDate), time: dayjs(item.inspectionTime, 'HH:mm:ss') }); setOpen(true); }}>Edit</MenuItem>
+                            <MenuItem onClick={() => { closeActionMenu(); handleDeleteInspection && handleDeleteInspection(item.id); }}>Delete</MenuItem>
+                          </Menu>
+                        </Box>
+                      </Box>
+                    </Paper>
+                  ))}
+                </Box>
+              )
             ) : (
               <Typography variant="body2" color="textSecondary">
                 No inspections available. Click &quot;Add Inspection&quot; to
