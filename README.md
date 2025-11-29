@@ -531,19 +531,17 @@ We now use Supabase as the primary database platform, so this section is kept on
 
 ###  Start Postgres with Docker (Earlier Design stages)
 
-Using Local or Docker PostgreSQL Database
-
 To run the backend using a local or Docker-based PostgreSQL instance, update your database configuration in:
-
+```bash
 flarenet-backend/src/main/resources/application.yml
-
+```
 
 Set the JDBC URL as follows:
-
+```bash
 spring:
   datasource:
     url: jdbc:postgresql://127.0.0.1:5432/flarenet
-
+```
 
 This ensures the backend connects to the PostgreSQL database running on your machine or within Docker.
 
