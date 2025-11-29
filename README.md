@@ -250,7 +250,7 @@ If Docker containers have issues, you can run PostgreSQL manually:
    psql -U flarenet -d flarenet -f flarenet-backend/db/init.sql
    ```
 4. **Update connection:** Modify `flarenet-backend/src/main/resources/application.yml` if using different credentials.
-```
+
 
 ## 🗂️ Project Structure
 
@@ -564,13 +564,9 @@ python param_manager.py --show     # View current parameters
 python param_manager.py --reset    # Reset to defaults
 python param_manager.py --stats    # Show adaptation statistics
 ```
----
 
-## 📌 Additional Tips
 
-- To stop the DB: `docker compose down`
-- To reset the DB: delete `pgdata` volume or run `docker compose down -v` and `docker compose up -d`
-- Use Postgres GUI tools (like pgAdmin or DBeaver) to inspect the database if needed
+
 
 
 ## ⚠️ Limitations & Known Issues
