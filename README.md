@@ -210,36 +210,6 @@ The frontend will be available at `http://localhost:5173`.
 
 ---
 
-### 5. Start Postgres with Docker (Optional)
-We use Docker to run Postgres with schema and seed data automatically.
-
-```bash
-docker compose down -v
-docker compose up -d
-```
-
-- Database: `flarenet`  
-- User: `flarenet`  
-- Password: `flarenet`  
-- Port: `5432`  
-
-#### Alternative: Manual PostgreSQL Setup
-If Docker containers have issues, you can run PostgreSQL manually:
-
-1. **Install PostgreSQL locally** (version 14+)
-2. **Create database:**
-   ```sql
-   CREATE DATABASE flarenet;
-   CREATE USER flarenet WITH PASSWORD 'flarenet';
-   GRANT ALL PRIVILEGES ON DATABASE flarenet TO flarenet;
-   ```
-3. **Run schema setup:**
-   ```bash
-   psql -U flarenet -d flarenet -f flarenet-backend/db/init.sql
-   ```
-4. **Update connection:** Modify `flarenet-backend/src/main/resources/application.yml` if using different credentials.
-
----
 
 
 ## 🗂️ Project Structure
@@ -555,6 +525,36 @@ python param_manager.py --reset    # Reset to defaults
 python param_manager.py --stats    # Show adaptation statistics
 ```
 
+###  Start Postgres with Docker (Earlier Design stages)
+We use Docker to run Postgres with schema and seed data automatically.
+
+```bash
+docker compose down -v
+docker compose up -d
+```
+
+- Database: `flarenet`  
+- User: `flarenet`  
+- Password: `flarenet`  
+- Port: `5432`  
+
+#### Alternative: Manual PostgreSQL Setup
+If Docker containers have issues, you can run PostgreSQL manually:
+
+1. **Install PostgreSQL locally** (version 14+)
+2. **Create database:**
+   ```sql
+   CREATE DATABASE flarenet;
+   CREATE USER flarenet WITH PASSWORD 'flarenet';
+   GRANT ALL PRIVILEGES ON DATABASE flarenet TO flarenet;
+   ```
+3. **Run schema setup:**
+   ```bash
+   psql -U flarenet -d flarenet -f flarenet-backend/db/init.sql
+   ```
+4. **Update connection:** Modify `flarenet-backend/src/main/resources/application.yml` if using different credentials.
+
+---
 
 
 
