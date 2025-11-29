@@ -2,7 +2,7 @@
 
 Flarenet is a web-based system designed to manage and automate transformer inspections using thermal images. Users can record transformer details, upload baseline and maintenance thermal images, and tag images by environmental conditions such as sunny, cloudy, or rainy. The system includes automated anomaly detection using machine learning models to analyze thermal images and generate digital maintenance records.
 
-**Current Stage: Milestone 05** - System Upgraded with **normalized database architecture**, **role-based inspection record management**, **PDF report generation**, and **history tracking** capabilities.
+**Current Stage Upgrade:** - System Upgraded with **normalized database architecture**, **role-based inspection record management**, **PDF report generation**, and **history tracking** capabilities.
 
 [![React](https://img.shields.io/badge/React-18%2B-cyan?logo=react&logoColor=white&logoSize=30)](https://reactjs.org/) 
 [![Vite](https://img.shields.io/badge/Vite-4%2B-pink?logo=vite&logoColor=white&logoSize=30)](https://vitejs.dev/) 
