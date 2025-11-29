@@ -364,6 +364,16 @@ users
 ├── username (UNIQUE)
 ├── password
 └── role (ADMIN/USER/ENGINEER)
+
+maintenance_record
+├── id (PK)
+├── inspection_id (FK → inspections.id)
+├── transformer_id (FK → transformers.id)
+├── user_id (ID of the user who submitted the maintenance record)
+├── record_json (full JSON payload from frontend: inspector info, rectification, reinspection, timestamps, etc.)
+├── created_at (timestamp)
+└── updated_at (timestamp)
+
 ```
 
 ### Database Design Principles
