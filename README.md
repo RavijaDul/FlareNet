@@ -2,7 +2,7 @@
 
 Flarenet is a web-based system designed to manage and automate transformer inspections using thermal images. Users can record transformer details, upload baseline and maintenance thermal images, and tag images by environmental conditions such as sunny, cloudy, or rainy. The system includes automated anomaly detection using machine learning models to analyze thermal images and generate digital maintenance records.
 
-**Current Stage: Milestone 03** - Full-stack application with integrated ML inference and **Adaptive Learning System** for continuous improvement through human feedback.
+**Current Stage: Milestone 05** - Production-ready system with **normalized database architecture**, **role-based access control**, **inspection record management**, **PDF report generation**, and **history tracking** capabilities.
 
 [![React](https://img.shields.io/badge/React-18%2B-cyan?logo=react&logoColor=white&logoSize=30)](https://reactjs.org/) 
 [![Vite](https://img.shields.io/badge/Vite-4%2B-pink?logo=vite&logoColor=white&logoSize=30)](https://vitejs.dev/) 
@@ -26,12 +26,12 @@ Flarenet is a web-based system designed to manage and automate transformer inspe
 
 **Flarenet** is a full-stack web application with a **React frontend**, **Spring Boot backend**, **Python ML backend**, and **PostgreSQL database**.
 
-- **Frontend:** Built with React, Vite, and Material UI for fast and responsive UI.
-- **Backend:** Spring Boot handles business logic, CRUD operations, and provides REST APIs.
-- **ML Backend:** Python FastAPI server for automated anomaly detection on thermal images using PyTorch models.
-- **Database:** PostgreSQL via Docker Compose stores transformers, inspections, thermal images, and analysis results.
+- **Frontend:** Built with React, Vite, and Material UI for fast and responsive UI with role-based component rendering.
+- **Backend:** Spring Boot handles business logic, CRUD operations, REST APIs, and enforces engineer-only access control at the API layer.
+- **ML Backend:** Python FastAPI server for automated anomaly detection on thermal images using PyTorch models with adaptive learning.
+- **Database:** PostgreSQL with normalized relational schema deployed on Supabase cloud platform for production scalability.
 
-This system demonstrates **modern full-stack development with AI integration**, including user authentication, CRUD operations, image upload/management, ML-powered analysis, and **human-in-the-loop adaptive learning** that improves detection accuracy over time without model retraining.
+This system demonstrates **modern full-stack development with AI integration**, including role-based authentication, CRUD operations, image upload/management, ML-powered analysis, **human-in-the-loop adaptive learning**, automated PDF report generation, and comprehensive inspection history tracking.
 
 ---
 
@@ -47,8 +47,9 @@ This system demonstrates **modern full-stack development with AI integration**, 
 
 - Java 17+, Spring Boot 3+
 - Spring Data JPA for database interactions
-- PostgreSQL via Docker Compose
+- PostgreSQL via Docker Compose (local) / Supabase (production)
 - Maven for dependency management
+- iText library for PDF report generation
 
 ### Python ML Backend
 
@@ -281,20 +282,236 @@ FlareNet/
 
 ---
 
+## Database Architecture
+
+FlareNet uses a **normalized relational database schema** designed for efficient querying and reporting capabilities. The database is deployed on **Supabase** (PostgreSQL cloud platform) for production use.
+
+### Core Tables
+
+```
+transformers
+├── id (PK)
+├── transformer_no
+├── region
+├── pole_no
+├── type
+├── location_details
+├── capacity_kva
+└── timestamps
+
+inspections
+├── id (PK)
+├── transformer_id (FK)
+├── inspection_number
+├── inspected_date
+├── inspection_time
+├── branch
+├── status (PENDING/IN_PROGRESS/COMPLETED)
+└── timestamps
+
+thermal_image
+├── id (PK)
+├── inspection_id (FK)
+├── transformer_id (FK)
+├── file_name
+├── file_path
+├── image_type (BASELINE/MAINTENANCE)
+├── weather_condition
+├── uploader
+└── uploaded_at
+
+analysis_result
+├── id (PK)
+├── thermal_image_id (FK)
+├── status (Normal/Anomalies)
+├── total_detections
+├── critical_count
+├── potentially_faulty_count
+├── result_json
+└── analyzed_at
+
+detection
+├── id (PK)
+├── analysis_result_id (FK)
+├── label
+├── category (loose_joint/wire_overload/point_overload)
+├── severity (Critical/Faulty/Potentially Faulty)
+├── confidence
+├── bbox (x, y, width, height)
+└── created_at
+
+user_annotations
+├── id (PK)
+├── thermal_image_id (FK)
+├── user_id
+├── annotations_json
+└── created_at
+
+annotation_action
+├── id (PK)
+├── user_annotation_id (FK)
+├── detection_id (FK)
+├── action_type (ADDED/EDITED/DELETED/CONFIRMED)
+├── original_* (label, category, severity, confidence, bbox)
+├── new_* (label, category, severity, confidence, bbox)
+├── bbox_modified
+└── created_at
+```
+
+### Database Design Principles
+
+**Normalization Benefits:**
+- Structured columns replace JSON text storage for efficient SQL queries
+- Foreign key relationships ensure referential integrity
+- Indexed columns (transformer_id, inspection_id, severity, category) optimize reporting
+- Separate `detection` table enables fast filtering by anomaly type without JSON parsing
+- `annotation_action` table tracks user feedback with before/after values for adaptive learning
+
+**Deployment:**
+- **Local Development:** PostgreSQL via Docker Compose (port 5432)
+- **Production:** Supabase cloud platform with automatic backups and SSL connections
+- **Connection Pooling:** HikariCP manages database connections efficiently (max 10 connections)
+
+---
+
+## Role-Based Access Control
+
+FlareNet implements **engineer-only access** for critical operations to ensure data integrity and proper maintenance workflows.
+
+### Access Restrictions
+
+**Engineer Role Required:**
+- Create/edit inspection records
+- Upload thermal images
+- Run AI analysis
+- Save annotations and corrections
+- Generate PDF reports
+
+**Implementation:**
+- **Frontend:** Role check hides "Add Inspection" and "Upload Image" buttons for non-engineers
+- **Backend:** Java Spring Security validates user role in API controllers before processing requests
+- **Database:** User role stored in `users` table, verified during login and cached in session
+
+**Login Flow:**
+```
+User Login → Backend validates credentials → Checks role in database → Returns user object with role → Frontend renders UI based on role
+```
+
+Only users with `role = 'ENGINEER'` can access maintenance-related endpoints. Unauthorized requests return HTTP 403 Forbidden.
+
+---
+
+## Inspection Record Management
+
+FlareNet provides comprehensive inspection lifecycle management with automated record generation from AI analysis results.
+
+### Workflow
+
+1. **Create Inspection:** Engineer creates inspection record for a transformer (inspection number, date, branch, status)
+2. **Upload Images:** Engineer uploads thermal images (baseline/maintenance) tagged with weather conditions
+3. **AI Analysis:** System analyzes images using PatchCore model, populates `analysis_result` and `detection` tables
+4. **User Annotation:** Engineer reviews AI detections, makes corrections (add/edit/delete annotations)
+5. **Adaptive Learning:** System processes feedback via `annotation_action` table, adjusts detection parameters
+6. **Generate Report:** Engineer generates PDF report with embedded images, detection overlays, and maintenance summary
+7. **History Tracking:** All inspections chronologically ordered per transformer for trend analysis
+
+### Automated Record Population
+
+**From AI Analysis:**
+- Analysis summary saved to `analysis_result` (status, total detections, critical count)
+- Individual anomalies saved to `detection` table (label, category, severity, confidence, bounding box)
+
+**From User Annotations:**
+- Original AI detections vs. user corrections compared automatically
+- Action type classified (ADDED/EDITED/DELETED/CONFIRMED)
+- Before/after values saved to `annotation_action` table
+- Feedback sent to Python backend for adaptive parameter tuning
+
+---
+
+## PDF Report Generation
+
+FlareNet generates professional inspection reports using **iText library** for PDF creation.
+
+### Report Contents
+
+- Transformer details (ID, region, location, capacity)
+- Inspection metadata (number, date, time, branch, status)
+- Embedded thermal images with detection bounding boxes overlaid
+- Analysis summary (total detections, critical count, severity breakdown)
+- Detailed anomaly list (label, category, severity, confidence, location)
+- User annotation summary (corrections made, detections added/deleted)
+- Engineer signature and timestamp
+
+### Technical Implementation
+
+**PDF Generation Process:**
+```
+Inspection Record → Query database (joins: inspections, thermal_image, analysis_result, detection) 
+→ Load image files from uploads folder → Embed images in PDF 
+→ Draw detection bounding boxes on images → Add tables with anomaly details 
+→ Return PDF file (Content-Type: application/pdf)
+```
+
+**Sample Report:** [View Sample PDF](https://drive.google.com/your-pdf-link-here)
+
+**Features:**
+- High-resolution image embedding (300 DPI)
+- Color-coded severity levels (Red: Critical, Orange: Faulty, Yellow: Potentially Faulty)
+- Professional layout with company branding
+- Pagination and table of contents for multi-page reports
+
+---
+
+## History Viewer
+
+Transformer inspection history provides chronological tracking of all maintenance activities.
+
+### Navigation Features
+
+- **Timeline View:** All inspections ordered by date (newest first)
+- **Status Indicators:** Visual badges for PENDING/IN_PROGRESS/COMPLETED status
+- **Quick Stats:** Image count and anomaly count per inspection displayed inline
+- **Detail Navigation:** Click any inspection to view full details, images, and detections
+- **Report Access:** Direct download link for generated PDF reports
+- **Trend Analysis:** Compare anomaly counts across multiple inspections to identify recurring issues
+
+### Database Query
+
+```sql
+SELECT i.*, COUNT(ti.id) as image_count, SUM(ar.total_detections) as total_anomalies
+FROM inspections i
+LEFT JOIN thermal_image ti ON i.id = ti.inspection_id
+LEFT JOIN analysis_result ar ON ti.id = ar.thermal_image_id
+WHERE i.transformer_id = ?
+GROUP BY i.id
+ORDER BY i.inspected_date DESC;
+```
+
+History viewer enables engineers to track transformer health over time and identify patterns in thermal anomalies.
+
+---
+
 ## ⚙️ Notes for Teammates
 
 1. **Images:**  
    All thermal images are stored in `flarenet-backend/uploads/`. This folder is mounted in Docker, so images are accessible to the backend.
 
-3. **Database:**
-   - Tables: `users`, `transformers`, `inspections`, `thermal_image`, `analysis_result`, `user_annotations`
-   - The database will be automatically created on first Docker run.
-   - User annotations are automatically fed to the adaptive learning system for parameter tuning.
+2. **Database:**
+   - **Schema:** Normalized relational tables (8 core tables with foreign key relationships)
+   - **Local:** PostgreSQL via Docker Compose (automatically created on first run)
+   - **Production:** Supabase cloud platform with SSL connections
+   - **Indexes:** Optimized for queries on transformer_id, inspection_id, severity, category, action_type
 
-3. **Environment variables (optional):**
-   Customize DB credentials in `docker-compose.yml`. Backend `application.yml` should matches these credentials.
+3. **Access Control:**
+   - Engineer role required for inspection operations (enforced in Java backend)
+   - Frontend checks user role to show/hide buttons
+   - Backend validates role in API controllers before processing
 
-4. **Adaptive Learning & Model Integration:**
+4. **Environment variables (optional):**
+   Customize DB credentials in `docker-compose.yml`. Backend `application.yml` should match these credentials.
+
+5. **Adaptive Learning & Model Integration:**
    The system combines pre-trained PatchCore models with adaptive parameter tuning. User feedback automatically improves detection without retraining the core AI model. All parameter changes are tracked and can be reset to defaults anytime.
 
 ---
@@ -348,8 +565,9 @@ python param_manager.py --stats    # Show adaptation statistics
 - Use Postgres GUI tools (like pgAdmin or DBeaver) to inspect the database if needed
 
 
-## ⚠️ Limitations & Issues
+## ⚠️ Limitations & Known Issues
 
-- Authentication & user roles missing – At this stage, the system does not include authentication, authorization, or multi-user role management. These features will be added in future phases.
-- Deployment not yet available – FlareNet currently runs only in a local development environment (Docker + local servers). A cloud deployment setup is not yet provided.
+- JWT authentication pending – Current implementation uses basic session-based authentication; token-based auth (JWT) will be added for enhanced security.
+- Mobile optimization needed – UI optimized for desktop browsers; responsive design for tablets and mobile devices in progress.
 - Adaptive learning requires user interaction – The system improves over time through user feedback; initial performance depends on base model accuracy.
+- Cloud deployment in progress – Database deployed on Supabase; full application deployment (frontend + backend) on AWS/Azure pending.
