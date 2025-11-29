@@ -429,7 +429,7 @@ Inspection Record → Query database (joins: inspections, thermal_image, analysi
 → Return PDF file (Content-Type: application/pdf)
 ```
 
-**Sample Report:** [View Sample PDF]([https://drive.google.com/your-pdf-link-here](https://drive.google.com/file/d/1JbA5w2vTDbH6XLNDDBWkx23UN2HjA96P/view?usp=sharing))
+**Sample Report:** [View Sample PDF]([[https://drive.google.com/your-pdf-link-here](https://drive.google.com/file/d/1JbA5w2vTDbH6XLNDDBWkx23UN2HjA96P/view?usp=sharing)])
 
 ---
 
