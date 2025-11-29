@@ -5,12 +5,12 @@ GitHub Link: https://github.com/RavijaDul/FlareNet
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Milestone 01:
+Milestone 01
 Video Links: https://drive.google.com/file/d/1qKRyumksrZPHtnMUvqLNtl3nvp669jVj/view?usp=sharing
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Milestone 02: 
+Milestone 02
 Video Links: https://drive.google.com/file/d/1weoFCDfgR8KZ3KQ385Yg-EiV3VY98KO2/view?usp=sharing
 
 Note: This repository includes the fully functional software required for Assignment 02, excluding the model training and inference testing files (Not required for the python - ML backend). However, these parts are explained in the video. If you wish to check the model training or inference, we will create a separate repository and add them later along with the necessary guidelines.
@@ -25,9 +25,14 @@ Model Training and Model Inference Repository link: https://github.com/RavijaDul
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Milestone 03: https://drive.google.com/file/d/1BM7oeJ1jGDUpSBM89QExOwKWobYHGga5/view?usp=sharing
+Milestone 03
+Video Links: https://drive.google.com/file/d/1BM7oeJ1jGDUpSBM89QExOwKWobYHGga5/view?usp=sharing
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Milestone 04:
+Milestone 04
+Video Links: https://drive.google.com/file/d/13MQlAqW5SiJ0U2fbryje_m6hetXMjnfZ/view?usp=sharing
+
 Sample Generated Report: https://drive.google.com/file/d/1JbA5w2vTDbH6XLNDDBWkx23UN2HjA96P/view?usp=sharing 
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
