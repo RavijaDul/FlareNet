@@ -524,9 +524,29 @@ python param_manager.py --show     # View current parameters
 python param_manager.py --reset    # Reset to defaults
 python param_manager.py --stats    # Show adaptation statistics
 ```
+⚠️ Deprecated: Old Local PostgreSQL Setup (Replaced by Supabase)
+
+Note: This PostgreSQL/Docker setup is from earlier development stages.
+We now use Supabase as the primary database platform, so this section is kept only for reference and historical context. The latest implementation no longer relies on local Postgres containers.
 
 ###  Start Postgres with Docker (Earlier Design stages)
-We use Docker to run Postgres with schema and seed data automatically.
+
+Using Local or Docker PostgreSQL Database
+
+To run the backend using a local or Docker-based PostgreSQL instance, update your database configuration in:
+
+flarenet-backend/src/main/resources/application.yml
+
+
+Set the JDBC URL as follows:
+
+spring:
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/flarenet
+
+
+This ensures the backend connects to the PostgreSQL database running on your machine or within Docker.
+
 
 ```bash
 docker compose down -v
