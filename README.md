@@ -581,5 +581,4 @@ If Docker containers have issues, you can run PostgreSQL manually:
 
 ## ⚠️ Limitations & Known Issues
 
-- Mobile optimization needed – UI optimized for desktop browsers; responsive design for tablets and mobile devices in progress.
 - Cloud deployment in progress – Database deployed on Supabase; full application deployment (frontend + backend) on AWS/Azure pending.
