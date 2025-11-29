@@ -394,7 +394,7 @@ FlareNet implements **engineer-only access** for critical operations to ensure d
 User Login → Backend validates credentials → Checks role in database → Returns user object with role → Frontend renders UI based on role
 ```
 
-Only users with `role = 'ENGINEER'` can access maintenance-related endpoints. Unauthorized requests return HTTP 403 Forbidden.
+Only users with `role = 'ENGINEER'` can access maintenance-related endpoints. 
 
 ---
 
