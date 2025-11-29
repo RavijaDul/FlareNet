@@ -525,7 +525,7 @@ python param_manager.py --reset    # Reset to defaults
 python param_manager.py --stats    # Show adaptation statistics
 ```
 
-###  Start Postgres with Docker (Earlier Design stages)
+##   Start Postgres with Docker (Earlier Design stages)
 
 **⚠️ Deprecated: Old Local PostgreSQL Setup (Replaced by Supabase)
 This PostgreSQL/Docker setup is from earlier development stages.
