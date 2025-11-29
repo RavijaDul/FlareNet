@@ -248,6 +248,8 @@ FlareNet/
 
 FlareNet uses a **normalized relational database schema** designed for efficient querying and reporting capabilities. The database is deployed on **Supabase** (PostgreSQL cloud platform) for production use.
 
+![Database Schema](supabase-schema.png)
+
 ### Core Tables
 
 ```
