@@ -11,6 +11,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.util.LinkedMultiValueMap;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -23,7 +25,9 @@ public class ThermalImageService {
     private final InspectionRepository inspections;
     private final StorageService storage;
     private final AnalysisResultRepository analysisRepo;
+    private final DetectionRepository detectionRepo;
     private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
 
     public ThermalImageService(
             ThermalImageRepository images,
@@ -31,14 +35,18 @@ public class ThermalImageService {
             InspectionRepository inspections,
             StorageService storage,
             AnalysisResultRepository analysisRepo,
-            RestTemplate restTemplate
+            DetectionRepository detectionRepo,
+            RestTemplate restTemplate,
+            ObjectMapper objectMapper
     ) {
         this.images = images;
         this.transformers = transformers;
         this.inspections = inspections;
         this.storage = storage;
         this.analysisRepo = analysisRepo;
+        this.detectionRepo = detectionRepo;
         this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
     }
 
     public ThermalImage upload(Long transformerId, MultipartFile file, ImageType type,
@@ -98,10 +106,33 @@ public class ThermalImageService {
                         restTemplate.postForEntity(pythonUrl, requestEntity, String.class);
 
                 if (response.getStatusCode().is2xxSuccessful()) {
+                    String jsonResponse = response.getBody();
+                    
+                    // Create and save analysis result
                     AnalysisResult result = new AnalysisResult();
                     result.setImage(saved);
-                    result.setResultJson(response.getBody());
-                    analysisRepo.save(result);
+                    result.setResultJson(jsonResponse);
+                    
+                    // Parse and populate normalized fields
+                    try {
+                        populateAnalysisResultFromJson(result, jsonResponse);
+                    } catch (Exception parseEx) {
+                        System.err.println("⚠️ Error parsing analysis JSON: " + parseEx.getMessage());
+                        result.setStatus("Unknown");
+                        result.setTotalDetections(0);
+                    }
+                    
+                    // Save analysis result first to get ID
+                    result = analysisRepo.save(result);
+                    
+                    // Populate detection table with individual detections
+                    try {
+                        populateDetections(result, jsonResponse);
+                    } catch (Exception detEx) {
+                        System.err.println("⚠️ Error populating detections: " + detEx.getMessage());
+                    }
+                    
+                    System.out.println("✅ Analysis saved with " + result.getTotalDetections() + " detections");
                 } else {
                     System.err.println("⚠️ Python backend returned: " + response.getStatusCode());
                 }
@@ -160,5 +191,75 @@ public class ThermalImageService {
 
     public Optional<AnalysisResult> getAnalysisForImage(Long imageId) {
         return Optional.ofNullable(analysisRepo.findByImageId(imageId));
+    }
+
+    /**
+     * Parse JSON and populate analysis_result summary fields
+     */
+    private void populateAnalysisResultFromJson(AnalysisResult result, String jsonResponse) throws Exception {
+        JsonNode root = objectMapper.readTree(jsonResponse);
+        
+        // Set status
+        String status = root.has("status") ? root.get("status").asText() : "Normal";
+        result.setStatus(status);
+        
+        // Count detections by severity
+        JsonNode anomalies = root.get("anomalies");
+        if (anomalies != null && anomalies.isArray()) {
+            int totalCount = anomalies.size();
+            int criticalCount = 0;
+            int potentiallyFaultyCount = 0;
+            
+            for (JsonNode anomaly : anomalies) {
+                String severity = anomaly.has("severity") ? anomaly.get("severity").asText() : "";
+                if (severity.equalsIgnoreCase("Critical")) {
+                    criticalCount++;
+                } else if (severity.equalsIgnoreCase("Potentially Faulty")) {
+                    potentiallyFaultyCount++;
+                }
+            }
+            
+            result.setTotalDetections(totalCount);
+            result.setCriticalCount(criticalCount);
+            result.setPotentiallyFaultyCount(potentiallyFaultyCount);
+        } else {
+            result.setTotalDetections(0);
+            result.setCriticalCount(0);
+            result.setPotentiallyFaultyCount(0);
+        }
+    }
+
+    /**
+     * Parse JSON and populate individual detection records
+     */
+    private void populateDetections(AnalysisResult analysisResult, String jsonResponse) throws Exception {
+        JsonNode root = objectMapper.readTree(jsonResponse);
+        JsonNode anomalies = root.get("anomalies");
+        
+        if (anomalies == null || !anomalies.isArray()) {
+            return;
+        }
+        
+        for (JsonNode anomaly : anomalies) {
+            Detection detection = new Detection();
+            detection.setAnalysisResult(analysisResult);
+            
+            // Extract fields
+            detection.setLabel(anomaly.has("label") ? anomaly.get("label").asText() : "Unknown");
+            detection.setCategory(anomaly.has("category") ? anomaly.get("category").asText() : "anomaly");
+            detection.setSeverity(anomaly.has("severity") ? anomaly.get("severity").asText() : "Unknown");
+            detection.setConfidence(anomaly.has("confidence") ? anomaly.get("confidence").asDouble() : 0.0);
+            
+            // Extract bbox
+            if (anomaly.has("bbox")) {
+                JsonNode bbox = anomaly.get("bbox");
+                detection.setBboxX(bbox.has("x") ? bbox.get("x").asInt() : 0);
+                detection.setBboxY(bbox.has("y") ? bbox.get("y").asInt() : 0);
+                detection.setBboxWidth(bbox.has("width") ? bbox.get("width").asInt() : 0);
+                detection.setBboxHeight(bbox.has("height") ? bbox.get("height").asInt() : 0);
+            }
+            
+            detectionRepo.save(detection);
+        }
     }
 }

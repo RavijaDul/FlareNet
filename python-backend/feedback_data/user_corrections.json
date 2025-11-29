@@ -2358,6 +2358,1800 @@
           }
         }
       ]
+    },
+    {
+      "timestamp": "2025-11-26T14:58:27.937788",
+      "image_id": "9",
+      "user_id": "H1210",
+      "original_count": 3,
+      "corrected_count": 2,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 147.21714285714285,
+            "height": 108
+          },
+          "isUserAdded": false,
+          "edited": true
+        }
+      ],
+      "feedback_analysis": [
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_0",
+              "category": "point_overload",
+              "severity": "Faulty",
+              "confidence": 0.98506960272789,
+              "bbox": {
+                "x": 165,
+                "y": 121,
+                "width": 80,
+                "height": 118
+              }
+            },
+            "category": "point_overload",
+            "confidence": 0.98506960272789
+          }
+        },
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_1",
+              "category": "point_overload",
+              "severity": "Faulty",
+              "confidence": 0.9817008674144745,
+              "bbox": {
+                "x": 75,
+                "y": 127,
+                "width": 80,
+                "height": 109
+              }
+            },
+            "category": "point_overload",
+            "confidence": 0.9817008674144745
+          }
+        },
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_2",
+              "category": "point_overload",
+              "severity": "Faulty",
+              "confidence": 0.9797631800174713,
+              "bbox": {
+                "x": 255,
+                "y": 128,
+                "width": 79,
+                "height": 108
+              }
+            },
+            "category": "point_overload",
+            "confidence": 0.9797631800174713
+          }
+        },
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_1",
+              "category": "point_overload",
+              "severity": "Faulty",
+              "confidence": 0.9817008674144745,
+              "bbox": {
+                "x": 75,
+                "y": 127,
+                "width": 80,
+                "height": 109
+              },
+              "isUserAdded": false,
+              "edited": false
+            },
+            "category": "point_overload",
+            "confidence": 0.9817008674144745
+          }
+        },
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_2",
+              "category": "point_overload",
+              "severity": "Faulty",
+              "confidence": 1,
+              "bbox": {
+                "x": 255,
+                "y": 128,
+                "width": 147.21714285714285,
+                "height": 108
+              },
+              "isUserAdded": false,
+              "edited": true
+            },
+            "category": "point_overload",
+            "confidence": 1
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-11-26T15:59:57.269179",
+      "image_id": "11",
+      "user_id": "H1210",
+      "original_count": 3,
+      "corrected_count": 3,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 147.94285714285715,
+            "height": 105.82211538461539
+          },
+          "isUserAdded": false,
+          "edited": true
+        }
+      ],
+      "feedback_analysis": [
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_2",
+              "category": "point_overload",
+              "severity": "Faulty",
+              "confidence": 0.9797631800174713,
+              "bbox": {
+                "x": 255,
+                "y": 128,
+                "width": 79,
+                "height": 108
+              }
+            },
+            "category": "point_overload",
+            "confidence": 0.9797631800174713
+          }
+        },
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_2",
+              "category": "point_overload",
+              "severity": "Faulty",
+              "confidence": 1,
+              "bbox": {
+                "x": 255,
+                "y": 128,
+                "width": 147.94285714285715,
+                "height": 105.82211538461539
+              },
+              "isUserAdded": false,
+              "edited": true
+            },
+            "category": "point_overload",
+            "confidence": 1
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-11-26T16:08:57.378290",
+      "image_id": "12",
+      "user_id": "H1210",
+      "original_count": 3,
+      "corrected_count": 2,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 150.84571428571428,
+            "height": 111.6298076923077
+          },
+          "isUserAdded": false,
+          "edited": true
+        }
+      ],
+      "feedback_analysis": [
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_0",
+              "category": "point_overload",
+              "severity": "Faulty",
+              "confidence": 0.98506960272789,
+              "bbox": {
+                "x": 165,
+                "y": 121,
+                "width": 80,
+                "height": 118
+              }
+            },
+            "category": "point_overload",
+            "confidence": 0.98506960272789
+          }
+        },
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_1",
+              "category": "point_overload",
+              "severity": "Faulty",
+              "confidence": 0.9817008674144745,
+              "bbox": {
+                "x": 75,
+                "y": 127,
+                "width": 80,
+                "height": 109
+              }
+            },
+            "category": "point_overload",
+            "confidence": 0.9817008674144745
+          }
+        },
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_2",
+              "category": "point_overload",
+              "severity": "Faulty",
+              "confidence": 0.9797631800174713,
+              "bbox": {
+                "x": 255,
+                "y": 128,
+                "width": 79,
+                "height": 108
+              }
+            },
+            "category": "point_overload",
+            "confidence": 0.9797631800174713
+          }
+        },
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_1",
+              "category": "point_overload",
+              "severity": "Faulty",
+              "confidence": 0.9817008674144745,
+              "bbox": {
+                "x": 75,
+                "y": 127,
+                "width": 80,
+                "height": 109
+              },
+              "isUserAdded": false,
+              "edited": false
+            },
+            "category": "point_overload",
+            "confidence": 0.9817008674144745
+          }
+        },
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_2",
+              "category": "point_overload",
+              "severity": "Faulty",
+              "confidence": 1,
+              "bbox": {
+                "x": 255,
+                "y": 128,
+                "width": 150.84571428571428,
+                "height": 111.6298076923077
+              },
+              "isUserAdded": false,
+              "edited": true
+            },
+            "category": "point_overload",
+            "confidence": 1
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-11-26T16:11:23.610636",
+      "image_id": "12",
+      "user_id": "H1210",
+      "original_count": 3,
+      "corrected_count": 1,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.98506960272789,
+          "bbox": {
+            "x": 165,
+            "y": 121,
+            "width": 80,
+            "height": 118
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9817008674144745,
+          "bbox": {
+            "x": 75,
+            "y": 127,
+            "width": 80,
+            "height": 109
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 0.9797631800174713,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 79,
+            "height": 108
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_2",
+          "category": "point_overload",
+          "severity": "Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 255,
+            "y": 128,
+            "width": 150.84571428571428,
+            "height": 111.6298076923077
+          },
+          "isUserAdded": false,
+          "edited": true
+        }
+      ],
+      "feedback_analysis": [
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_0",
+              "category": "point_overload",
+              "severity": "Faulty",
+              "confidence": 0.98506960272789,
+              "bbox": {
+                "x": 165,
+                "y": 121,
+                "width": 80,
+                "height": 118
+              }
+            },
+            "category": "point_overload",
+            "confidence": 0.98506960272789
+          }
+        },
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_1",
+              "category": "point_overload",
+              "severity": "Faulty",
+              "confidence": 0.9817008674144745,
+              "bbox": {
+                "x": 75,
+                "y": 127,
+                "width": 80,
+                "height": 109
+              }
+            },
+            "category": "point_overload",
+            "confidence": 0.9817008674144745
+          }
+        },
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_2",
+              "category": "point_overload",
+              "severity": "Faulty",
+              "confidence": 0.9797631800174713,
+              "bbox": {
+                "x": 255,
+                "y": 128,
+                "width": 79,
+                "height": 108
+              }
+            },
+            "category": "point_overload",
+            "confidence": 0.9797631800174713
+          }
+        },
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_2",
+              "category": "point_overload",
+              "severity": "Faulty",
+              "confidence": 1,
+              "bbox": {
+                "x": 255,
+                "y": 128,
+                "width": 150.84571428571428,
+                "height": 111.6298076923077
+              },
+              "isUserAdded": false,
+              "edited": true
+            },
+            "category": "point_overload",
+            "confidence": 1
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-11-26T16:13:28.009180",
+      "image_id": "4",
+      "user_id": "H1210",
+      "original_count": 5,
+      "corrected_count": 5,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "loose_joint",
+          "severity": "Faulty",
+          "confidence": 0.90237109375,
+          "bbox": {
+            "x": 41,
+            "y": 268,
+            "width": 454,
+            "height": 341
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 1.0,
+          "bbox": {
+            "x": 480,
+            "y": 469,
+            "width": 28,
+            "height": 75
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8501624464988708,
+          "bbox": {
+            "x": 298,
+            "y": 576,
+            "width": 33,
+            "height": 64
+          }
+        },
+        {
+          "id": "orig_3",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8517188131809235,
+          "bbox": {
+            "x": 248,
+            "y": 602,
+            "width": 29,
+            "height": 38
+          }
+        },
+        {
+          "id": "orig_4",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8541258573532104,
+          "bbox": {
+            "x": 208,
+            "y": 604,
+            "width": 20,
+            "height": 36
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_0",
+          "category": "loose_joint",
+          "severity": "Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 147.9714285714286,
+            "y": 256.1142857142857,
+            "width": 454,
+            "height": 341
+          },
+          "isUserAdded": false,
+          "edited": true
+        },
+        {
+          "id": "corr_1",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 480,
+            "y": 469,
+            "width": 28,
+            "height": 75
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_2",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8501624464988708,
+          "bbox": {
+            "x": 298,
+            "y": 576,
+            "width": 33,
+            "height": 64
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_3",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8517188131809235,
+          "bbox": {
+            "x": 248,
+            "y": 602,
+            "width": 29,
+            "height": 38
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_4",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8541258573532104,
+          "bbox": {
+            "x": 208,
+            "y": 604,
+            "width": 20,
+            "height": 36
+          },
+          "isUserAdded": false,
+          "edited": false
+        }
+      ],
+      "feedback_analysis": [
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_0",
+              "category": "loose_joint",
+              "severity": "Faulty",
+              "confidence": 0.90237109375,
+              "bbox": {
+                "x": 41,
+                "y": 268,
+                "width": 454,
+                "height": 341
+              }
+            },
+            "category": "loose_joint",
+            "confidence": 0.90237109375
+          }
+        },
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_0",
+              "category": "loose_joint",
+              "severity": "Faulty",
+              "confidence": 1,
+              "bbox": {
+                "x": 147.9714285714286,
+                "y": 256.1142857142857,
+                "width": 454,
+                "height": 341
+              },
+              "isUserAdded": false,
+              "edited": true
+            },
+            "category": "loose_joint",
+            "confidence": 1
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-11-26T16:22:20.818662",
+      "image_id": "4",
+      "user_id": "H1210",
+      "original_count": 5,
+      "corrected_count": 5,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "loose_joint",
+          "severity": "Faulty",
+          "confidence": 0.90237109375,
+          "bbox": {
+            "x": 41,
+            "y": 268,
+            "width": 454,
+            "height": 341
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 1.0,
+          "bbox": {
+            "x": 480,
+            "y": 469,
+            "width": 28,
+            "height": 75
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8501624464988708,
+          "bbox": {
+            "x": 298,
+            "y": 576,
+            "width": 33,
+            "height": 64
+          }
+        },
+        {
+          "id": "orig_3",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8517188131809235,
+          "bbox": {
+            "x": 248,
+            "y": 602,
+            "width": 29,
+            "height": 38
+          }
+        },
+        {
+          "id": "orig_4",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8541258573532104,
+          "bbox": {
+            "x": 208,
+            "y": 604,
+            "width": 20,
+            "height": 36
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_0",
+          "category": "loose_joint",
+          "severity": "Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 147.9714285714286,
+            "y": 256.1142857142857,
+            "width": 272.9714285714286,
+            "height": 176.42857142857144
+          },
+          "isUserAdded": false,
+          "edited": true
+        },
+        {
+          "id": "corr_1",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 480,
+            "y": 469,
+            "width": 110.28571428571428,
+            "height": 131.68571428571428
+          },
+          "isUserAdded": false,
+          "edited": true
+        },
+        {
+          "id": "corr_2",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8501624464988708,
+          "bbox": {
+            "x": 298,
+            "y": 576,
+            "width": 33,
+            "height": 64
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_3",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8517188131809235,
+          "bbox": {
+            "x": 248,
+            "y": 602,
+            "width": 29,
+            "height": 38
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_4",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8541258573532104,
+          "bbox": {
+            "x": 208,
+            "y": 604,
+            "width": 20,
+            "height": 36
+          },
+          "isUserAdded": false,
+          "edited": false
+        }
+      ],
+      "feedback_analysis": [
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_0",
+              "category": "loose_joint",
+              "severity": "Faulty",
+              "confidence": 0.90237109375,
+              "bbox": {
+                "x": 41,
+                "y": 268,
+                "width": 454,
+                "height": 341
+              }
+            },
+            "category": "loose_joint",
+            "confidence": 0.90237109375
+          }
+        },
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_1",
+              "category": "point_overload",
+              "severity": "Potentially Faulty",
+              "confidence": 1.0,
+              "bbox": {
+                "x": 480,
+                "y": 469,
+                "width": 28,
+                "height": 75
+              }
+            },
+            "category": "point_overload",
+            "confidence": 1.0
+          }
+        },
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_0",
+              "category": "loose_joint",
+              "severity": "Faulty",
+              "confidence": 1,
+              "bbox": {
+                "x": 147.9714285714286,
+                "y": 256.1142857142857,
+                "width": 272.9714285714286,
+                "height": 176.42857142857144
+              },
+              "isUserAdded": false,
+              "edited": true
+            },
+            "category": "loose_joint",
+            "confidence": 1
+          }
+        },
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_1",
+              "category": "point_overload",
+              "severity": "Potentially Faulty",
+              "confidence": 1,
+              "bbox": {
+                "x": 480,
+                "y": 469,
+                "width": 110.28571428571428,
+                "height": 131.68571428571428
+              },
+              "isUserAdded": false,
+              "edited": true
+            },
+            "category": "point_overload",
+            "confidence": 1
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-11-26T16:31:14.686858",
+      "image_id": "4",
+      "user_id": "H1210",
+      "original_count": 5,
+      "corrected_count": 4,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "loose_joint",
+          "severity": "Faulty",
+          "confidence": 0.90237109375,
+          "bbox": {
+            "x": 41,
+            "y": 268,
+            "width": 454,
+            "height": 341
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 1.0,
+          "bbox": {
+            "x": 480,
+            "y": 469,
+            "width": 28,
+            "height": 75
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8501624464988708,
+          "bbox": {
+            "x": 298,
+            "y": 576,
+            "width": 33,
+            "height": 64
+          }
+        },
+        {
+          "id": "orig_3",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8517188131809235,
+          "bbox": {
+            "x": 248,
+            "y": 602,
+            "width": 29,
+            "height": 38
+          }
+        },
+        {
+          "id": "orig_4",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8541258573532104,
+          "bbox": {
+            "x": 208,
+            "y": 604,
+            "width": 20,
+            "height": 36
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_0",
+          "category": "loose_joint",
+          "severity": "Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 139.74285714285716,
+            "y": 302.74285714285713,
+            "width": 171.48571428571432,
+            "height": 167.2857142857143
+          },
+          "isUserAdded": false,
+          "edited": true
+        },
+        {
+          "id": "corr_2",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8501624464988708,
+          "bbox": {
+            "x": 298,
+            "y": 576,
+            "width": 33,
+            "height": 64
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_3",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8517188131809235,
+          "bbox": {
+            "x": 248,
+            "y": 602,
+            "width": 29,
+            "height": 38
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_4",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8541258573532104,
+          "bbox": {
+            "x": 208,
+            "y": 604,
+            "width": 20,
+            "height": 36
+          },
+          "isUserAdded": false,
+          "edited": false
+        }
+      ],
+      "feedback_analysis": [
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_0",
+              "category": "loose_joint",
+              "severity": "Faulty",
+              "confidence": 0.90237109375,
+              "bbox": {
+                "x": 41,
+                "y": 268,
+                "width": 454,
+                "height": 341
+              }
+            },
+            "category": "loose_joint",
+            "confidence": 0.90237109375
+          }
+        },
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_1",
+              "category": "point_overload",
+              "severity": "Potentially Faulty",
+              "confidence": 1.0,
+              "bbox": {
+                "x": 480,
+                "y": 469,
+                "width": 28,
+                "height": 75
+              }
+            },
+            "category": "point_overload",
+            "confidence": 1.0
+          }
+        },
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_2",
+              "category": "point_overload",
+              "severity": "Potentially Faulty",
+              "confidence": 0.8501624464988708,
+              "bbox": {
+                "x": 298,
+                "y": 576,
+                "width": 33,
+                "height": 64
+              }
+            },
+            "category": "point_overload",
+            "confidence": 0.8501624464988708
+          }
+        },
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_3",
+              "category": "point_overload",
+              "severity": "Potentially Faulty",
+              "confidence": 0.8517188131809235,
+              "bbox": {
+                "x": 248,
+                "y": 602,
+                "width": 29,
+                "height": 38
+              }
+            },
+            "category": "point_overload",
+            "confidence": 0.8517188131809235
+          }
+        },
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_4",
+              "category": "point_overload",
+              "severity": "Potentially Faulty",
+              "confidence": 0.8541258573532104,
+              "bbox": {
+                "x": 208,
+                "y": 604,
+                "width": 20,
+                "height": 36
+              }
+            },
+            "category": "point_overload",
+            "confidence": 0.8541258573532104
+          }
+        },
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_0",
+              "category": "loose_joint",
+              "severity": "Faulty",
+              "confidence": 1,
+              "bbox": {
+                "x": 139.74285714285716,
+                "y": 302.74285714285713,
+                "width": 171.48571428571432,
+                "height": 167.2857142857143
+              },
+              "isUserAdded": false,
+              "edited": true
+            },
+            "category": "loose_joint",
+            "confidence": 1
+          }
+        },
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_2",
+              "category": "point_overload",
+              "severity": "Potentially Faulty",
+              "confidence": 0.8501624464988708,
+              "bbox": {
+                "x": 298,
+                "y": 576,
+                "width": 33,
+                "height": 64
+              },
+              "isUserAdded": false,
+              "edited": false
+            },
+            "category": "point_overload",
+            "confidence": 0.8501624464988708
+          }
+        },
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_3",
+              "category": "point_overload",
+              "severity": "Potentially Faulty",
+              "confidence": 0.8517188131809235,
+              "bbox": {
+                "x": 248,
+                "y": 602,
+                "width": 29,
+                "height": 38
+              },
+              "isUserAdded": false,
+              "edited": false
+            },
+            "category": "point_overload",
+            "confidence": 0.8517188131809235
+          }
+        },
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_4",
+              "category": "point_overload",
+              "severity": "Potentially Faulty",
+              "confidence": 0.8541258573532104,
+              "bbox": {
+                "x": 208,
+                "y": 604,
+                "width": 20,
+                "height": 36
+              },
+              "isUserAdded": false,
+              "edited": false
+            },
+            "category": "point_overload",
+            "confidence": 0.8541258573532104
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-11-26T16:40:26.402476",
+      "image_id": "4",
+      "user_id": "H1210",
+      "original_count": 5,
+      "corrected_count": 3,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "loose_joint",
+          "severity": "Faulty",
+          "confidence": 0.90237109375,
+          "bbox": {
+            "x": 41,
+            "y": 268,
+            "width": 454,
+            "height": 341
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 1.0,
+          "bbox": {
+            "x": 480,
+            "y": 469,
+            "width": 28,
+            "height": 75
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8501624464988708,
+          "bbox": {
+            "x": 298,
+            "y": 576,
+            "width": 33,
+            "height": 64
+          }
+        },
+        {
+          "id": "orig_3",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8517188131809235,
+          "bbox": {
+            "x": 248,
+            "y": 602,
+            "width": 29,
+            "height": 38
+          }
+        },
+        {
+          "id": "orig_4",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8541258573532104,
+          "bbox": {
+            "x": 208,
+            "y": 604,
+            "width": 20,
+            "height": 36
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_0",
+          "category": "loose_joint",
+          "severity": "Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 139.74285714285716,
+            "y": 302.74285714285713,
+            "width": 293.0857142857143,
+            "height": 242.25714285714287
+          },
+          "isUserAdded": false,
+          "edited": true
+        },
+        {
+          "id": "corr_3",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8517188131809235,
+          "bbox": {
+            "x": 248,
+            "y": 602,
+            "width": 29,
+            "height": 38
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_4",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8541258573532104,
+          "bbox": {
+            "x": 208,
+            "y": 604,
+            "width": 20,
+            "height": 36
+          },
+          "isUserAdded": false,
+          "edited": false
+        }
+      ],
+      "feedback_analysis": [
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_0",
+              "category": "loose_joint",
+              "severity": "Faulty",
+              "confidence": 0.90237109375,
+              "bbox": {
+                "x": 41,
+                "y": 268,
+                "width": 454,
+                "height": 341
+              }
+            },
+            "category": "loose_joint",
+            "confidence": 0.90237109375
+          }
+        },
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_1",
+              "category": "point_overload",
+              "severity": "Potentially Faulty",
+              "confidence": 1.0,
+              "bbox": {
+                "x": 480,
+                "y": 469,
+                "width": 28,
+                "height": 75
+              }
+            },
+            "category": "point_overload",
+            "confidence": 1.0
+          }
+        },
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_2",
+              "category": "point_overload",
+              "severity": "Potentially Faulty",
+              "confidence": 0.8501624464988708,
+              "bbox": {
+                "x": 298,
+                "y": 576,
+                "width": 33,
+                "height": 64
+              }
+            },
+            "category": "point_overload",
+            "confidence": 0.8501624464988708
+          }
+        },
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_3",
+              "category": "point_overload",
+              "severity": "Potentially Faulty",
+              "confidence": 0.8517188131809235,
+              "bbox": {
+                "x": 248,
+                "y": 602,
+                "width": 29,
+                "height": 38
+              }
+            },
+            "category": "point_overload",
+            "confidence": 0.8517188131809235
+          }
+        },
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_4",
+              "category": "point_overload",
+              "severity": "Potentially Faulty",
+              "confidence": 0.8541258573532104,
+              "bbox": {
+                "x": 208,
+                "y": 604,
+                "width": 20,
+                "height": 36
+              }
+            },
+            "category": "point_overload",
+            "confidence": 0.8541258573532104
+          }
+        },
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_0",
+              "category": "loose_joint",
+              "severity": "Faulty",
+              "confidence": 1,
+              "bbox": {
+                "x": 139.74285714285716,
+                "y": 302.74285714285713,
+                "width": 293.0857142857143,
+                "height": 242.25714285714287
+              },
+              "isUserAdded": false,
+              "edited": true
+            },
+            "category": "loose_joint",
+            "confidence": 1
+          }
+        },
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_3",
+              "category": "point_overload",
+              "severity": "Potentially Faulty",
+              "confidence": 0.8517188131809235,
+              "bbox": {
+                "x": 248,
+                "y": 602,
+                "width": 29,
+                "height": 38
+              },
+              "isUserAdded": false,
+              "edited": false
+            },
+            "category": "point_overload",
+            "confidence": 0.8517188131809235
+          }
+        },
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_4",
+              "category": "point_overload",
+              "severity": "Potentially Faulty",
+              "confidence": 0.8541258573532104,
+              "bbox": {
+                "x": 208,
+                "y": 604,
+                "width": 20,
+                "height": 36
+              },
+              "isUserAdded": false,
+              "edited": false
+            },
+            "category": "point_overload",
+            "confidence": 0.8541258573532104
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-11-26T22:28:39.104112",
+      "image_id": "4",
+      "user_id": "H1210",
+      "original_count": 5,
+      "corrected_count": 5,
+      "original_detections": [
+        {
+          "id": "orig_0",
+          "category": "loose_joint",
+          "severity": "Faulty",
+          "confidence": 0.90237109375,
+          "bbox": {
+            "x": 41,
+            "y": 268,
+            "width": 454,
+            "height": 341
+          }
+        },
+        {
+          "id": "orig_1",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 1.0,
+          "bbox": {
+            "x": 480,
+            "y": 469,
+            "width": 28,
+            "height": 75
+          }
+        },
+        {
+          "id": "orig_2",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8501624464988708,
+          "bbox": {
+            "x": 298,
+            "y": 576,
+            "width": 33,
+            "height": 64
+          }
+        },
+        {
+          "id": "orig_3",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8517188131809235,
+          "bbox": {
+            "x": 248,
+            "y": 602,
+            "width": 29,
+            "height": 38
+          }
+        },
+        {
+          "id": "orig_4",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8541258573532104,
+          "bbox": {
+            "x": 208,
+            "y": 604,
+            "width": 20,
+            "height": 36
+          }
+        }
+      ],
+      "user_corrections": [
+        {
+          "id": "corr_0",
+          "category": "loose_joint",
+          "severity": "Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 42.08108108108108,
+            "y": 251.78378378378378,
+            "width": 454,
+            "height": 341
+          },
+          "isUserAdded": false,
+          "edited": true
+        },
+        {
+          "id": "corr_1",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 1,
+          "bbox": {
+            "x": 480,
+            "y": 469,
+            "width": 28,
+            "height": 75
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_2",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8501624464988708,
+          "bbox": {
+            "x": 298,
+            "y": 576,
+            "width": 33,
+            "height": 64
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_3",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8517188131809235,
+          "bbox": {
+            "x": 248,
+            "y": 602,
+            "width": 29,
+            "height": 38
+          },
+          "isUserAdded": false,
+          "edited": false
+        },
+        {
+          "id": "corr_4",
+          "category": "point_overload",
+          "severity": "Potentially Faulty",
+          "confidence": 0.8541258573532104,
+          "bbox": {
+            "x": 208,
+            "y": 604,
+            "width": 20,
+            "height": 36
+          },
+          "isUserAdded": false,
+          "edited": false
+        }
+      ],
+      "feedback_analysis": [
+        {
+          "type": "false_positive",
+          "changes": {
+            "deleted_detection": {
+              "id": "orig_0",
+              "category": "loose_joint",
+              "severity": "Faulty",
+              "confidence": 0.90237109375,
+              "bbox": {
+                "x": 41,
+                "y": 268,
+                "width": 454,
+                "height": 341
+              }
+            },
+            "category": "loose_joint",
+            "confidence": 0.90237109375
+          }
+        },
+        {
+          "type": "false_negative",
+          "changes": {
+            "added_detection": {
+              "id": "corr_0",
+              "category": "loose_joint",
+              "severity": "Faulty",
+              "confidence": 1,
+              "bbox": {
+                "x": 42.08108108108108,
+                "y": 251.78378378378378,
+                "width": 454,
+                "height": 341
+              },
+              "isUserAdded": false,
+              "edited": true
+            },
+            "category": "loose_joint",
+            "confidence": 1
+          }
+        }
+      ]
     }
   ]
 }

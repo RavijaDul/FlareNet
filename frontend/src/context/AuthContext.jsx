@@ -1,55 +1,43 @@
-// context/ActorContext.jsx
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
+import { authAPI } from "../services/api";
 
-export const ActorContext = createContext();
+export const AuthContext = createContext();
 
-export function ActorProvider({ children }) {
-  const [actor, setActor] = useState(localStorage.getItem("actor") || "guest");
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(() => {
+    const stored = localStorage.getItem("user");
+    return stored ? JSON.parse(stored) : null;
+  });
 
-  const setDisplayName = (name) => {
-    setActor(name);
-    localStorage.setItem("actor", name);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token && !user) {
+      // try to reload minimal user info from storage
+      const stored = localStorage.getItem("user");
+      if (stored) setUser(JSON.parse(stored));
+    }
+  }, []);
+
+  const login = async ({ username, password }) => {
+    const resp = await authAPI.login({ username, password });
+    // resp.data contains { token, username, role }
+    const payload = resp.data;
+    const u = { username: payload.username, role: payload.role, token: payload.token };
+    setUser(u);
+    localStorage.setItem("user", JSON.stringify(u));
+    localStorage.setItem("token", payload.token);
+    return u;
+  };
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
   };
 
   return (
-    <ActorContext.Provider value={{ actor, setDisplayName }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
-    </ActorContext.Provider>
+    </AuthContext.Provider>
   );
 }
-
-
-
-// import { createContext, useState, useEffect } from "react";
-
-// export const AuthContext = createContext();
-
-// export function AuthProvider({ children }) {
-//   const [user, setUser] = useState(null);
-
-//   useEffect(() => {
-//     // load from localStorage on refresh
-//     const storedUser = localStorage.getItem("user");
-//     if (storedUser) {
-//       setUser(JSON.parse(storedUser));
-//     }
-//   }, []);
-
-//   const login = (data) => {
-//     setUser(data);
-//     localStorage.setItem("user", JSON.stringify(data));
-//     localStorage.setItem("token", data.token);
-//   };
-
-//   const logout = () => {
-//     setUser(null);
-//     localStorage.removeItem("user");
-//     localStorage.removeItem("token");
-//   };
-
-//   return (
-//     <AuthContext.Provider value={{ user, login, logout }}>
-//       {children}
-//     </AuthContext.Provider>
-//   );
-// }

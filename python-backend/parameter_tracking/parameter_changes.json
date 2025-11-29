@@ -1184,5 +1184,935 @@
         "delta": -3
       }
     }
+  },
+  {
+    "timestamp": "2025-11-26T14:58:28.019248",
+    "image_id": "9",
+    "user_id": "H1210",
+    "feedback_types": [
+      "false_positive",
+      "false_positive",
+      "false_positive",
+      "false_negative",
+      "false_negative"
+    ],
+    "detection_counts": {
+      "original": 3,
+      "corrected": 2,
+      "added": 2,
+      "deleted": 3
+    },
+    "parameters_before": {
+      "percent_threshold": 14,
+      "min_area_factor": 0.0005,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "parameters_after": {
+      "percent_threshold": 17,
+      "min_area_factor": 0.0005529599999999999,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "changes": {
+      "percent_threshold": {
+        "from": 14,
+        "to": 17,
+        "delta": 3
+      },
+      "min_area_factor": {
+        "from": 0.0005,
+        "to": 0.0005529599999999999,
+        "delta": 5.29599999999999e-05
+      }
+    }
+  },
+  {
+    "timestamp": "2025-11-26T15:59:57.308107",
+    "image_id": "11",
+    "user_id": "H1210",
+    "feedback_types": [
+      "false_positive",
+      "false_negative"
+    ],
+    "detection_counts": {
+      "original": 3,
+      "corrected": 3,
+      "added": 3,
+      "deleted": 3
+    },
+    "parameters_before": {
+      "percent_threshold": 17,
+      "min_area_factor": 0.0005529599999999999,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "parameters_after": {
+      "percent_threshold": 17,
+      "min_area_factor": 0.0005308415999999999,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "changes": {
+      "min_area_factor": {
+        "from": 0.0005529599999999999,
+        "to": 0.0005308415999999999,
+        "delta": -2.2118400000000035e-05
+      }
+    }
+  },
+  {
+    "timestamp": "2025-11-26T16:08:57.402323",
+    "image_id": "12",
+    "user_id": "H1210",
+    "feedback_types": [
+      "false_positive",
+      "false_positive",
+      "false_positive",
+      "false_negative",
+      "false_negative"
+    ],
+    "detection_counts": {
+      "original": 3,
+      "corrected": 2,
+      "added": 2,
+      "deleted": 3
+    },
+    "parameters_before": {
+      "percent_threshold": 17,
+      "min_area_factor": 0.0005308415999999999,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "parameters_after": {
+      "percent_threshold": 20,
+      "min_area_factor": 0.0005870683422719999,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "changes": {
+      "percent_threshold": {
+        "from": 17,
+        "to": 20,
+        "delta": 3
+      },
+      "min_area_factor": {
+        "from": 0.0005308415999999999,
+        "to": 0.0005870683422719999,
+        "delta": 5.622674227199998e-05
+      }
+    }
+  },
+  {
+    "timestamp": "2025-11-26T16:11:23.634103",
+    "image_id": "12",
+    "user_id": "H1210",
+    "feedback_types": [
+      "false_positive",
+      "false_positive",
+      "false_positive",
+      "false_negative"
+    ],
+    "detection_counts": {
+      "original": 3,
+      "corrected": 1,
+      "added": 1,
+      "deleted": 3
+    },
+    "parameters_before": {
+      "percent_threshold": 20,
+      "min_area_factor": 0.0005870683422719999,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "parameters_after": {
+      "percent_threshold": 26,
+      "min_area_factor": 0.0008115632763568125,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "changes": {
+      "percent_threshold": {
+        "from": 20,
+        "to": 26,
+        "delta": 6
+      },
+      "min_area_factor": {
+        "from": 0.0005870683422719999,
+        "to": 0.0008115632763568125,
+        "delta": 0.00022449493408481264
+      }
+    }
+  },
+  {
+    "timestamp": "2025-11-26T16:13:28.029214",
+    "image_id": "4",
+    "user_id": "H1210",
+    "feedback_types": [
+      "false_positive",
+      "false_negative"
+    ],
+    "detection_counts": {
+      "original": 5,
+      "corrected": 5,
+      "added": 5,
+      "deleted": 5
+    },
+    "parameters_before": {
+      "percent_threshold": 26,
+      "min_area_factor": 0.0008115632763568125,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "parameters_after": {
+      "percent_threshold": 26,
+      "min_area_factor": 0.00077910074530254,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "changes": {
+      "min_area_factor": {
+        "from": 0.0008115632763568125,
+        "to": 0.00077910074530254,
+        "delta": -3.2462531054272526e-05
+      }
+    }
+  },
+  {
+    "timestamp": "2025-11-26T16:22:20.837785",
+    "image_id": "4",
+    "user_id": "H1210",
+    "feedback_types": [
+      "false_positive",
+      "false_positive",
+      "false_negative",
+      "false_negative"
+    ],
+    "detection_counts": {
+      "original": 5,
+      "corrected": 5,
+      "added": 5,
+      "deleted": 5
+    },
+    "parameters_before": {
+      "percent_threshold": 26,
+      "min_area_factor": 0.00077910074530254,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "parameters_after": {
+      "percent_threshold": 26,
+      "min_area_factor": 0.0007180192468708208,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "changes": {
+      "min_area_factor": {
+        "from": 0.00077910074530254,
+        "to": 0.0007180192468708208,
+        "delta": -6.108149843171912e-05
+      }
+    }
+  },
+  {
+    "timestamp": "2025-11-26T16:31:14.720375",
+    "image_id": "4",
+    "user_id": "H1210",
+    "feedback_types": [
+      "false_positive",
+      "false_positive",
+      "false_positive",
+      "false_positive",
+      "false_positive",
+      "false_negative",
+      "false_negative",
+      "false_negative",
+      "false_negative"
+    ],
+    "detection_counts": {
+      "original": 5,
+      "corrected": 4,
+      "added": 4,
+      "deleted": 5
+    },
+    "parameters_before": {
+      "percent_threshold": 26,
+      "min_area_factor": 0.0007180192468708208,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "parameters_after": {
+      "percent_threshold": 29,
+      "min_area_factor": 0.000731816612812227,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "changes": {
+      "percent_threshold": {
+        "from": 26,
+        "to": 29,
+        "delta": 3
+      },
+      "min_area_factor": {
+        "from": 0.0007180192468708208,
+        "to": 0.000731816612812227,
+        "delta": 1.3797365941406155e-05
+      }
+    }
+  },
+  {
+    "timestamp": "2025-11-26T16:40:26.434636",
+    "image_id": "4",
+    "user_id": "H1210",
+    "feedback_types": [
+      "false_positive",
+      "false_positive",
+      "false_positive",
+      "false_positive",
+      "false_positive",
+      "false_negative",
+      "false_negative",
+      "false_negative"
+    ],
+    "detection_counts": {
+      "original": 5,
+      "corrected": 3,
+      "added": 3,
+      "deleted": 5
+    },
+    "parameters_before": {
+      "percent_threshold": 29,
+      "min_area_factor": 0.000731816612812227,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "parameters_after": {
+      "percent_threshold": 35,
+      "min_area_factor": 0.0009323488839643754,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "changes": {
+      "percent_threshold": {
+        "from": 29,
+        "to": 35,
+        "delta": 6
+      },
+      "min_area_factor": {
+        "from": 0.000731816612812227,
+        "to": 0.0009323488839643754,
+        "delta": 0.00020053227115214838
+      }
+    }
+  },
+  {
+    "timestamp": "2025-11-26T22:28:39.136793",
+    "image_id": "4",
+    "user_id": "H1210",
+    "feedback_types": [
+      "false_positive",
+      "false_negative"
+    ],
+    "detection_counts": {
+      "original": 5,
+      "corrected": 5,
+      "added": 5,
+      "deleted": 5
+    },
+    "parameters_before": {
+      "percent_threshold": 35,
+      "min_area_factor": 0.0009323488839643754,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "parameters_after": {
+      "percent_threshold": 35,
+      "min_area_factor": 0.0008950549286058005,
+      "hsv_warm_thresholds": {
+        "hue_low": 0.17,
+        "hue_high": 0.95,
+        "saturation_min": 0.35,
+        "value_min": 0.5
+      },
+      "color_classification": {
+        "red_hue_max": 10,
+        "red_hue_min": 160,
+        "orange_hue_min": 10,
+        "orange_hue_max": 25,
+        "yellow_hue_min": 25,
+        "yellow_hue_max": 35,
+        "color_sat_min": 100,
+        "color_val_min": 100
+      },
+      "geometric_rules": {
+        "loose_joint_area_min": 0.1,
+        "loose_joint_overlap_min": 0.4,
+        "loose_joint_large_area": 0.3,
+        "wire_aspect_ratio": 2.0,
+        "wire_overload_area": 0.3
+      },
+      "severity_rules": {
+        "faulty_red_orange_threshold": 0.5
+      },
+      "confidence_factors": {
+        "loose_joint_base": 0.6,
+        "loose_joint_area_factor": 0.8,
+        "wire_base": 0.5,
+        "wire_aspect_factor": 0.2,
+        "point_base": 0.5,
+        "point_brightness_factor": 0.5
+      }
+    },
+    "changes": {
+      "min_area_factor": {
+        "from": 0.0009323488839643754,
+        "to": 0.0008950549286058005,
+        "delta": -3.7293955358574894e-05
+      }
+    }
   }
 ]

@@ -6,11 +6,11 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
-
+#jdbc:postgresql://127.0.0.1:5432/flarenet 
   datasource:
-    url: jdbc:postgresql://127.0.0.1:5432/flarenet
-    username: flarenet
-    password: "flarenet"
+    url: jdbc:postgresql://db.oqalzhntjnzubqtyuvdh.supabase.co:5432/postgres
+    username: postgres
+    password: "flarenet.2001"
     hikari:
       initialization-fail-timeout: 60000
       connection-timeout: 30000

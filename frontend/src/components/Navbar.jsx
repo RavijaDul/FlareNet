@@ -1,10 +1,11 @@
 import { useContext, useState } from "react";
-import { ActorContext } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 
 export default function Navbar() {
-  // const { user, logout } = useContext(ActorContext);
-  const { actor, setDisplayName } = useContext(ActorContext);
+  const { user, logout } = useContext(AuthContext);
+  const name = user?.username || "";
+  const role = user?.role ? user.role.toLowerCase() : null;
 
   const [open, setOpen] = useState(false);
 
@@ -61,21 +62,29 @@ export default function Navbar() {
       {/* Right side */}
       <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
         <div style={avatarStyle} onClick={() => setOpen((p) => !p)}>
-          {actor.charAt(0).toUpperCase()}
+          {(name || "?").charAt(0).toUpperCase()}
         </div>
         {open && (
           <div style={popupStyle}>
-            <p style={{ margin: 0, fontWeight: "bold" }}>{actor}</p>
-            <input
-              type="text"
-              placeholder="Change name"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  setDisplayName(e.target.value || "guest");
-                  setOpen(false);
-                }
-              }}
-            />
+            {user ? (
+              <>
+                <p style={{ margin: 0, fontWeight: "bold" }}>{name}</p>
+                <p style={{ marginTop: 6, marginBottom: 0, color: '#555' }}>{user.role}</p>
+                <div style={{ marginTop: 8 }}>
+                  <button
+                    onClick={() => { logout(); setOpen(false); }}
+                    style={{ cursor: 'pointer', width: '100%', padding: '6px', borderRadius: '5px', border: 'none', background: '#1976d2', color: '#fff' }}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <Link to="/login" onClick={() => setOpen(false)} style={{ display: 'block', marginBottom: 6 }}>Login</Link>
+                <Link to="/register" onClick={() => setOpen(false)}>Sign Up</Link>
+              </>
+            )}
           </div>
         )}
       
