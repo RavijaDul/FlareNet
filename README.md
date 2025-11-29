@@ -489,9 +489,6 @@ History viewer enables engineers to track transformer health over time and ident
 ## ✅ Quick Commands
 
 ```bash
-# Start database
-docker compose down -v
-docker compose up -d
 
 # Start backend
 cd flarenet-backend
@@ -525,6 +522,7 @@ uvicorn app:app --host 0.0.0.0 --port 5000 --reload
 python param_manager.py --show     # View current parameters
 python param_manager.py --reset    # Reset to defaults
 python param_manager.py --stats    # Show adaptation statistics
+
 ```
 
 ##   Start Postgres with Docker (Earlier Design stages)
