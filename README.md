@@ -2,7 +2,7 @@
 
 Flarenet is a web-based system designed to manage and automate transformer inspections using thermal images. Users can record transformer details, upload baseline and maintenance thermal images, and tag images by environmental conditions such as sunny, cloudy, or rainy. The system includes automated anomaly detection using machine learning models to analyze thermal images and generate digital maintenance records.
 
-**Current Stage: Milestone 05** - Production-ready system with **normalized database architecture**, **role-based access control**, **inspection record management**, **PDF report generation**, and **history tracking** capabilities.
+**Current Stage: Milestone 05** - System Upgraded with **normalized database architecture**, **role-based inspection record management**, **PDF report generation**, and **history tracking** capabilities.
 
 [![React](https://img.shields.io/badge/React-18%2B-cyan?logo=react&logoColor=white&logoSize=30)](https://reactjs.org/) 
 [![Vite](https://img.shields.io/badge/Vite-4%2B-pink?logo=vite&logoColor=white&logoSize=30)](https://vitejs.dev/) 
@@ -19,6 +19,7 @@ Flarenet is a web-based system designed to manage and automate transformer inspe
 [![OpenCV](https://img.shields.io/badge/OpenCV-4.8%2B-blue?logo=opencv&logoColor=white&logoSize=30)](https://opencv.org/) 
 [![ResNet](https://img.shields.io/badge/Deep_Learning-ResNet-red?logo=keras&logoColor=white&logoSize=30)](https://arxiv.org/abs/1512.03385) 
 [![Transfer Learning](https://img.shields.io/badge/Transfer_Learning-Enabled-purple?logo=tensorflow&logoColor=white&logoSize=30)](https://www.tensorflow.org/tutorials/images/transfer_learning)
+[![Supabase](https://img.shields.io/badge/Supabase-Platform-3ECF8E?logo=supabase&logoColor=white&logoSize=30)](https://supabase.com/)
 
 ---
 
@@ -31,7 +32,7 @@ Flarenet is a web-based system designed to manage and automate transformer inspe
 - **ML Backend:** Python FastAPI server for automated anomaly detection on thermal images using PyTorch models with adaptive learning.
 - **Database:** PostgreSQL with normalized relational schema deployed on Supabase cloud platform for production scalability.
 
-This system demonstrates **modern full-stack development with AI integration**, including role-based authentication, CRUD operations, image upload/management, ML-powered analysis, **human-in-the-loop adaptive learning**, automated PDF report generation, and comprehensive inspection history tracking.
+This system demonstrates **modern full-stack development with AI integration**, including role-based authentication, CRUD operations, image upload/management, ML-powered analysis, **human-in-the-loop adaptive learning**, automated PDF report generation, and inspection history tracking.
 
 ---
 
@@ -364,7 +365,7 @@ annotation_action
 - Structured columns replace JSON text storage for efficient SQL queries
 - Foreign key relationships ensure referential integrity
 - Indexed columns (transformer_id, inspection_id, severity, category) optimize reporting
-- Separate `detection` table enables fast filtering by anomaly type without JSON parsing
+- Separate `detection` table enables fast filtering.
 - `annotation_action` table tracks user feedback with before/after values for adaptive learning
 
 **Deployment:**
@@ -381,10 +382,6 @@ FlareNet implements **engineer-only access** for critical operations to ensure d
 ### Access Restrictions
 
 **Engineer Role Required:**
-- Create/edit inspection records
-- Upload thermal images
-- Run AI analysis
-- Save annotations and corrections
 - Generate PDF reports
 
 **Implementation:**
@@ -455,12 +452,6 @@ Inspection Record → Query database (joins: inspections, thermal_image, analysi
 
 **Sample Report:** [View Sample PDF](https://drive.google.com/your-pdf-link-here)
 
-**Features:**
-- High-resolution image embedding (300 DPI)
-- Color-coded severity levels (Red: Critical, Orange: Faulty, Yellow: Potentially Faulty)
-- Professional layout with company branding
-- Pagination and table of contents for multi-page reports
-
 ---
 
 ## History Viewer
@@ -504,7 +495,7 @@ History viewer enables engineers to track transformer health over time and ident
    - **Indexes:** Optimized for queries on transformer_id, inspection_id, severity, category, action_type
 
 3. **Access Control:**
-   - Engineer role required for inspection operations (enforced in Java backend)
+   - Engineer role required for maintaince record generation operations (enforced in Java backend)
    - Frontend checks user role to show/hide buttons
    - Backend validates role in API controllers before processing
 
@@ -569,5 +560,4 @@ python param_manager.py --stats    # Show adaptation statistics
 
 - JWT authentication pending – Current implementation uses basic session-based authentication; token-based auth (JWT) will be added for enhanced security.
 - Mobile optimization needed – UI optimized for desktop browsers; responsive design for tablets and mobile devices in progress.
-- Adaptive learning requires user interaction – The system improves over time through user feedback; initial performance depends on base model accuracy.
 - Cloud deployment in progress – Database deployed on Supabase; full application deployment (frontend + backend) on AWS/Azure pending.
